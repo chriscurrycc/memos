@@ -27,6 +27,9 @@ const UserStatisticsView = () => {
   const [activityStats, setActivityStats] = useState<Record<string, number>>({});
   const [selectedDate] = useState(new Date());
   const [visibleMonthString, setVisibleMonthString] = useState(dayjs(selectedDate.toDateString()).format("YYYY-MM"));
+  const currentMonth = dayjs().startOf("month");
+  const visibleMonth = dayjs(visibleMonthString).startOf("month");
+  const isNextMonthDisabled = !visibleMonth.isBefore(currentMonth);
   const [days, setDays] = useState(0);
 
   useAsyncEffect(async () => {
@@ -78,8 +81,14 @@ const UserStatisticsView = () => {
             <ChevronLeftIcon className="w-4 h-auto shrink-0 opacity-60" />
           </span>
           <span
-            className="cursor-pointer hover:opacity-80"
-            onClick={() => setVisibleMonthString(dayjs(visibleMonthString).add(1, "month").format("YYYY-MM"))}
+            className={clsx("cursor-pointer hover:opacity-80", isNextMonthDisabled && "cursor-not-allowed opacity-40 hover:opacity-40")}
+            onClick={() => {
+              const nextMonth = visibleMonth.add(1, "month");
+              if (nextMonth.isAfter(currentMonth)) {
+                return;
+              }
+              setVisibleMonthString(nextMonth.format("YYYY-MM"));
+            }}
           >
             <ChevronRightIcon className="w-4 h-auto shrink-0 opacity-60" />
           </span>

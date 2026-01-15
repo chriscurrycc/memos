@@ -15,18 +15,21 @@ interface Props {
   getTooltipText?: (date: string, count: number) => string;
 }
 
-const getCellAdditionalStyles = (count: number, maxCount: number) => {
+const HEATMAP_BUCKETS = [
+  { max: 1, className: "bg-primary/55 dark:bg-primary" },
+  { max: 3, className: "bg-primary/65 dark:bg-primary/90" },
+  { max: 5, className: "bg-primary/75 dark:bg-primary/80" },
+  { max: 10, className: "bg-primary/85 dark:bg-primary/70" },
+  { max: 20, className: "bg-primary/90 dark:bg-primary/65" },
+  { max: 50, className: "bg-primary/95 dark:bg-primary/60" },
+  { max: Infinity, className: "bg-primary dark:bg-primary/55" },
+];
+
+const getCellAdditionalStyles = (count: number) => {
   if (count === 0) {
     return "";
   }
-  const ratio = count / maxCount;
-  if (ratio > 0.7) {
-    return "bg-primary-darker text-gray-100 dark:opacity-80";
-  } else if (ratio > 0.4) {
-    return "bg-primary-dark text-gray-100 dark:opacity-80";
-  } else {
-    return "bg-primary text-gray-100 dark:opacity-70";
-  }
+  return HEATMAP_BUCKETS.find((bucket) => count <= bucket.max)?.className || "";
 };
 
 const ActivityCalendar = (props: Props) => {
@@ -46,7 +49,6 @@ const ActivityCalendar = (props: Props) => {
 
   const WEEK_DAYS = [t("days.sun"), t("days.mon"), t("days.tue"), t("days.wed"), t("days.thu"), t("days.fri"), t("days.sat")];
   const weekDays = WEEK_DAYS.slice(weekStartDayOffset).concat(WEEK_DAYS.slice(0, weekStartDayOffset));
-  const maxCount = Math.max(...Object.values(data));
   const days = [];
 
   // Fill in previous month's days.
@@ -88,7 +90,8 @@ const ActivityCalendar = (props: Props) => {
               className={cn(
                 "w-6 h-6 text-xs rounded-xl flex justify-center items-center border cursor-default",
                 "text-gray-400",
-                item.isCurrentMonth ? getCellAdditionalStyles(count, maxCount) : "opacity-60",
+                item.isCurrentMonth ? getCellAdditionalStyles(count) : "opacity-60",
+                item.isCurrentMonth && count > 0 && "text-gray-100",
                 item.isCurrentMonth && isToday && "border-zinc-400",
                 item.isCurrentMonth && isSelected && "font-bold border-zinc-400",
                 item.isCurrentMonth && !isToday && !isSelected && "border-transparent",
