@@ -30,6 +30,9 @@ const UserStatisticsView = () => {
   const [selectedDate] = useState(new Date());
   const [visibleMonthString, setVisibleMonthString] = useState(dayjs(selectedDate.toDateString()).format("YYYY-MM"));
   const days = Math.ceil((Date.now() - currentUser.createTime!.getTime()) / 86400000);
+  const currentMonth = dayjs().startOf("month");
+  const visibleMonth = dayjs(visibleMonthString).startOf("month");
+  const isNextMonthDisabled = !visibleMonth.isBefore(currentMonth);
 
   useAsyncEffect(async () => {
     const memoStats: UserMemoStats = { link: 0, taskList: 0, code: 0, incompleteTasks: 0 };
@@ -75,8 +78,14 @@ const UserStatisticsView = () => {
             <ChevronLeftIcon className="w-4 h-auto shrink-0 opacity-60" />
           </span>
           <span
-            className="cursor-pointer hover:opacity-80"
-            onClick={() => setVisibleMonthString(dayjs(visibleMonthString).add(1, "month").format("YYYY-MM"))}
+            className={clsx("cursor-pointer hover:opacity-80", isNextMonthDisabled && "cursor-not-allowed opacity-40 hover:opacity-40")}
+            onClick={() => {
+              const nextMonth = visibleMonth.add(1, "month");
+              if (nextMonth.isAfter(currentMonth)) {
+                return;
+              }
+              setVisibleMonthString(nextMonth.format("YYYY-MM"));
+            }}
           >
             <ChevronRightIcon className="w-4 h-auto shrink-0 opacity-60" />
           </span>
