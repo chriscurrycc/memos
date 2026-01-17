@@ -8,7 +8,7 @@ interface Props extends BaseProps {
 
 const Blockquote: React.FC<Props> = ({ children }: Props) => {
   return (
-    <blockquote className="p-2 border-s-4 rounded border-gray-300 bg-gray-50 dark:border-gray-500 dark:bg-zinc-700">
+    <blockquote className="not-italic pl-3 border-l-2 border-gray-400 dark:border-gray-600 text-gray-600 dark:text-gray-400 text-sm leading-relaxed font-serif font-normal [&>p]:before:content-none [&>p]:after:content-none">
       {children.map((child, index) => (
         <Renderer key={`${child.type}-${index}`} index={String(index)} node={child} />
       ))}
