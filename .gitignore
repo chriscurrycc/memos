@@ -29,3 +29,6 @@ dist
 
 memo.md
 memo.http
+
+# Claude local configuration
+.claude
