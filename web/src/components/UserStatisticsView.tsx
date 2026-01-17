@@ -81,7 +81,7 @@ const UserStatisticsView = () => {
             <ChevronLeftIcon className="w-4 h-auto shrink-0 opacity-60" />
           </span>
           <span
-            className={clsx("cursor-pointer hover:opacity-80", isNextMonthDisabled && "cursor-not-allowed opacity-40 hover:opacity-40")}
+            className={clsx(isNextMonthDisabled ? "cursor-not-allowed opacity-40" : "cursor-pointer hover:opacity-80")}
             onClick={() => {
               const nextMonth = visibleMonth.add(1, "month");
               if (nextMonth.isAfter(currentMonth)) {
