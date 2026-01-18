@@ -1,1 +1,2 @@
-1. 这个项目不需要进行 typecheck 和 prettier 操作
+1. This project does not require typecheck and prettier operations
+2. All GitHub operations (issues, PRs, etc.) should target the repository chriscurrycc/memos, not the upstream fork
