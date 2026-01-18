@@ -65,7 +65,7 @@ const Link: React.FC<Props> = ({ text, url }: Props) => {
       open={showTooltip}
       arrow
     >
-      <MLink underline="always" target="_blank" href={url}>
+      <MLink underline="always" target="_blank" href={url} sx={{ fontSize: "inherit" }}>
         <span onMouseEnter={handleMouseEnter} onMouseLeave={() => setShowTooltip(false)}>
           {text || url}
         </span>

@@ -81,7 +81,7 @@ const CodeBlock: React.FC<Props> = ({ language, content }: Props) => {
         <div className="overflow-auto">
           <pre className={clsx("no-wrap overflow-auto", "w-full p-2 bg-amber-50 dark:bg-zinc-700 relative")}>
             <code
-              className={clsx(`language-${formatedLanguage}`, "block text-sm leading-5")}
+              className={clsx(`language-${formatedLanguage}`, "block leading-5 not-prose")}
               dangerouslySetInnerHTML={{ __html: highlightedCode }}
             ></code>
           </pre>

@@ -45,7 +45,7 @@ const Tag: React.FC<Props> = ({ content }: Props) => {
   return (
     <span
       className={clsx(
-        "not-prose inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20 dark:bg-primary/10 dark:text-primary dark:ring-primary/20",
+        "inline-flex items-center rounded-md bg-primary/10 px-2 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20 dark:bg-primary/10 dark:text-primary dark:ring-primary/20",
         context.disableFilter ? "" : "cursor-pointer hover:opacity-80",
       )}
       onClick={handleTagClick}
