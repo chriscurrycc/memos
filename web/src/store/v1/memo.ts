@@ -8,6 +8,8 @@ interface State {
   // stateId is used to identify the store instance state.
   // It should be update when any state change.
   stateId: string;
+  // mutationVersion is incremented only on create/update/delete, not on fetch.
+  mutationVersion: number;
   memoMapByName: Record<string, Memo>;
   pinnedMemoMapByName: Record<string, Memo>;
   currentRequest: AbortController | null;
@@ -15,6 +17,7 @@ interface State {
 
 const getDefaultState = (): State => ({
   stateId: uniqueId(),
+  mutationVersion: 0,
   memoMapByName: {},
   pinnedMemoMapByName: {},
   currentRequest: null,
@@ -98,7 +101,7 @@ export const useMemoStore = create(
       const memo = await memoServiceClient.createMemo(request);
       const memoMap = get().memoMapByName;
       memoMap[memo.name] = memo;
-      set({ stateId: uniqueId(), memoMapByName: memoMap });
+      set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap });
       return memo;
     },
     updateMemo: async (update: Partial<Memo>, updateMask: string[]) => {
@@ -115,24 +118,25 @@ export const useMemoStore = create(
       memoMap[memo.name] = memo;
 
       // Update pinnedMemoMapByName based on the memo's pinned status.
+      const newMutationVersion = get().mutationVersion + 1;
       if (memo.pinned) {
         if (hasPinnedMemo) {
           // Replace value without reordering for existing pinned memos.
           const newPinnedMemoMap = { ...pinnedMemoMap };
           newPinnedMemoMap[memo.name] = memo;
-          set({ stateId: uniqueId(), memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
+          set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
         } else {
           // New pinned memos go to the front to preserve pin order.
           const newPinnedMemoMap = { [memo.name]: memo, ...pinnedMemoMap };
-          set({ stateId: uniqueId(), memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
+          set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
         }
       } else if (hasPinnedMemo) {
         // Remove from pinned list when unpinned.
         const newPinnedMemoMap = { ...pinnedMemoMap };
         delete newPinnedMemoMap[memo.name];
-        set({ stateId: uniqueId(), memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
+        set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
       } else {
-        set({ stateId: uniqueId(), memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
+        set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
       }
       return memo;
     },
@@ -143,7 +147,7 @@ export const useMemoStore = create(
 
       const memoMap = get().memoMapByName;
       delete memoMap[name];
-      set({ stateId: uniqueId(), memoMapByName: memoMap });
+      set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap });
     },
     fetchPinnedMemos: async (creatorName: string) => {
       const { memos, nextPageToken } = await memoServiceClient.listMemos({

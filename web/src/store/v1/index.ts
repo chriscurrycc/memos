@@ -3,7 +3,7 @@ export * from "./memo";
 export * from "./inbox";
 export * from "./resourceName";
 export * from "./resource";
-export * from "./tag";
+export * from "./tagSettings";
 export * from "./workspaceSetting";
 export * from "./memoFilter";
 export * from "./memoMetadata";

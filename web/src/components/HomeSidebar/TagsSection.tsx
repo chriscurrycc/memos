@@ -1,4 +1,4 @@
-import { Dropdown, Menu, MenuButton, MenuItem, Switch } from "@mui/joy";
+import { Dropdown, Menu, MenuButton, MenuItem, Skeleton, Switch } from "@mui/joy";
 import clsx from "clsx";
 import { Edit3Icon, HashIcon, MoreVerticalIcon, TagsIcon, TrashIcon } from "lucide-react";
 import toast from "react-hot-toast";
@@ -6,7 +6,7 @@ import { useLocation } from "react-router-dom";
 import useLocalStorage from "react-use/lib/useLocalStorage";
 import { memoServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { useMemoFilterStore, useMemoMetadataStore, useMemoTagList } from "@/store/v1";
+import { useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore, useSortedTags } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
 import showRenameTagDialog from "../RenameTagDialog";
 import TagTree from "../TagTree";
@@ -16,16 +16,52 @@ interface Props {
   readonly?: boolean;
 }
 
+const TagItemSkeleton = ({ width }: { width: number }) => (
+  <div className="flex items-center gap-1 w-full">
+    <Skeleton variant="circular" width={20} height={20} />
+    <Skeleton variant="text" level="body-sm" width={width} />
+  </div>
+);
+
+const TagsSectionSkeleton = () => {
+  return (
+    <div className="flex flex-col justify-start items-start w-full mt-3 px-1 h-auto shrink-0 flex-nowrap">
+      <div className="w-full mb-1">
+        <Skeleton variant="text" level="body-sm" width={40} />
+      </div>
+      <div className="w-full flex flex-col gap-2 mt-1">
+        {/* Pinned tags */}
+        <TagItemSkeleton width={70} />
+        <TagItemSkeleton width={90} />
+        {/* Divider */}
+        <div className="w-full h-px bg-gray-200 dark:bg-zinc-700 my-1" />
+        {/* Unpinned tags */}
+        <TagItemSkeleton width={60} />
+        <TagItemSkeleton width={100} />
+        <TagItemSkeleton width={50} />
+        <TagItemSkeleton width={80} />
+        <TagItemSkeleton width={70} />
+        <TagItemSkeleton width={90} />
+        <TagItemSkeleton width={55} />
+        <TagItemSkeleton width={75} />
+      </div>
+    </div>
+  );
+};
+
 const TagsSection = (props: Props) => {
   const t = useTranslate();
   const location = useLocation();
   const user = useCurrentUser();
   const memoFilterStore = useMemoFilterStore();
   const memoMetadataStore = useMemoMetadataStore();
+  const initialized = useMemoMetadataInitialized();
   const [treeMode, setTreeMode] = useLocalStorage<boolean>("tag-view-as-tree", false);
-  const tags = Object.entries(useMemoTagList())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .sort((a, b) => b[1] - a[1]);
+  const tags = useSortedTags();
+
+  if (!initialized) {
+    return <TagsSectionSkeleton />;
+  }
 
   const handleTagClick = (tag: string) => {
     const isActive = memoFilterStore.getFiltersByFactor("tagSearch").some((filter) => filter.value === tag);
@@ -71,7 +107,7 @@ const TagsSection = (props: Props) => {
       </div>
       {tags.length > 0 ? (
         treeMode ? (
-          <TagTree tagAmounts={tags} />
+          <TagTree />
         ) : (
           <div className="w-full flex flex-row justify-start items-center relative flex-wrap gap-x-2 gap-y-1">
             {tags.map(([tag, amount]) => (

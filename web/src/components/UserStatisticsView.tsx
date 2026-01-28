@@ -1,68 +1,53 @@
-import { Divider, Tooltip } from "@mui/joy";
+import { Divider, Skeleton, Tooltip } from "@mui/joy";
 import clsx from "clsx";
 import dayjs from "dayjs";
-import { countBy } from "lodash-es";
 import { CalendarDaysIcon, CheckCircleIcon, ChevronLeftIcon, ChevronRightIcon, Code2Icon, LinkIcon, ListTodoIcon } from "lucide-react";
 import { useState } from "react";
-import useAsyncEffect from "@/hooks/useAsyncEffect";
 import i18n from "@/i18n";
-import { useMemoFilterStore, useMemoMetadataStore } from "@/store/v1";
+import { useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
 import ActivityCalendar from "./ActivityCalendar";
 
-interface UserMemoStats {
-  link: number;
-  taskList: number;
-  code: number;
-  incompleteTasks: number;
-}
+const UserStatisticsViewSkeleton = () => {
+  return (
+    <div className="w-full border mt-2 py-2 px-3 rounded-lg space-y-2 bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800">
+      <Skeleton variant="text" level="body-sm" width={100} />
+      <div className="grid grid-cols-7 gap-1">
+        {Array.from({ length: 35 }).map((_, i) => (
+          <Skeleton key={i} variant="rectangular" width="100%" height={16} />
+        ))}
+      </div>
+      <Skeleton variant="text" level="body-xs" width={120} />
+      <Divider className="!my-2 opacity-50" />
+      <div className="flex gap-2">
+        <Skeleton variant="rectangular" width={48} height={24} />
+        <Skeleton variant="rectangular" width={48} height={24} />
+        <Skeleton variant="rectangular" width={48} height={24} />
+      </div>
+    </div>
+  );
+};
 
 const UserStatisticsView = () => {
   const t = useTranslate();
   const memoFilterStore = useMemoFilterStore();
   const memoMetadataStore = useMemoMetadataStore();
-  const metadataList = Object.values(memoMetadataStore.getState().dataMapByName);
-  const [memoAmount, setMemoAmount] = useState(0);
-  const [memoStats, setMemoStats] = useState<UserMemoStats>({ link: 0, taskList: 0, code: 0, incompleteTasks: 0 });
-  const [activityStats, setActivityStats] = useState<Record<string, number>>({});
+  const initialized = useMemoMetadataInitialized();
+  const { stats: memoStats, activityStats, memoCount: memoAmount, days } = memoMetadataStore.getState();
   const [selectedDate] = useState(new Date());
   const [visibleMonthString, setVisibleMonthString] = useState(dayjs(selectedDate.toDateString()).format("YYYY-MM"));
   const currentMonth = dayjs().startOf("month");
   const visibleMonth = dayjs(visibleMonthString).startOf("month");
   const isNextMonthDisabled = !visibleMonth.isBefore(currentMonth);
-  const [days, setDays] = useState(0);
-
-  useAsyncEffect(async () => {
-    const memoStats: UserMemoStats = { link: 0, taskList: 0, code: 0, incompleteTasks: 0 };
-    let earliestTime = Date.now();
-    metadataList.forEach((memo) => {
-      const { property, createTime } = memo;
-      if (createTime && createTime.getTime() < earliestTime) {
-        earliestTime = createTime.getTime();
-      }
-      if (property?.hasLink) {
-        memoStats.link += 1;
-      }
-      if (property?.hasTaskList) {
-        memoStats.taskList += 1;
-      }
-      if (property?.hasCode) {
-        memoStats.code += 1;
-      }
-      if (property?.hasIncompleteTasks) {
-        memoStats.incompleteTasks += 1;
-      }
-    });
-    setMemoStats(memoStats);
-    setMemoAmount(metadataList.length);
-    setDays(metadataList.length > 0 ? Math.ceil((Date.now() - earliestTime) / 86400000) : 0);
-    setActivityStats(countBy(metadataList.map((memo) => dayjs(memo.displayTime).format("YYYY-MM-DD"))));
-  }, [memoMetadataStore.stateId]);
 
   const onCalendarClick = (date: string) => {
     memoFilterStore.removeFilter((f) => f.factor === "displayTime");
     memoFilterStore.addFilter({ factor: "displayTime", value: date });
   };
+
+  if (!initialized) {
+    return <UserStatisticsViewSkeleton />;
+  }
 
   return (
     <div className="group w-full border mt-2 py-2 px-3 rounded-lg space-y-0.5 text-gray-500 dark:text-gray-400 bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800">

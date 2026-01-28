@@ -1,103 +1,34 @@
 import { ChevronRightIcon, PinIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useToggle from "react-use/lib/useToggle";
-import { useMemoFilterStore, useTag } from "@/store/v1";
+import { useMemoFilterStore, useTag, useTagTree } from "@/store/v1";
+import { TagTreeNode } from "@/store/v1/memoMetadata";
 import { EmojiPickerPopover } from "./EmojiPickerPopover";
 
-interface Tag {
-  key: string;
-  text: string;
-  amount: number;
-  subTags: Tag[];
-}
-
-interface Props {
-  tagAmounts: [tag: string, amount: number][];
-}
-
-const TagTree = ({ tagAmounts: rawTagAmounts }: Props) => {
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [pinnedTags, setPinnedTags] = useState<Tag[]>([]);
-  const [unpinnedTags, setUnpinnedTags] = useState<Tag[]>([]);
+const TagTree = () => {
+  const tags = useTagTree();
   const { fetchEmojiTags, fetchPinnedTags, pinnedTags: pinnedTagsFromStore } = useTag();
 
-  useEffect(() => {
-    const sortedTagAmounts = Array.from(rawTagAmounts).sort();
-    const root: Tag = {
-      key: "",
-      text: "",
-      amount: 0,
-      subTags: [],
-    };
-
-    for (const tagAmount of sortedTagAmounts) {
-      const subtags = tagAmount[0].split("/");
-      let tempObj = root;
-      let tagText = "";
-
-      for (let i = 0; i < subtags.length; i++) {
-        const key = subtags[i];
-        let amount: number = 0;
-
-        if (i === 0) {
-          tagText += key;
-        } else {
-          tagText += "/" + key;
-        }
-        if (sortedTagAmounts.some(([tag, amount]) => tag === tagText && amount > 1)) {
-          amount = tagAmount[1];
-        }
-
-        let obj = null;
-
-        for (const t of tempObj.subTags) {
-          if (t.text === tagText) {
-            obj = t;
-            break;
-          }
-        }
-
-        if (!obj) {
-          obj = {
-            key,
-            text: tagText,
-            amount: amount,
-            subTags: [],
-          };
-          tempObj.subTags.push(obj);
-        }
-
-        tempObj = obj;
-      }
-    }
-
-    setTags(root.subTags as Tag[]);
-  }, [rawTagAmounts]);
-
   // Separate pinned and unpinned tags
-  useEffect(() => {
+  const { pinnedTags, unpinnedTags } = useMemo(() => {
     const pinnedTagNames = pinnedTagsFromStore.map((tag) => tag.tagName);
-    const unpinned: Tag[] = [];
+    const unpinned: TagTreeNode[] = [];
 
-    // For unpinned tags, use the alphabetically sorted order from tags
     tags.forEach((tag) => {
       if (!pinnedTagNames.includes(tag.text)) {
         unpinned.push(tag);
       }
     });
 
-    // For pinned tags, maintain the server order (time-based) by creating them from pinnedTagsFromStore
-    const pinned: Tag[] = [];
+    const pinned: TagTreeNode[] = [];
     pinnedTagsFromStore.forEach((pinnedTag) => {
-      // Find the corresponding tag from tags array to get the full structure with subTags
       const fullTag = tags.find((tag) => tag.text === pinnedTag.tagName);
       if (fullTag) {
         pinned.push(fullTag);
       }
     });
 
-    setPinnedTags(pinned);
-    setUnpinnedTags(unpinned);
+    return { pinnedTags: pinned, unpinnedTags: unpinned };
   }, [tags, pinnedTagsFromStore]);
 
   // Fetch emoji tags and pinned tags when component mounts
@@ -131,7 +62,7 @@ const TagTree = ({ tagAmounts: rawTagAmounts }: Props) => {
 };
 
 interface TagItemContainerProps {
-  tag: Tag;
+  tag: TagTreeNode;
   isPinned?: boolean;
 }
 
