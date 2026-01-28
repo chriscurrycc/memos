@@ -42,7 +42,9 @@ const TaskListItem: React.FC<Props> = ({ node, complete, children }: Props) => {
       <span className="size-6 flex justify-start items-center">
         <Checkbox size="sm" checked={checked} disabled={context.readonly} onChange={(e) => handleCheckboxChange(e.target.checked)} />
       </span>
-      <p className={clsx(complete && "line-through opacity-80 [&_a]:line-through [&_a]:decoration-gray-800 dark:[&_a]:decoration-gray-400")}>
+      <p
+        className={clsx(complete && "line-through opacity-80 [&_a]:line-through [&_a]:decoration-gray-800 dark:[&_a]:decoration-gray-400")}
+      >
         {children.map((child, index) => (
           <Renderer key={`${child.type}-${index}`} index={String(index)} node={child} />
         ))}
