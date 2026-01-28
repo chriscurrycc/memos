@@ -6,7 +6,7 @@ interface ScrollToTopProps {
   className?: string;
   style?: React.CSSProperties;
   enabled?: boolean;
-  scrollContainerRef: React.RefObject<HTMLDivElement>;
+  scrollContainerRef: React.RefObject<HTMLElement>;
 }
 
 const ScrollToTop = ({ className, style, enabled = true, scrollContainerRef }: ScrollToTopProps) => {

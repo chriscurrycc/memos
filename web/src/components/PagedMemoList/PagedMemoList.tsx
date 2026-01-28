@@ -17,6 +17,7 @@ interface Props {
   listSort?: (list: Memo[]) => Memo[];
   filter?: string;
   pageSize?: number;
+  scrollContainerRef?: React.RefObject<HTMLElement>;
 }
 
 interface State {
@@ -106,7 +107,7 @@ const PagedMemoList = (props: Props) => {
         enabled={shouldShowScrollToTop}
         className="fixed bottom-6"
         style={{ right: `calc(1rem + ${containerRightOffset}px)` }}
-        scrollContainerRef={containerRef}
+        scrollContainerRef={props.scrollContainerRef || containerRef}
       />
     </div>
   );
