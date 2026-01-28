@@ -12,6 +12,13 @@ module.exports = {
           dark: "#0f766e", // Teal 700
           darker: "#0d5a56", // Teal 800
         },
+        heatmap: {
+          1: { DEFAULT: "#d5e8e5", dark: "#2a4a47" }, // Muted teal-gray
+          2: { DEFAULT: "#a3d1cb", dark: "#367872" }, // Soft teal
+          3: { DEFAULT: "#5cb8ad", dark: "#3d9b92" }, // Medium teal
+          4: { DEFAULT: "#26a69a", dark: "#3fbdb0" }, // Teal
+          5: { DEFAULT: "#0d9488", dark: "#4dd9c9" }, // Primary teal
+        },
         success: {
           DEFAULT: "#16a34a", // Green 600
           dark: "#047857", // Green 700

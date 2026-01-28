@@ -16,13 +16,11 @@ interface Props {
 }
 
 const HEATMAP_BUCKETS = [
-  { max: 1, className: "bg-primary/55 dark:bg-primary" },
-  { max: 3, className: "bg-primary/65 dark:bg-primary/90" },
-  { max: 5, className: "bg-primary/75 dark:bg-primary/80" },
-  { max: 10, className: "bg-primary/85 dark:bg-primary/70" },
-  { max: 20, className: "bg-primary/90 dark:bg-primary/65" },
-  { max: 50, className: "bg-primary/95 dark:bg-primary/60" },
-  { max: Infinity, className: "bg-primary dark:bg-primary/55" },
+  { max: 1, className: "bg-heatmap-1 dark:bg-heatmap-1-dark text-teal-700 dark:text-teal-300" },
+  { max: 3, className: "bg-heatmap-2 dark:bg-heatmap-2-dark text-teal-800 dark:text-teal-200" },
+  { max: 10, className: "bg-heatmap-3 dark:bg-heatmap-3-dark text-white dark:text-teal-100" },
+  { max: 20, className: "bg-heatmap-4 dark:bg-heatmap-4-dark text-white dark:text-teal-900" },
+  { max: Infinity, className: "bg-heatmap-5 dark:bg-heatmap-5-dark text-white dark:text-teal-900" },
 ];
 
 const getCellAdditionalStyles = (count: number) => {
@@ -91,7 +89,6 @@ const ActivityCalendar = (props: Props) => {
                 "w-6 h-6 text-xs rounded-xl flex justify-center items-center border cursor-default",
                 "text-gray-400",
                 item.isCurrentMonth ? getCellAdditionalStyles(count) : "opacity-60",
-                item.isCurrentMonth && count > 0 && "text-gray-100",
                 item.isCurrentMonth && isToday && "border-zinc-400",
                 item.isCurrentMonth && isSelected && "font-bold border-zinc-400",
                 item.isCurrentMonth && !isToday && !isSelected && "border-transparent",
