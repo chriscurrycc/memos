@@ -16,11 +16,9 @@ interface Props {
 }
 
 const HEATMAP_BUCKETS = [
-  { max: 1, className: "bg-heatmap-1 dark:bg-heatmap-1-dark text-teal-700 dark:text-teal-300" },
-  { max: 3, className: "bg-heatmap-2 dark:bg-heatmap-2-dark text-teal-800 dark:text-teal-200" },
-  { max: 10, className: "bg-heatmap-3 dark:bg-heatmap-3-dark text-white dark:text-teal-100" },
-  { max: 20, className: "bg-heatmap-4 dark:bg-heatmap-4-dark text-white dark:text-teal-900" },
-  { max: Infinity, className: "bg-heatmap-5 dark:bg-heatmap-5-dark text-white dark:text-teal-900" },
+  { max: 3, className: "bg-heatmap-1 dark:bg-heatmap-1-dark text-teal-700 dark:text-teal-300" },
+  { max: 10, className: "bg-heatmap-2 dark:bg-heatmap-2-dark text-teal-800 dark:text-teal-100" },
+  { max: Infinity, className: "bg-heatmap-3 dark:bg-heatmap-3-dark text-white dark:text-white" },
 ];
 
 const getCellAdditionalStyles = (count: number) => {
@@ -80,23 +78,18 @@ const ActivityCalendar = (props: Props) => {
           : count
             ? t("memo.count-memos-in-date", { count: count, date: date })
             : date;
-        const isSelected = dayjs(props.selectedDate).format("YYYY-MM-DD") === date;
-
         return (
           <Tooltip className="shrink-0" key={`${date}-${index}`} title={tooltipText} placement="top" arrow>
             <div
               className={cn(
-                "w-6 h-6 text-xs rounded-xl flex justify-center items-center border cursor-default",
+                "w-6 h-6 text-xs rounded-xl flex flex-col justify-center items-center cursor-default relative",
                 "text-gray-400",
                 item.isCurrentMonth ? getCellAdditionalStyles(count) : "opacity-60",
-                item.isCurrentMonth && isToday && "border-zinc-400",
-                item.isCurrentMonth && isSelected && "font-bold border-zinc-400",
-                item.isCurrentMonth && !isToday && !isSelected && "border-transparent",
-                !item.isCurrentMonth && "border-transparent",
               )}
               onClick={() => count && onClick && onClick(date)}
             >
               {item.day}
+              {item.isCurrentMonth && isToday && <span className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-primary dark:bg-primary" />}
             </div>
           </Tooltip>
         );

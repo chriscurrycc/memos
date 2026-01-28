@@ -13,11 +13,9 @@ module.exports = {
           darker: "#0d5a56", // Teal 800
         },
         heatmap: {
-          1: { DEFAULT: "#d5e8e5", dark: "#2a4a47" }, // Muted teal-gray
-          2: { DEFAULT: "#a3d1cb", dark: "#367872" }, // Soft teal
-          3: { DEFAULT: "#5cb8ad", dark: "#3d9b92" }, // Medium teal
-          4: { DEFAULT: "#26a69a", dark: "#3fbdb0" }, // Teal
-          5: { DEFAULT: "#0d9488", dark: "#4dd9c9" }, // Primary teal
+          1: { DEFAULT: "#d0e8e4", dark: "#263f3c" }, // Light teal / Very muted
+          2: { DEFAULT: "#8fd4c8", dark: "#3d8a7e" }, // Medium teal
+          3: { DEFAULT: "#0d8478", dark: "#14b8a6" }, // Deep teal / Bright teal
         },
         success: {
           DEFAULT: "#16a34a", // Green 600
