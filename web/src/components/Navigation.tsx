@@ -1,17 +1,6 @@
 import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
-import {
-  ArchiveIcon,
-  BellIcon,
-  DatabaseIcon,
-  Globe2Icon,
-  HomeIcon,
-  LogInIcon,
-  PaperclipIcon,
-  SettingsIcon,
-  SmileIcon,
-  User2Icon,
-} from "lucide-react";
+import { ArchiveIcon, BellIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import useCurrentUser from "@/hooks/useCurrentUser";
@@ -120,15 +109,9 @@ const Navigation = (props: Props) => {
     title: t("common.about"),
     icon: <SmileIcon className="w-6 h-auto opacity-70 shrink-0" />,
   };
-  const rawDataViewNavLink: NavLinkItem = {
-    id: "header-raw-data-view",
-    path: Routes.RAW_DATA_VIEW,
-    title: "Raw Data View",
-    icon: <DatabaseIcon className="w-6 h-auto opacity-70 shrink-0" />,
-  };
 
   const navLinks: NavLinkItem[] = user
-    ? [homeNavLink, resourcesNavLink, exploreNavLink, profileNavLink, rawDataViewNavLink, archivedNavLink, settingNavLink]
+    ? [homeNavLink, resourcesNavLink, exploreNavLink, profileNavLink, archivedNavLink, settingNavLink]
     : [exploreNavLink, signInNavLink, aboutNavLink];
 
   return (

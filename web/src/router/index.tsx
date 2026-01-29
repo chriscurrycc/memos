@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import RootLayout from "@/layouts/RootLayout";
 import SuspenseWrapper from "@/layouts/SuspenseWrapper";
@@ -12,10 +12,6 @@ import Inboxes from "@/pages/Inboxes";
 import MemoDetail from "@/pages/MemoDetail";
 import NotFound from "@/pages/NotFound";
 import PermissionDenied from "@/pages/PermissionDenied";
-import RawDataView from "@/pages/RawDataView";
-import Book from "@/pages/RawDataView/Book";
-import Pet from "@/pages/RawDataView/Pet";
-import Video from "@/pages/RawDataView/Video";
 import Resources from "@/pages/Resources";
 import Setting from "@/pages/Setting";
 import SignIn from "@/pages/SignIn";
@@ -31,7 +27,6 @@ export enum Routes {
   EXPLORE = "/explore",
   ABOUT = "/about",
   AUTH = "/auth",
-  RAW_DATA_VIEW = "/raw-data-view",
 }
 
 const router = createBrowserRouter([
@@ -88,28 +83,6 @@ const router = createBrowserRouter([
           {
             path: Routes.EXPLORE,
             element: <Explore />,
-          },
-          {
-            path: Routes.RAW_DATA_VIEW,
-            element: <RawDataView />,
-            children: [
-              {
-                index: true,
-                element: <Navigate to="pet" replace />,
-              },
-              {
-                path: "pet",
-                element: <Pet />,
-              },
-              {
-                path: "book",
-                element: <Book />,
-              },
-              {
-                path: "video",
-                element: <Video />,
-              },
-            ],
           },
           {
             path: "m/:uid",
