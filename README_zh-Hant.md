@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README_zh.md) | [日本語](README_ja.md)
 
-![Chris Curry's Memos](https://webp.chriscurry.cc/863shots_so.png)
+![Chris Curry's Memos](https://webp.chriscurry.cc/864shots_so.png)
 
 一個輕量級、可自託管的備忘錄中心，用於記錄和整理你的想法。
 

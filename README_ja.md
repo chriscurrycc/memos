@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README_zh.md) | [繁體中文](README_zh-Hant.md)
 
-![Chris Curry's Memos](https://webp.chriscurry.cc/863shots_so.png)
+![Chris Curry's Memos](https://webp.chriscurry.cc/864shots_so.png)
 
 軽量でセルフホスト可能なメモハブ。あなたの考えを記録・整理するためのツールです。
 

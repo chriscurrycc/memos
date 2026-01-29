@@ -2,7 +2,7 @@
 
 [简体中文](README_zh.md) | [繁體中文](README_zh-Hant.md) | [日本語](README_ja.md)
 
-![Chris Curry's Memos](https://webp.chriscurry.cc/863shots_so.png)
+![Chris Curry's Memos](https://webp.chriscurry.cc/864shots_so.png)
 
 A lightweight, self-hosted memo hub for capturing and organizing your thoughts.
 
