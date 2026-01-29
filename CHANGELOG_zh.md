@@ -4,12 +4,12 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
-## [v0.26.5](https://github.com/chriscurrycc/memos/releases/tag/v0.26.5) - 2025-01-29
+## [v0.26.5](https://github.com/chriscurrycc/memos/releases/tag/v0.26.5) - 2026-01-29
 
 ### 移除
 - 移除了原始数据查看功能
 
-## [v0.26.4](https://github.com/chriscurrycc/memos/releases/tag/v0.26.4) - 2025-01-29
+## [v0.26.4](https://github.com/chriscurrycc/memos/releases/tag/v0.26.4) - 2026-01-29
 
 ### 新功能
 - 移动端和平板设备新增置顶备忘录抽屉
@@ -22,12 +22,12 @@
 ### 修复
 - 已完成任务项中的链接也应用删除线样式
 
-## [v0.26.3](https://github.com/chriscurrycc/memos/releases/tag/v0.26.3) - 2025-01-18
+## [v0.26.3](https://github.com/chriscurrycc/memos/releases/tag/v0.26.3) - 2026-01-18
 
 ### 优化
 - 优化备忘录内容组件样式，提升可读性
 
-## [v0.26.2](https://github.com/chriscurrycc/memos/releases/tag/v0.26.2) - 2025-01-17
+## [v0.26.2](https://github.com/chriscurrycc/memos/releases/tag/v0.26.2) - 2026-01-17
 
 ### 优化
 - 优化引用块样式，提升可读性
@@ -35,7 +35,7 @@
 ### 修复
 - 修复下月按钮禁用状态样式
 
-## [v0.26.1](https://github.com/chriscurrycc/memos/releases/tag/v0.26.1) - 2025-01-15
+## [v0.26.1](https://github.com/chriscurrycc/memos/releases/tag/v0.26.1) - 2026-01-15
 
 ### 优化
 - 调整活动日历热力图颜色
@@ -46,18 +46,18 @@
 - 修复鼠标设备上表情选择器点击无效的问题
 - 修复天数计算改为从最早备忘录开始，而非用户创建时间
 
-## [v0.26.0](https://github.com/chriscurrycc/memos/releases/tag/v0.26.0) - 2025-01-14
+## [v0.26.0](https://github.com/chriscurrycc/memos/releases/tag/v0.26.0) - 2026-01-14
 
 ### 新功能
 - 代码块支持折叠/展开
 - 紧凑型编辑器 UI，优化间距和布局
 
-## [v0.25.2](https://github.com/chriscurrycc/memos/releases/tag/v0.25.2) - 2024-12-30
+## [v0.25.2](https://github.com/chriscurrycc/memos/releases/tag/v0.25.2) - 2025-12-30
 
 ### 修复
 - 修复多选框状态异常问题
 
-## [v0.25.1](https://github.com/chriscurrycc/memos/releases/tag/v0.25.1) - 2024-12-29
+## [v0.25.1](https://github.com/chriscurrycc/memos/releases/tag/v0.25.1) - 2025-12-29
 
 ### 新功能
 - 新增原始数据管理功能（后在 v0.26.5 中移除）
