@@ -4,12 +4,12 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
-## [v0.26.5] - 2025-01-29
+## [v0.26.5](https://github.com/chriscurrycc/memos/releases/tag/v0.26.5) - 2025-01-29
 
 ### Removed
 - Removed raw-data-view feature
 
-## [v0.26.4] - 2025-01-29
+## [v0.26.4](https://github.com/chriscurrycc/memos/releases/tag/v0.26.4) - 2025-01-29
 
 ### Features
 - Added pinned memos drawer for mobile and tablet screens
@@ -22,12 +22,12 @@ All notable changes to this fork compared to the original [usememos/memos v0.23.
 ### Fixes
 - Applied strikethrough to links in checked task list items
 
-## [v0.26.3] - 2025-01-18
+## [v0.26.3](https://github.com/chriscurrycc/memos/releases/tag/v0.26.3) - 2025-01-18
 
 ### Improvements
 - Refined MemoContent component styles for better readability
 
-## [v0.26.2] - 2025-01-17
+## [v0.26.2](https://github.com/chriscurrycc/memos/releases/tag/v0.26.2) - 2025-01-17
 
 ### Improvements
 - Refined blockquote styling for better readability
@@ -35,7 +35,7 @@ All notable changes to this fork compared to the original [usememos/memos v0.23.
 ### Fixes
 - Fixed disabled state styling for next month button
 
-## [v0.26.1] - 2025-01-15
+## [v0.26.1](https://github.com/chriscurrycc/memos/releases/tag/v0.26.1) - 2025-01-15
 
 ### Improvements
 - Adjusted activity calendar heatmap colors
@@ -46,23 +46,23 @@ All notable changes to this fork compared to the original [usememos/memos v0.23.
 - Fixed emoji picker click not working on mouse devices
 - Fixed days calculation to use earliest memo instead of user creation time
 
-## [v0.26.0] - 2025-01-14
+## [v0.26.0](https://github.com/chriscurrycc/memos/releases/tag/v0.26.0) - 2025-01-14
 
 ### Features
 - Added collapse functionality to code block component
 - Compact memo editor UI with improved spacing and layout
 
-## [v0.25.2] - 2024-12-30
+## [v0.25.2](https://github.com/chriscurrycc/memos/releases/tag/v0.25.2) - 2024-12-30
 
 ### Fixes
 - Fixed multiple checkbox state issues
 
-## [v0.25.1] - 2024-12-29
+## [v0.25.1](https://github.com/chriscurrycc/memos/releases/tag/v0.25.1) - 2024-12-29
 
 ### Features
 - Added raw data management (later removed in v0.26.5)
 
-## [v0.24.2] - 2025-07-02
+## [v0.24.2](https://github.com/chriscurrycc/memos/releases/tag/v0.24.2) - 2025-07-02
 
 ### Features
 - **Tag Management**
