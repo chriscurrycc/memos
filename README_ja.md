@@ -116,7 +116,24 @@ docker run -d \
   chriscurrycc/memos:latest
 ```
 
-## Watchtower で自動更新
+## 更新
+
+### 手動更新
+
+```bash
+docker pull chriscurrycc/memos:latest
+docker stop memos
+docker rm memos
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
+```
+
+### Watchtower で自動更新
 
 新しいバージョンがリリースされた際に自動更新（例：毎日 UTC+8 の午前3時に確認）：
 

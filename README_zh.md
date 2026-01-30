@@ -116,7 +116,24 @@ docker run -d \
   chriscurrycc/memos:latest
 ```
 
-## 使用 Watchtower 自动更新
+## 更新
+
+### 手动更新
+
+```bash
+docker pull chriscurrycc/memos:latest
+docker stop memos
+docker rm memos
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
+```
+
+### 使用 Watchtower 自动更新
 
 自动更新容器到最新版本（例如：每天凌晨 3:00 UTC+8 自动检查更新）：
 

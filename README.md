@@ -116,7 +116,24 @@ docker run -d \
   chriscurrycc/memos:latest
 ```
 
-## Auto Update with Watchtower
+## Update
+
+### Manual Update
+
+```bash
+docker pull chriscurrycc/memos:latest
+docker stop memos
+docker rm memos
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
+```
+
+### Auto Update with Watchtower
 
 Automatically update the container when a new version is available (e.g., at 3:00 AM UTC+8 daily):
 
