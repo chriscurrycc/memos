@@ -37,7 +37,7 @@ const ScrollToTop = ({ className, style, enabled = true, scrollContainerRef }: S
       scrollContainer.addEventListener("scroll", handleScroll);
       return () => scrollContainer.removeEventListener("scroll", handleScroll);
     }
-  }, [enabled, isVisible]);
+  }, [enabled, isVisible, scrollContainerRef]);
 
   const scrollToTop = () => {
     if (!scrollContainerRef.current) {

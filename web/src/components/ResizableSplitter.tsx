@@ -1,26 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 
-interface ResizableSplitterProps {
-  leftPanelId?: string;
-  rightPanelId?: string;
-  minLeftWidth?: number;
-  minRightWidth?: number;
-  defaultLeftWidth?: number;
+interface Props {
+  timelinePanelId?: string;
+  pinnedPanelId?: string;
+  minTimelineWidth?: number;
+  minPinnedWidth?: number;
+  defaultTimelineWidth?: number;
   localStorageKey?: string;
 }
 
-const ResizableSplitter: React.FC<ResizableSplitterProps> = ({
-  leftPanelId = "left-panel",
-  rightPanelId = "right-panel",
-  minLeftWidth = 300,
-  minRightWidth = 300,
-  defaultLeftWidth = 50,
-  localStorageKey = "memos-splitter-width",
-}) => {
+const ResizableSplitter = (props: Props) => {
+  const {
+    timelinePanelId = "timeline-panel",
+    pinnedPanelId = "pinned-panel",
+    minTimelineWidth = 300,
+    minPinnedWidth = 300,
+    defaultTimelineWidth = 50,
+    localStorageKey = "memos-splitter-width",
+  } = props;
+
   const [isDragging, setIsDragging] = useState(false);
-  const [leftWidth, setLeftWidth] = useState<number>(() => {
+  const [timelineWidth, setTimelineWidth] = useState<number>(() => {
     const saved = localStorage.getItem(localStorageKey);
-    return saved ? parseFloat(saved) : defaultLeftWidth;
+    return saved ? parseFloat(saved) : defaultTimelineWidth;
   });
 
   const handleMouseDown = useCallback(() => {
@@ -31,23 +33,23 @@ const ResizableSplitter: React.FC<ResizableSplitterProps> = ({
     (e: MouseEvent) => {
       if (!isDragging) return;
 
-      const container = document.getElementById(leftPanelId)?.parentElement;
+      const container = document.getElementById(timelinePanelId)?.parentElement;
       if (!container) return;
 
       const containerRect = container.getBoundingClientRect();
       const containerWidth = containerRect.width;
       const offsetX = e.clientX - containerRect.left;
 
-      const newLeftWidthPx = offsetX;
-      const newRightWidthPx = containerWidth - offsetX;
+      const newTimelineWidthPx = offsetX;
+      const newPinnedWidthPx = containerWidth - offsetX;
 
-      if (newLeftWidthPx >= minLeftWidth && newRightWidthPx >= minRightWidth) {
-        const newLeftWidthPercent = (newLeftWidthPx / containerWidth) * 100;
-        setLeftWidth(newLeftWidthPercent);
-        localStorage.setItem(localStorageKey, newLeftWidthPercent.toString());
+      if (newTimelineWidthPx >= minTimelineWidth && newPinnedWidthPx >= minPinnedWidth) {
+        const newTimelineWidthPercent = (newTimelineWidthPx / containerWidth) * 100;
+        setTimelineWidth(newTimelineWidthPercent);
+        localStorage.setItem(localStorageKey, newTimelineWidthPercent.toString());
       }
     },
-    [isDragging, leftPanelId, minLeftWidth, minRightWidth, localStorageKey],
+    [isDragging, timelinePanelId, minTimelineWidth, minPinnedWidth, localStorageKey],
   );
 
   const handleMouseUp = useCallback(() => {
@@ -71,21 +73,21 @@ const ResizableSplitter: React.FC<ResizableSplitterProps> = ({
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
   useEffect(() => {
-    const leftPanel = document.getElementById(leftPanelId);
-    const rightPanel = document.getElementById(rightPanelId);
+    const timelinePanel = document.getElementById(timelinePanelId);
+    const pinnedPanel = document.getElementById(pinnedPanelId);
 
-    if (leftPanel) {
-      leftPanel.style.width = `${leftWidth}%`;
+    if (timelinePanel) {
+      timelinePanel.style.width = `${timelineWidth}%`;
     }
-    if (rightPanel) {
-      rightPanel.style.width = `${100 - leftWidth}%`;
+    if (pinnedPanel) {
+      pinnedPanel.style.width = `${100 - timelineWidth}%`;
     }
-  }, [leftWidth, leftPanelId, rightPanelId]);
+  }, [timelineWidth, timelinePanelId, pinnedPanelId]);
 
   return (
     <div
-      className={`hidden lg:flex relative w-1 cursor-col-resize group hover:bg-blue-500 transition-colors ${
-        isDragging ? "bg-blue-500" : "bg-transparent"
+      className={`hidden lg:flex relative w-1 mx-2 cursor-col-resize group hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors ${
+        isDragging ? "bg-teal-600 dark:bg-teal-500" : "bg-transparent"
       }`}
       onMouseDown={handleMouseDown}
     >
@@ -93,7 +95,7 @@ const ResizableSplitter: React.FC<ResizableSplitterProps> = ({
       <div
         className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 transition-opacity ${
           isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-        } bg-blue-500`}
+        } bg-teal-600 dark:bg-teal-500`}
       />
     </div>
   );
