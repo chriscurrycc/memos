@@ -12,6 +12,18 @@ This is a customized fork of [usememos/memos](https://github.com/usememos/memos)
 - Migrating from usememos/memos v0.23.0 ~ v0.23.1: Fully compatible
 - Migrating from usememos/memos v0.24.0+: Compatible if you haven't used pinned memos or webhooks; otherwise these features need to be reconfigured after migration. Please stop the service and backup your data directory before migrating (default: `~/.memos/`).
 
+**Migration Troubleshooting:**
+
+If you encounter `no such table: tag` error after migrating from usememos/memos v0.24.0+, manually create the tag table:
+
+```bash
+# Docker users
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | docker exec -i memos sqlite3 /var/opt/memos/memos_prod.db
+
+# Non-Docker users
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 ~/.memos/memos_prod.db
+```
+
 ## What's Different
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed list of features and improvements compared to the original Memos.

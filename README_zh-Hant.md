@@ -12,6 +12,18 @@
 - 從 usememos/memos v0.23.0 ~ v0.23.1 遷移：完全相容
 - 從 usememos/memos v0.24.0+ 遷移：如果未使用過置頂備忘錄或 Webhook 功能則相容；否則遷移後需要重新配置這些功能。遷移前請先停止服務並備份資料目錄（預設：`~/.memos/`）。
 
+**遷移故障排除：**
+
+如果從 usememos/memos v0.24.0+ 遷移後遇到 `no such table: tag` 錯誤，需要手動建立 tag 表：
+
+```bash
+# Docker 使用者
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | docker exec -i memos sqlite3 /var/opt/memos/memos_prod.db
+
+# 非 Docker 使用者
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 ~/.memos/memos_prod.db
+```
+
 ## 版本差異
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解與原版 Memos 的詳細功能和改進。

@@ -88,3 +88,4 @@ docker run -d --init --name memos --publish 5230:5230 --volume ~/.memos/:/var/op
 
 1. This project does not require typecheck and prettier operations
 2. All GitHub operations (issues, PRs, etc.) should target the repository chriscurrycc/memos, not the upstream fork
+3. When updating README.md, always update all language versions: README.md (English), README_zh.md (简体中文), README_zh-Hant.md (繁體中文), README_ja.md (日本語)
