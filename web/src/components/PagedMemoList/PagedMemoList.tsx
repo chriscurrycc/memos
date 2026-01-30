@@ -30,7 +30,8 @@ const PagedMemoList = (props: Props) => {
   const { md } = useResponsiveWidth();
   const memoStore = useMemoStore();
   const memoList = useMemoList();
-  const containerRef = useRef<HTMLDivElement>(null);
+  const internalContainerRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = props.scrollContainerRef || internalContainerRef;
   const [containerRightOffset, setContainerRightOffset] = useState(0);
   const [state, setState] = useState<State>({
     isRequesting: true, // Initial request
@@ -46,17 +47,25 @@ const PagedMemoList = (props: Props) => {
 
   useEffect(() => {
     const updateOffset = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
+      if (internalContainerRef.current) {
+        const rect = internalContainerRef.current.getBoundingClientRect();
         const offset = window.innerWidth - rect.right;
         setContainerRightOffset(offset);
       }
     };
 
     updateOffset();
-    window.addEventListener("resize", updateOffset);
-    return () => window.removeEventListener("resize", updateOffset);
-  }, []);
+
+    const resizeObserver = new ResizeObserver(updateOffset);
+    if (internalContainerRef.current) {
+      resizeObserver.observe(internalContainerRef.current);
+    }
+    if (props.scrollContainerRef?.current) {
+      resizeObserver.observe(props.scrollContainerRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [props.scrollContainerRef]);
 
   const fetchMoreMemos = async (nextPageToken: string) => {
     setState((state) => ({ ...state, isRequesting: true }));
@@ -82,7 +91,7 @@ const PagedMemoList = (props: Props) => {
   }, [props.filter, props.pageSize]);
 
   const children = (
-    <div ref={containerRef} className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll">
+    <div ref={internalContainerRef} className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll">
       {sortedMemoList.map((memo) => props.renderer(memo))}
       {state.isRequesting && (
         <div className="w-full flex flex-row justify-center items-center my-4">
@@ -107,7 +116,7 @@ const PagedMemoList = (props: Props) => {
         enabled={shouldShowScrollToTop}
         className="fixed bottom-6"
         style={{ right: `calc(1rem + ${containerRightOffset}px)` }}
-        scrollContainerRef={props.scrollContainerRef || containerRef}
+        scrollContainerRef={scrollContainerRef}
       />
     </div>
   );
