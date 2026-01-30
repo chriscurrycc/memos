@@ -8,6 +8,7 @@ import MobileHeader from "@/components/MobileHeader";
 import PagedMemoList from "@/components/PagedMemoList";
 import PinnedMemoList from "@/components/PinnedMemoList";
 import PinnedMemosDrawer from "@/components/PinnedMemosDrawer";
+import ResizableSplitter from "@/components/ResizableSplitter";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoFilterStore } from "@/store/v1";
@@ -97,8 +98,8 @@ const Home = () => {
         <div className="hidden md:flex flex-shrink-0 w-64 h-full px-4 border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto">
           <HomeSidebar className="py-6" />
         </div>
-        <div className="flex-1 flex gap-4 px-4 md:px-6 pb-4 md:pb-0 md:pt-3 md:h-full lg:pt-6 overflow-x-hidden">
-          <div className="lg:w-1/2 flex-grow flex flex-col min-w-0 md:h-full md:overflow-y-auto">
+        <div className="flex-1 flex px-4 md:px-6 pb-4 md:pb-0 md:pt-3 md:h-full lg:pt-6 overflow-x-hidden">
+          <div id="left-panel" className="lg:w-1/2 flex-grow flex flex-col min-w-0 md:h-full md:overflow-y-auto">
             {md && <div className="shrink-0">{editorSection}</div>}
             <PagedMemoList
               renderer={memoRenderer}
@@ -107,7 +108,8 @@ const Home = () => {
               scrollContainerRef={!md ? scrollContainerRef : undefined}
             />
           </div>
-          <div className="hidden lg:flex w-1/2 flex-col h-full overflow-y-auto">
+          <ResizableSplitter />
+          <div id="right-panel" className="hidden lg:flex lg:w-1/2 flex-col h-full overflow-y-auto lg:pl-4">
             <PinnedMemoList renderer={memoRenderer} />
           </div>
         </div>
