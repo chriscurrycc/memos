@@ -52,7 +52,7 @@ const Explore = () => {
           <MemoFilters />
           <div className="flex flex-col justify-start items-start w-full max-w-full">
             <PagedMemoList
-              renderer={(memo: Memo) => <MemoView key={`${memo.name}-${memo.updateTime}`} memo={memo} showCreator showVisibility compact />}
+              renderer={(memo: Memo) => <MemoView key={`${memo.name}-${memo.updateTime}`} memo={memo} showCreator showVisibility enableCollapse />}
               listSort={(memos: Memo[]) =>
                 memos
                   .filter((memo) => memo.rowStatus === RowStatus.ACTIVE)

@@ -109,7 +109,6 @@ const MemoDetail = () => {
             key={`${memo.name}-${memo.displayTime}`}
             className="shadow hover:shadow-md transition-all"
             memo={memo}
-            compact={false}
             parentPage={locationState?.from}
             showCreator
             showVisibility
@@ -149,7 +148,7 @@ const MemoDetail = () => {
                       memo={comment}
                       parentPage={locationState?.from}
                       showCreator
-                      compact
+                      enableCollapse
                     />
                   ))}
                 </>

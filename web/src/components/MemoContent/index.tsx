@@ -1,21 +1,19 @@
 import clsx from "clsx";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef } from "react";
 import { PhotoProvider } from "react-photo-view";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoStore } from "@/store/v1";
 import { Node, NodeType } from "@/types/proto/api/v1/markdown_service";
-import { useTranslate } from "@/utils/i18n";
 import { isSuperUser } from "@/utils/user";
 import Renderer from "./Renderer";
 import { RendererContext } from "./types";
 
-// MAX_DISPLAY_HEIGHT is the maximum height of the memo content to display in compact mode.
-const MAX_DISPLAY_HEIGHT = 256;
+// MAX_DISPLAY_HEIGHT is the maximum height of the memo content to display when collapsed.
+export const MAX_DISPLAY_HEIGHT = 256;
 
 interface Props {
   nodes: Node[];
   memoName?: string;
-  compact?: boolean;
   readonly?: boolean;
   disableFilter?: boolean;
   // embeddedMemos is a set of memo resource names that are embedded in the current memo.
@@ -26,33 +24,58 @@ interface Props {
   onClick?: (e: React.MouseEvent) => void;
   onDoubleClick?: (e: React.MouseEvent) => void;
   parentPage?: string;
+  // Collapse control
+  enableCollapse?: boolean;
+  isCollapsed?: boolean;
+  onCollapsibleChange?: (collapsible: boolean) => void;
 }
 
-type ContentCompactView = "ALL" | "SNIPPET";
-
 const MemoContent: React.FC<Props> = (props: Props) => {
-  const { className, contentClassName, nodes, memoName, embeddedMemos, onClick, onDoubleClick } = props;
-  const t = useTranslate();
+  const {
+    className,
+    contentClassName,
+    nodes,
+    memoName,
+    embeddedMemos,
+    onClick,
+    onDoubleClick,
+    enableCollapse,
+    isCollapsed,
+    onCollapsibleChange,
+  } = props;
   const currentUser = useCurrentUser();
   const memoStore = useMemoStore();
   const memoContentContainerRef = useRef<HTMLDivElement>(null);
-  const [showCompactMode, setShowCompactMode] = useState<ContentCompactView | undefined>(undefined);
-  const memo = memoName ? memoStore.getMemoByName(memoName) : null;
-  const allowEdit = !props.readonly && memo && (currentUser?.name === memo.creator || isSuperUser(currentUser));
+  const memoObj = memoName ? memoStore.getMemoByName(memoName) : null;
+  const allowEdit = !props.readonly && memoObj && (currentUser?.name === memoObj.creator || isSuperUser(currentUser));
 
-  // Initial compact mode.
+  // Detect if content needs collapse based on height
   useEffect(() => {
-    if (!props.compact) {
-      return;
-    }
-    if (!memoContentContainerRef.current) {
+    if (!enableCollapse || !onCollapsibleChange || !memoContentContainerRef.current) {
       return;
     }
 
-    if ((memoContentContainerRef.current as HTMLDivElement).getBoundingClientRect().height > MAX_DISPLAY_HEIGHT) {
-      setShowCompactMode("ALL");
+    // Already collapsed, no need to monitor height
+    if (isCollapsed === true) {
+      return;
     }
-  }, []);
+
+    const element = memoContentContainerRef.current;
+
+    const checkHeight = () => {
+      const height = element.scrollHeight;
+      onCollapsibleChange(height > MAX_DISPLAY_HEIGHT);
+    };
+
+    checkHeight();
+
+    const resizeObserver = new ResizeObserver(checkHeight);
+    resizeObserver.observe(element);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [enableCollapse, onCollapsibleChange, isCollapsed]);
 
   const handleMemoContentClick = async (e: React.MouseEvent) => {
     if (onClick) {
@@ -68,10 +91,6 @@ const MemoContent: React.FC<Props> = (props: Props) => {
 
   let prevNode: Node | null = null;
   let skipNextLineBreakFlag = false;
-  const compactStates = {
-    ALL: { text: t("memo.show-more"), nextState: "SNIPPET" },
-    SNIPPET: { text: t("memo.show-less"), nextState: "ALL" },
-  };
 
   return (
     <RendererContext.Provider
@@ -86,16 +105,16 @@ const MemoContent: React.FC<Props> = (props: Props) => {
     >
       <PhotoProvider>
         <div
-          className={`prose prose-sm prose-neutral max-w-none dark:prose-invert 
-          prose-p:my-0.5 prose-blockquote:my-1.5 prose-pre:my-0 
-          prose-li:my-0.5 
-          prose-h1:mb-2 prose-h1:mt-3 
-          prose-h2:mb-2 prose-h2:mt-2.5 
-          prose-h3:mb-1.5 prose-h3:mt-2 
-          prose-h4:mb-1 prose-h4:mt-1.5 
-          prose-img:m-0 
-          [&_li_p]:my-0 
-          [&_dl]:my-1.5 
+          className={`prose prose-sm prose-neutral max-w-none dark:prose-invert
+          prose-p:my-0.5 prose-blockquote:my-1.5 prose-pre:my-0
+          prose-li:my-0.5
+          prose-h1:mb-2 prose-h1:mt-3
+          prose-h2:mb-2 prose-h2:mt-2.5
+          prose-h3:mb-1.5 prose-h3:mt-2
+          prose-h4:mb-1 prose-h4:mt-1.5
+          prose-img:m-0
+          [&_li_p]:my-0
+          [&_dl]:my-1.5
           [&_pre_code]:text-[#24292e] dark:[&_pre_code]:text-[#abb2bf]
           [&_code]:before:content-none [&_code]:after:content-none
           w-full flex flex-col justify-start items-start ${className || ""}`}
@@ -104,7 +123,7 @@ const MemoContent: React.FC<Props> = (props: Props) => {
             ref={memoContentContainerRef}
             className={clsx(
               "relative w-full max-w-full word-break whitespace-pre-wrap",
-              showCompactMode == "ALL" && "line-clamp-6 max-h-60",
+              isCollapsed && "line-clamp-6 max-h-60",
               contentClassName,
             )}
             onClick={handleMemoContentClick}
@@ -119,22 +138,10 @@ const MemoContent: React.FC<Props> = (props: Props) => {
               skipNextLineBreakFlag = true;
               return <Renderer key={`${node.type}-${index}`} index={String(index)} node={node} />;
             })}
-            {showCompactMode == "ALL" && (
+            {isCollapsed && (
               <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-b from-transparent dark:to-zinc-800 to-white pointer-events-none"></div>
             )}
           </div>
-          {showCompactMode != undefined && (
-            <div className="w-full mt-1">
-              <span
-                className="w-auto flex flex-row justify-start items-center cursor-pointer text-sm text-blue-600 dark:text-blue-400 hover:opacity-80"
-                onClick={() => {
-                  setShowCompactMode(compactStates[showCompactMode].nextState as ContentCompactView);
-                }}
-              >
-                {compactStates[showCompactMode].text}
-              </span>
-            </div>
-          )}
         </div>
       </PhotoProvider>
     </RendererContext.Provider>

@@ -107,7 +107,7 @@ const UserProfile = () => {
               <MemoFilters />
               <PagedMemoList
                 renderer={(memo: Memo) => (
-                  <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned compact />
+                  <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned enableCollapse />
                 )}
                 listSort={(memos: Memo[]) =>
                   memos

@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
-import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon } from "lucide-react";
+import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon, ChevronDownIcon } from "lucide-react";
 import { memo, useCallback, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
@@ -31,7 +31,7 @@ import VisibilityIcon from "./VisibilityIcon";
 interface Props {
   memo: Memo;
   displayTimeFormat?: "auto" | "time";
-  compact?: boolean;
+  enableCollapse?: boolean;
   showCreator?: boolean;
   showVisibility?: boolean;
   showPinned?: boolean;
@@ -52,6 +52,8 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const workspaceSettingStore = useWorkspaceSettingStore();
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const [creator, setCreator] = useState(userStore.getUserByName(memo.creator));
+  const [collapsible, setCollapsible] = useState<boolean>(false);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>();
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const workspaceMemoRelatedSetting =
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED).memoRelatedSetting ||
@@ -159,6 +161,20 @@ const MemoView: React.FC<Props> = (props: Props) => {
     setShowExportModal(true);
   }, []);
 
+  const handleCollapsibleChange = useCallback((value: boolean) => {
+    setCollapsible(value);
+    setIsCollapsed((prev) => {
+      if (!value) {
+        // Content no longer needs collapse, reset state
+        return undefined;
+      }
+      // Only set initial collapsed state, don't override user's manual toggle
+      return prev === undefined ? true : prev;
+    });
+  }, []);
+
+  const enableCollapse = props.enableCollapse && workspaceMemoRelatedSetting.enableAutoCompact;
+
   return (
     <div
       className={clsx(
@@ -194,20 +210,48 @@ const MemoView: React.FC<Props> = (props: Props) => {
                     >
                       {creator.nickname || creator.username}
                     </Link>
-                    <div
-                      className="w-auto -mt-0.5 text-xs leading-tight text-gray-400 dark:text-gray-500 select-none"
-                      onClick={handleGotoMemoDetailPage}
-                    >
-                      {displayTime}
+                    <div className="w-auto -mt-0.5 flex flex-row items-center gap-2">
+                      <Tooltip title={t("memo.view-detail")} placement="top">
+                        <span
+                          className="text-xs leading-tight text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
+                          onClick={handleGotoMemoDetailPage}
+                        >
+                          {displayTime}
+                        </span>
+                      </Tooltip>
+                      {collapsible && (
+                        <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
+                          <span
+                            className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                            onClick={() => setIsCollapsed(!isCollapsed)}
+                          >
+                            <ChevronDownIcon className={clsx("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-180")} />
+                          </span>
+                        </Tooltip>
+                      )}
                     </div>
                   </div>
                 </div>
               ) : (
-                <div
-                  className="w-full text-sm leading-tight text-gray-400 dark:text-gray-500 select-none"
-                  onClick={handleGotoMemoDetailPage}
-                >
-                  {displayTime}
+                <div className="w-full flex flex-row items-center gap-2">
+                  <Tooltip title={t("memo.view-detail")} placement="top">
+                    <span
+                      className="text-sm leading-tight text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
+                      onClick={handleGotoMemoDetailPage}
+                    >
+                      {displayTime}
+                    </span>
+                  </Tooltip>
+                  {collapsible && (
+                    <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
+                      <span
+                        className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
+                        onClick={() => setIsCollapsed(!isCollapsed)}
+                      >
+                        <ChevronDownIcon className={clsx("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-180")} />
+                      </span>
+                    </Tooltip>
+                  )}
                 </div>
               )}
             </div>
@@ -264,7 +308,9 @@ const MemoView: React.FC<Props> = (props: Props) => {
             readonly={readonly}
             onClick={handleMemoContentClick}
             onDoubleClick={handleMemoContentDoubleClick}
-            compact={props.compact && workspaceMemoRelatedSetting.enableAutoCompact}
+            enableCollapse={enableCollapse}
+            isCollapsed={isCollapsed}
+            onCollapsibleChange={handleCollapsibleChange}
             parentPage={parentPage}
           />
           {memo.location && <MemoLocationView location={memo.location} />}

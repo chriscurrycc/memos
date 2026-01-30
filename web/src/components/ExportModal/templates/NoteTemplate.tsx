@@ -28,7 +28,7 @@ const NoteTemplate = ({ memo }: NoteTemplateProps) => {
 
         <div className="relative z-1">
           <div className="text-gray-800 dark:text-amber-100 leading-relaxed">
-            <MemoContent memoName={memo.name} nodes={memo.nodes} readonly={true} compact={false} />
+            <MemoContent memoName={memo.name} nodes={memo.nodes} readonly={true} />
           </div>
 
           <div className="mt-6 text-right text-sm text-gray-600 dark:text-amber-200/70 italic">

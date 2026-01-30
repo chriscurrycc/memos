@@ -37,7 +37,7 @@ const ModernTemplate = ({ memo }: ModernTemplateProps) => {
       {/* Content */}
       <div className="pt-10 px-6 pb-6">
         <div className="mb-6">
-          <MemoContent memoName={memo.name} nodes={memo.nodes} readonly={true} compact={false} />
+          <MemoContent memoName={memo.name} nodes={memo.nodes} readonly={true} />
         </div>
 
         {/* Footer */}

@@ -22,7 +22,7 @@ const Home = () => {
   const mobileScrollContainerRef = useRef<HTMLElement>(null);
 
   const memoRenderer = useCallback(
-    (memo: Memo) => <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned showExport compact />,
+    (memo: Memo) => <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned showExport enableCollapse />,
     [],
   );
 
