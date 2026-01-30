@@ -6,7 +6,11 @@
 
 一個輕量級、可自託管的備忘錄中心，用於記錄和整理你的想法。
 
-本專案是 [usememos/memos](https://github.com/usememos/memos) 的定製分支，從 [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 版本 fork 而來，相容原版 Memos v0.23.0 及更早版本。
+本專案是 [usememos/memos](https://github.com/usememos/memos) 的定製分支，從 [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 版本 fork 而來。
+
+**相容性說明：**
+- 從 usememos/memos v0.23.0 ~ v0.23.1 遷移：完全相容
+- 從 usememos/memos v0.24.0+ 遷移：如果未使用過置頂備忘錄或 Webhook 功能則相容；否則遷移後需要重新配置這些功能。遷移前請先停止服務並備份資料目錄（預設：`~/.memos/`）。
 
 ## 版本差異
 

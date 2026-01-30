@@ -6,7 +6,11 @@
 
 A lightweight, self-hosted memo hub for capturing and organizing your thoughts.
 
-This is a customized fork of [usememos/memos](https://github.com/usememos/memos), forked from [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0). It is compatible with the original Memos v0.23.0 and earlier versions.
+This is a customized fork of [usememos/memos](https://github.com/usememos/memos), forked from [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
+
+**Compatibility:**
+- Migrating from usememos/memos v0.23.0 ~ v0.23.1: Fully compatible
+- Migrating from usememos/memos v0.24.0+: Compatible if you haven't used pinned memos or webhooks; otherwise these features need to be reconfigured after migration. Please stop the service and backup your data directory before migrating (default: `~/.memos/`).
 
 ## What's Different
 

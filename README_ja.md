@@ -6,7 +6,11 @@
 
 軽量でセルフホスト可能なメモハブ。あなたの考えを記録・整理するためのツールです。
 
-このプロジェクトは [usememos/memos](https://github.com/usememos/memos) のカスタマイズ版フォークで、[v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) からフォークされています。オリジナルの Memos v0.23.0 以前のバージョンと互換性があります。
+このプロジェクトは [usememos/memos](https://github.com/usememos/memos) のカスタマイズ版フォークで、[v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) からフォークされています。
+
+**互換性について：**
+- usememos/memos v0.23.0 ~ v0.23.1 からの移行：完全互換
+- usememos/memos v0.24.0+ からの移行：ピン留めメモや Webhook 機能を使用していない場合は互換性あり。使用していた場合は、移行後に再設定が必要です。移行前にサービスを停止し、データディレクトリをバックアップしてください（デフォルト：`~/.memos/`）。
 
 ## 変更点
 
