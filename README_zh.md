@@ -8,22 +8,6 @@
 
 本项目是 [usememos/memos](https://github.com/usememos/memos) 的定制分支，从 [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 版本 fork 而来。
 
-**兼容性说明：**
-- 从 usememos/memos v0.23.0 ~ v0.23.1 迁移：完全兼容
-- 从 usememos/memos v0.24.0+ 迁移：如果未使用过置顶备忘录或 Webhook 功能则兼容；否则迁移后需要重新配置这些功能。迁移前请先停止服务并备份数据目录（默认：`~/.memos/`）。
-
-**迁移故障排除：**
-
-如果从 usememos/memos v0.24.0+ 迁移后遇到 `no such table: tag` 错误，需要手动创建 tag 表：
-
-```bash
-# Docker 用户
-curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | docker exec -i memos sqlite3 /var/opt/memos/memos_prod.db
-
-# 非 Docker 用户
-curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 ~/.memos/memos_prod.db
-```
-
 ## 版本差异
 
 查看 [CHANGELOG_zh.md](CHANGELOG_zh.md) 了解与原版 Memos 的详细功能和改进。
@@ -146,6 +130,24 @@ docker run -d \
   containrrr/watchtower \
   --schedule "0 0 3 * * *" \
   memos
+```
+
+## 从 usememos/memos 迁移
+
+如果你是从原版 [usememos/memos](https://github.com/usememos/memos) 项目迁移：
+
+**兼容性说明：**
+- 从 v0.23.0 ~ v0.23.1 迁移：完全兼容
+- 从 v0.24.0+ 迁移：如果未使用过置顶备忘录或 Webhook 功能则兼容；否则迁移后需要重新配置这些功能
+
+> **重要提示：** 迁移前请先停止服务并备份数据目录（默认：`~/.memos/`）。
+
+**故障排除（仅限 SQLite）：**
+
+如果从 v0.24.0+ 迁移后遇到 `no such table: tag` 错误，需要手动创建 tag 表：
+
+```bash
+docker exec memos sh -c "apk add --no-cache sqlite && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 /var/opt/memos/memos_prod.db"
 ```
 
 ## 文档

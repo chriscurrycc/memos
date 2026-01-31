@@ -8,22 +8,6 @@
 
 このプロジェクトは [usememos/memos](https://github.com/usememos/memos) のカスタマイズ版フォークで、[v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) からフォークされています。
 
-**互換性について：**
-- usememos/memos v0.23.0 ~ v0.23.1 からの移行：完全互換
-- usememos/memos v0.24.0+ からの移行：ピン留めメモや Webhook 機能を使用していない場合は互換性あり。使用していた場合は、移行後に再設定が必要です。移行前にサービスを停止し、データディレクトリをバックアップしてください（デフォルト：`~/.memos/`）。
-
-**移行トラブルシューティング：**
-
-usememos/memos v0.24.0+ から移行後に `no such table: tag` エラーが発生した場合は、手動で tag テーブルを作成してください：
-
-```bash
-# Docker ユーザー
-curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | docker exec -i memos sqlite3 /var/opt/memos/memos_prod.db
-
-# 非 Docker ユーザー
-curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 ~/.memos/memos_prod.db
-```
-
 ## 変更点
 
 オリジナル Memos との詳細な機能と改善点は [CHANGELOG.md](CHANGELOG.md) をご覧ください。
@@ -146,6 +130,24 @@ docker run -d \
   containrrr/watchtower \
   --schedule "0 0 3 * * *" \
   memos
+```
+
+## usememos/memos からの移行
+
+オリジナルの [usememos/memos](https://github.com/usememos/memos) プロジェクトから移行する場合：
+
+**互換性について：**
+- v0.23.0 ~ v0.23.1 からの移行：完全互換
+- v0.24.0+ からの移行：ピン留めメモや Webhook 機能を使用していない場合は互換性あり。使用していた場合は、移行後に再設定が必要です
+
+> **重要：** 移行前にサービスを停止し、データディレクトリをバックアップしてください（デフォルト：`~/.memos/`）。
+
+**トラブルシューティング（SQLite のみ）：**
+
+v0.24.0+ から移行後に `no such table: tag` エラーが発生した場合は、手動で tag テーブルを作成してください：
+
+```bash
+docker exec memos sh -c "apk add --no-cache sqlite && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 /var/opt/memos/memos_prod.db"
 ```
 
 ## ドキュメント

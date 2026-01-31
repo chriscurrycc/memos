@@ -8,22 +8,6 @@ A lightweight, self-hosted memo hub for capturing and organizing your thoughts.
 
 This is a customized fork of [usememos/memos](https://github.com/usememos/memos), forked from [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
-**Compatibility:**
-- Migrating from usememos/memos v0.23.0 ~ v0.23.1: Fully compatible
-- Migrating from usememos/memos v0.24.0+: Compatible if you haven't used pinned memos or webhooks; otherwise these features need to be reconfigured after migration. Please stop the service and backup your data directory before migrating (default: `~/.memos/`).
-
-**Migration Troubleshooting:**
-
-If you encounter `no such table: tag` error after migrating from usememos/memos v0.24.0+, manually create the tag table:
-
-```bash
-# Docker users
-curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | docker exec -i memos sqlite3 /var/opt/memos/memos_prod.db
-
-# Non-Docker users
-curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 ~/.memos/memos_prod.db
-```
-
 ## What's Different
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed list of features and improvements compared to the original Memos.
@@ -146,6 +130,24 @@ docker run -d \
   containrrr/watchtower \
   --schedule "0 0 3 * * *" \
   memos
+```
+
+## Migration from usememos/memos
+
+If you are migrating from the original [usememos/memos](https://github.com/usememos/memos) project:
+
+**Compatibility:**
+- From v0.23.0 ~ v0.23.1: Fully compatible
+- From v0.24.0+: Compatible if you haven't used pinned memos or webhooks; otherwise these features need to be reconfigured after migration
+
+> **Important:** Stop the service and backup your data directory before migrating (default: `~/.memos/`).
+
+**Troubleshooting (SQLite only):**
+
+If you encounter `no such table: tag` error after migrating from v0.24.0+, manually create the tag table:
+
+```bash
+docker exec memos sh -c "apk add --no-cache sqlite && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 /var/opt/memos/memos_prod.db"
 ```
 
 ## Documentation
