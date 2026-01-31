@@ -3,6 +3,7 @@ import { Button } from "@usememos/mui";
 import { MenuIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import useSwipeGesture from "@/hooks/useSwipeGesture";
 import Navigation from "./Navigation";
 
 const NavigationDrawer = () => {
@@ -20,6 +21,16 @@ const NavigationDrawer = () => {
 
     setOpen(inOpen);
   };
+
+  // Add swipe gesture support - swipe right from left edge to open
+  useSwipeGesture({
+    onSwipeRight: () => {
+      if (!open) {
+        setOpen(true);
+      }
+    },
+    trackFromEdge: "left",
+  });
 
   return (
     <>

@@ -3,6 +3,7 @@ import { Button } from "@usememos/mui";
 import { SearchIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import useSwipeGesture from "@/hooks/useSwipeGesture";
 import HomeSidebar from "./HomeSidebar";
 
 const HomeSidebarDrawer = () => {
@@ -20,6 +21,16 @@ const HomeSidebarDrawer = () => {
 
     setOpen(inOpen);
   };
+
+  // Add swipe gesture support - swipe left from right edge to open
+  useSwipeGesture({
+    onSwipeLeft: () => {
+      if (!open) {
+        setOpen(true);
+      }
+    },
+    trackFromEdge: "right",
+  });
 
   return (
     <>

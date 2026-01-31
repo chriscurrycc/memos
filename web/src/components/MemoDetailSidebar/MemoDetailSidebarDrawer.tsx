@@ -3,6 +3,7 @@ import { Button } from "@usememos/mui";
 import { GanttChartIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import useSwipeGesture from "@/hooks/useSwipeGesture";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import MemoDetailSidebar from "./MemoDetailSidebar";
 
@@ -25,6 +26,16 @@ const MemoDetailSidebarDrawer = ({ memo, parentPage }: Props) => {
     }
     setOpen(inOpen);
   };
+
+  // Add swipe gesture support - swipe left from right edge to open
+  useSwipeGesture({
+    onSwipeLeft: () => {
+      if (!open) {
+        setOpen(true);
+      }
+    },
+    trackFromEdge: "right",
+  });
 
   return (
     <>
