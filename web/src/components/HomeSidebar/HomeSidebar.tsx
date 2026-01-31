@@ -9,6 +9,7 @@ import TagsSection from "./TagsSection";
 
 interface Props {
   className?: string;
+  onCloseHomeSidebarDrawer?: () => void;
 }
 
 const HomeSidebar = (props: Props) => {
@@ -29,7 +30,7 @@ const HomeSidebar = (props: Props) => {
       )}
     >
       <SearchBar />
-      <UserStatisticsView />
+      <UserStatisticsView onCloseHomeSidebarDrawer={props.onCloseHomeSidebarDrawer} />
       <TagsSection />
     </aside>
   );

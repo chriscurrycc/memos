@@ -37,7 +37,11 @@ const UserStatisticsViewSkeleton = () => {
   );
 };
 
-const UserStatisticsView = () => {
+interface Props {
+  onCloseHomeSidebarDrawer?: () => void;
+}
+
+const UserStatisticsView = ({ onCloseHomeSidebarDrawer }: Props) => {
   const t = useTranslate();
   const memoFilterStore = useMemoFilterStore();
   const memoMetadataStore = useMemoMetadataStore();
@@ -86,6 +90,7 @@ const UserStatisticsView = () => {
   const onCalendarClick = (date: string) => {
     memoFilterStore.removeFilter((f) => f.factor === "displayTime");
     memoFilterStore.addFilter({ factor: "displayTime", value: date });
+    onCloseHomeSidebarDrawer?.();
   };
 
   if (!initialized) {

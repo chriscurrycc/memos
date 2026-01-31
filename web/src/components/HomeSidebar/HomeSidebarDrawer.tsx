@@ -28,7 +28,7 @@ const HomeSidebarDrawer = () => {
       </Button>
       <Drawer anchor="right" size="sm" open={open} onClose={toggleDrawer(false)}>
         <div className="w-full h-full px-4 bg-zinc-100 dark:bg-zinc-900">
-          <HomeSidebar className="py-4" />
+          <HomeSidebar className="py-4" onCloseHomeSidebarDrawer={() => setOpen(false)} />
         </div>
       </Drawer>
     </>
