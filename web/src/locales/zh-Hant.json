@@ -7,6 +7,9 @@
     "sign-in-tip": "已經有帳戶了嗎？",
     "sign-up-tip": "還沒有帳戶？"
   },
+  "calendar": {
+    "back-to-current-month": "返回當前月份"
+  },
   "common": {
     "about": "關於",
     "admin": "管理",

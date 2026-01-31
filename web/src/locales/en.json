@@ -7,6 +7,9 @@
     "sign-in-tip": "Already have an account?",
     "sign-up-tip": "Don't have an account yet?"
   },
+  "calendar": {
+    "back-to-current-month": "Back to current month"
+  },
   "common": {
     "about": "About",
     "add": "Add",

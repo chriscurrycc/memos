@@ -13,6 +13,7 @@ interface Props {
   data: Record<string, number>;
   onClick?: (date: string) => void;
   getTooltipText?: (date: string, count: number) => string;
+  hideNonCurrentMonth?: boolean;
 }
 
 const HEATMAP_BUCKETS = [
@@ -30,7 +31,7 @@ const getCellAdditionalStyles = (count: number) => {
 
 const ActivityCalendar = (props: Props) => {
   const t = useTranslate();
-  const { month: monthStr, data, onClick, getTooltipText } = props;
+  const { month: monthStr, data, onClick, getTooltipText, hideNonCurrentMonth } = props;
   const workspaceSettingStore = useWorkspaceSettingStore();
   const weekStartDayOffset = (
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.GENERAL).generalSetting || WorkspaceGeneralSetting.fromPartial({})
@@ -78,20 +79,38 @@ const ActivityCalendar = (props: Props) => {
           : count
             ? t("memo.count-memos-in-date", { count: count, date: date })
             : date;
+
+        if (hideNonCurrentMonth && !item.isCurrentMonth) {
+          return <div key={`${date}-${index}`} className="w-6 h-6" />;
+        }
+
+        const cellContent = (
+          <div
+            className={cn(
+              "w-6 h-6 text-xs rounded-xl flex flex-col justify-center items-center relative",
+              "text-gray-400",
+              item.isCurrentMonth ? getCellAdditionalStyles(count) : "opacity-60",
+              count > 0 ? "cursor-pointer" : "cursor-default",
+            )}
+            onClick={() => count && onClick && onClick(date)}
+          >
+            {item.day}
+            {item.isCurrentMonth && isToday && <span className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-primary dark:bg-primary" />}
+          </div>
+        );
+
+        if (count > 0) {
+          return (
+            <Tooltip className="shrink-0" key={`${date}-${index}`} title={tooltipText} placement="top" arrow>
+              {cellContent}
+            </Tooltip>
+          );
+        }
+
         return (
-          <Tooltip className="shrink-0" key={`${date}-${index}`} title={tooltipText} placement="top" arrow>
-            <div
-              className={cn(
-                "w-6 h-6 text-xs rounded-xl flex flex-col justify-center items-center cursor-default relative",
-                "text-gray-400",
-                item.isCurrentMonth ? getCellAdditionalStyles(count) : "opacity-60",
-              )}
-              onClick={() => count && onClick && onClick(date)}
-            >
-              {item.day}
-              {item.isCurrentMonth && isToday && <span className="absolute -bottom-0.5 w-1 h-1 rounded-full bg-primary dark:bg-primary" />}
-            </div>
-          </Tooltip>
+          <div key={`${date}-${index}`} className="shrink-0">
+            {cellContent}
+          </div>
         );
       })}
     </div>

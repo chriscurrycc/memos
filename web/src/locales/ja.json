@@ -7,6 +7,9 @@
     "sign-in-tip": "すでにアカウントを持っていますか?",
     "sign-up-tip": "アカウントを持っていませんか?"
   },
+  "calendar": {
+    "back-to-current-month": "今月に戻る"
+  },
   "common": {
     "about": "Memos について",
     "admin": "管理者設定",
