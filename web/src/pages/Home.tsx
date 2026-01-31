@@ -29,7 +29,7 @@ const Home = () => {
   const editorSection = useMemo(
     () => (
       <>
-        <MemoEditor className="mb-2" cacheKey="home-memo-editor" />
+        <MemoEditor className="mb-2" cacheKey="home-memo-editor" enableZenMode />
         <MemoFilters />
       </>
     ),

@@ -23,11 +23,13 @@ import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
 import { convertVisibilityFromString, convertVisibilityToString } from "@/utils/memo";
 import VisibilityIcon from "../VisibilityIcon";
+import showZenModeDialog from "../ZenModeDialog";
 import AddMemoRelationPopover from "./ActionButton/AddMemoRelationPopover";
 import LocationSelector from "./ActionButton/LocationSelector";
 import MarkdownMenu from "./ActionButton/MarkdownMenu";
 import TagSelector from "./ActionButton/TagSelector";
 import UploadResourceButton from "./ActionButton/UploadResourceButton";
+import ZenModeButton from "./ActionButton/ZenModeButton";
 import Editor, { EditorRefActions } from "./Editor";
 import RelationListView from "./RelationListView";
 import ResourceListView from "./ResourceListView";
@@ -43,6 +45,12 @@ export interface Props {
   // The name of the parent memo if the memo is a comment.
   parentMemoName?: string;
   autoFocus?: boolean;
+  // Enable zen mode expand/collapse button (default false)
+  enableZenMode?: boolean;
+  // Whether the editor is currently in zen mode
+  isZenMode?: boolean;
+  // Callback to close zen mode
+  onZenModeClose?: () => void;
   onConfirm?: (memoName: string) => void;
   onCancel?: () => void;
 }
@@ -58,7 +66,7 @@ interface State {
 }
 
 const MemoEditor = (props: Props) => {
-  const { className, cacheKey, memoName, parentMemoName, autoFocus, onConfirm, onCancel } = props;
+  const { className, cacheKey, memoName, parentMemoName, autoFocus, enableZenMode, isZenMode, onZenModeClose, onConfirm, onCancel } = props;
   const t = useTranslate();
   const { i18n } = useTranslation();
   const workspaceSettingStore = useWorkspaceSettingStore();
@@ -148,6 +156,27 @@ const MemoEditor = (props: Props) => {
     }));
   };
 
+  const handleOpenZenMode = () => {
+    if (!enableZenMode) return;
+    showZenModeDialog(
+      {
+        ...props,
+        enableZenMode: true,
+        onConfirm: (memoName: string) => {
+          editorRef.current?.setContent("");
+          localStorage.removeItem(contentCacheKey);
+          onConfirm?.(memoName);
+        },
+      },
+      () => {
+        // Sync content from localStorage and refocus
+        const cachedContent = localStorage.getItem(contentCacheKey);
+        editorRef.current?.setContent(cachedContent ? JSON.parse(cachedContent) : "");
+        editorRef.current?.focus();
+      },
+    );
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (!editorRef.current) {
       return;
@@ -155,6 +184,11 @@ const MemoEditor = (props: Props) => {
 
     const isMetaKey = event.ctrlKey || event.metaKey;
     if (isMetaKey) {
+      if (event.shiftKey && event.key === "Enter" && enableZenMode) {
+        event.preventDefault();
+        isZenMode ? onZenModeClose?.() : handleOpenZenMode();
+        return;
+      }
       if (event.key === "Enter") {
         void handleSaveBtnClick();
         return;
@@ -388,13 +422,13 @@ const MemoEditor = (props: Props) => {
 
   const editorConfig = useMemo(
     () => ({
-      className: "",
+      className: isZenMode ? "zen-mode-editor-inner" : "",
       initialContent: "",
       placeholder: props.placeholder ?? t("editor.any-thoughts"),
       onContentChange: handleContentChange,
       onPaste: handlePasteEvent,
     }),
-    [i18n.language],
+    [i18n.language, isZenMode],
   );
 
   const allowSave = (hasContent || state.resourceList.length > 0) && !state.isUploadingResource && !state.isRequesting;
@@ -430,6 +464,7 @@ const MemoEditor = (props: Props) => {
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
       >
+        {enableZenMode && <ZenModeButton isZenMode={isZenMode} onClick={isZenMode ? onZenModeClose! : handleOpenZenMode} />}
         {memoName && displayTime && (
           <DatePicker
             selected={displayTime}

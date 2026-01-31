@@ -90,7 +90,9 @@
   "editor": {
     "add-your-comment-here": "请输入您的评论...",
     "any-thoughts": "此刻的想法...",
-    "save": "保存"
+    "save": "保存",
+    "zen-mode": "禅定模式",
+    "zen-mode-tooltip": "禅定模式 ({{shortcut}})"
   },
   "inbox": {
     "memo-comment": "{{user}} 评论了您的“{{memo}}”。",

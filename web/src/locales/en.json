@@ -93,7 +93,9 @@
   "editor": {
     "add-your-comment-here": "Add your comment here...",
     "any-thoughts": "Any thoughts...",
-    "save": "Save"
+    "save": "Save",
+    "zen-mode": "Zen Mode",
+    "zen-mode-tooltip": "Zen Mode ({{shortcut}})"
   },
   "inbox": {
     "memo-comment": "{{user}} has a comment on your {{memo}}.",
