@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { combine } from "zustand/middleware";
 import { memoServiceClient } from "@/grpcweb";
 import { CreateMemoRequest, ListMemosRequest, Memo, MemoView } from "@/types/proto/api/v1/memo_service";
+import { removeMemoCollapseState } from "@/utils/memo";
 
 interface State {
   // stateId is used to identify the store instance state.
@@ -141,11 +142,17 @@ export const useMemoStore = create(
       return memo;
     },
     deleteMemo: async (name: string) => {
+      const memoMap = get().memoMapByName;
+      const memo = memoMap[name];
+
       await memoServiceClient.deleteMemo({
         name,
       });
 
-      const memoMap = get().memoMapByName;
+      if (memo?.uid) {
+        removeMemoCollapseState(memo.uid);
+      }
+
       delete memoMap[name];
       set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap });
     },

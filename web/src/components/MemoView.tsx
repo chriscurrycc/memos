@@ -13,7 +13,7 @@ import { Memo, Visibility } from "@/types/proto/api/v1/memo_service";
 import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
-import { convertVisibilityToString } from "@/utils/memo";
+import { convertVisibilityToString, getMemoCollapseState, setMemoCollapseState } from "@/utils/memo";
 import { isSuperUser } from "@/utils/user";
 import ExportModal from "./ExportModal";
 import MemoActionMenu from "./MemoActionMenu";
@@ -53,7 +53,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const [showEditor, setShowEditor] = useState<boolean>(false);
   const [creator, setCreator] = useState(userStore.getUserByName(memo.creator));
   const [collapsible, setCollapsible] = useState<boolean>(false);
-  const [isCollapsed, setIsCollapsed] = useState<boolean>();
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const workspaceMemoRelatedSetting =
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED).memoRelatedSetting ||
@@ -161,17 +161,32 @@ const MemoView: React.FC<Props> = (props: Props) => {
     setShowExportModal(true);
   }, []);
 
-  const handleCollapsibleChange = useCallback((value: boolean) => {
-    setCollapsible(value);
+  const handleCollapsibleChange = useCallback(
+    (value: boolean) => {
+      setCollapsible((prev) => {
+        if (prev === value) return prev;
+
+        // When collapsible becomes true, initialize isCollapsed from localStorage or default to true
+        // Note: collapsible only changes when isCollapsed is false (MemoContent only checks height when expanded)
+        if (value) {
+          const stored = getMemoCollapseState(memo.uid);
+          setIsCollapsed(stored !== undefined ? stored : true);
+        }
+
+        return value;
+      });
+    },
+    [memo.uid],
+  );
+
+  // Save collapse state to localStorage when user manually toggles
+  const handleToggleCollapse = useCallback(() => {
     setIsCollapsed((prev) => {
-      if (!value) {
-        // Content no longer needs collapse, reset state
-        return undefined;
-      }
-      // Only set initial collapsed state, don't override user's manual toggle
-      return prev === undefined ? true : prev;
+      const newValue = !prev;
+      setMemoCollapseState(memo.uid, newValue);
+      return newValue;
     });
-  }, []);
+  }, [memo.uid]);
 
   const enableCollapse = props.enableCollapse && workspaceMemoRelatedSetting.enableAutoCompact;
 
@@ -223,7 +238,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                         <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
                           <span
                             className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                            onClick={() => setIsCollapsed(!isCollapsed)}
+                            onClick={handleToggleCollapse}
                           >
                             <ChevronDownIcon className={clsx("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-180")} />
                           </span>
@@ -246,7 +261,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                     <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
                       <span
                         className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                        onClick={() => setIsCollapsed(!isCollapsed)}
+                        onClick={handleToggleCollapse}
                       >
                         <ChevronDownIcon className={clsx("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-180")} />
                       </span>
