@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package memos.api.v1;
+
+import "api/v1/memo_service.proto";
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "gen/api/v1";
+
+service ReviewService {
+  // ListReviewMemos returns memos for review that haven't been reviewed in the last 30 days.
+  rpc ListReviewMemos(ListReviewMemosRequest) returns (ListReviewMemosResponse) {
+    option (google.api.http) = {get: "/api/v1/review/memos"};
+  }
+  // ListOnThisDayMemos returns memos created on this day in previous years.
+  rpc ListOnThisDayMemos(ListOnThisDayMemosRequest) returns (ListOnThisDayMemosResponse) {
+    option (google.api.http) = {get: "/api/v1/review/on-this-day"};
+  }
+  // GetRandomMemo returns a random memo for surprise mode.
+  rpc GetRandomMemo(GetRandomMemoRequest) returns (Memo) {
+    option (google.api.http) = {get: "/api/v1/review/random"};
+  }
+  // GetTimeTravelMemos returns memos from a random time period.
+  rpc GetTimeTravelMemos(GetTimeTravelMemosRequest) returns (GetTimeTravelMemosResponse) {
+    option (google.api.http) = {get: "/api/v1/review/time-travel"};
+  }
+  // RecordReview records that memos have been reviewed.
+  rpc RecordReview(RecordReviewRequest) returns (RecordReviewResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/review/record"
+      body: "*"
+    };
+  }
+  // GetReviewStats returns review statistics for the user.
+  rpc GetReviewStats(GetReviewStatsRequest) returns (GetReviewStatsResponse) {
+    option (google.api.http) = {get: "/api/v1/review/stats"};
+  }
+}
+
+enum ReviewSource {
+  REVIEW_SOURCE_UNSPECIFIED = 0;
+  REVIEW_SOURCE_REVIEW = 1;
+  REVIEW_SOURCE_ON_THIS_DAY = 2;
+  REVIEW_SOURCE_SURPRISE = 3;
+  REVIEW_SOURCE_TIME_TRAVEL = 4;
+}
+
+message ListReviewMemosRequest {
+  // Maximum number of memos to return.
+  int32 page_size = 1;
+
+  // Filter by tags to include (optional).
+  repeated string include_tags = 2;
+
+  // Filter by tags to exclude (optional).
+  repeated string exclude_tags = 3;
+}
+
+message ListReviewMemosResponse {
+  // The memos available for review.
+  repeated Memo memos = 1;
+
+  // Total count of memos available for review (before limit).
+  int32 total_count = 2;
+}
+
+message ListOnThisDayMemosRequest {
+  // The month (1-12) to filter by. Defaults to current month.
+  int32 month = 1;
+
+  // The day (1-31) to filter by. Defaults to current day.
+  int32 day = 2;
+}
+
+message ListOnThisDayMemosResponse {
+  // The memos from this day in previous years, grouped by year.
+  repeated OnThisDayGroup groups = 1;
+}
+
+message OnThisDayGroup {
+  // The year.
+  int32 year = 1;
+
+  // The memos from that year.
+  repeated Memo memos = 2;
+}
+
+message GetRandomMemoRequest {
+  // No parameters needed.
+}
+
+message GetTimeTravelMemosRequest {
+  // Maximum number of memos to return.
+  int32 page_size = 1;
+}
+
+message GetTimeTravelMemosResponse {
+  // The memos from the random time period.
+  repeated Memo memos = 1;
+
+  // The start date of the time period.
+  google.protobuf.Timestamp period_start = 2;
+
+  // The end date of the time period.
+  google.protobuf.Timestamp period_end = 3;
+}
+
+message RecordReviewRequest {
+  // The memo names that were reviewed.
+  // Format: memos/{id}
+  repeated string memo_names = 1;
+
+  // The source of the review.
+  ReviewSource source = 2;
+}
+
+message RecordReviewResponse {
+  // The session ID for this review batch.
+  int32 session_id = 1;
+
+  // Number of memos recorded.
+  int32 recorded_count = 2;
+}
+
+message GetReviewStatsRequest {
+  // No parameters needed.
+}
+
+message GetReviewStatsResponse {
+  // Total number of memos.
+  int32 total_memos = 1;
+
+  // Number of memos reviewed in the last 30 days.
+  int32 reviewed_last_30_days = 2;
+
+  // Number of memos available for review.
+  int32 available_for_review = 3;
+
+  // Total number of review sessions.
+  int32 total_sessions = 4;
+}

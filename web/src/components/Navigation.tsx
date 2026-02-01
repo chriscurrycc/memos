@@ -1,6 +1,6 @@
 import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
-import { ArchiveIcon, BellIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
+import { ArchiveIcon, BellIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, RefreshCwIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import useCurrentUser from "@/hooks/useCurrentUser";
@@ -85,6 +85,12 @@ const Navigation = (props: Props) => {
       </>
     ),
   };
+  const reviewNavLink: NavLinkItem = {
+    id: "header-review",
+    path: Routes.REVIEW,
+    title: t("common.review"),
+    icon: <RefreshCwIcon className="w-6 h-auto opacity-70 shrink-0" />,
+  };
   const archivedNavLink: NavLinkItem = {
     id: "header-archived",
     path: Routes.ARCHIVED,
@@ -111,7 +117,7 @@ const Navigation = (props: Props) => {
   };
 
   const navLinks: NavLinkItem[] = user
-    ? [homeNavLink, resourcesNavLink, exploreNavLink, profileNavLink, archivedNavLink, settingNavLink]
+    ? [homeNavLink, resourcesNavLink, exploreNavLink, reviewNavLink, profileNavLink, archivedNavLink, settingNavLink]
     : [exploreNavLink, signInNavLink, aboutNavLink];
 
   return (
