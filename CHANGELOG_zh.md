@@ -4,6 +4,11 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.27.1](https://github.com/chriscurrycc/memos/releases/tag/v0.27.1) - 2026-02-02
+
+### 优化
+- 新增多架构 Docker 镜像构建支持（linux/amd64、linux/arm64）
+
 ## [v0.27.0](https://github.com/chriscurrycc/memos/releases/tag/v0.27.0) - 2026-02-02
 
 ### 新功能
