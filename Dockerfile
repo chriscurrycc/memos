@@ -1,5 +1,5 @@
 # Build frontend dist.
-FROM node:20-alpine AS frontend
+FROM --platform=$BUILDPLATFORM node:20-alpine AS frontend
 WORKDIR /frontend-build
 
 COPY . .
@@ -14,13 +14,15 @@ RUN npm install -g corepack@latest && \
 RUN pnpm build
 
 # Build backend exec file.
-FROM golang:1.23-alpine AS backend
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS backend
 WORKDIR /backend-build
 
 COPY . .
 COPY --from=frontend /frontend-build/web/dist /backend-build/server/router/frontend/dist
 
-RUN CGO_ENABLED=0 go build -o memos ./bin/memos/main.go
+ARG TARGETOS
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o memos ./bin/memos/main.go
 
 # Make workspace with above generated files.
 FROM alpine:latest AS monolithic
