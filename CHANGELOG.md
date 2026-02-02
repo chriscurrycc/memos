@@ -4,6 +4,21 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.27.0](https://github.com/chriscurrycc/memos/releases/tag/v0.27.0) - 2026-02-02
+
+### Features
+- Added Zen mode for immersive memo editing
+- Added resizable splitter for Timeline/Pinned layout
+- Added month picker drawer with quick navigation in calendar
+- Enabled MarkdownMenu in memo editor toolbar
+
+### Improvements
+- Improved memo content collapse with external control and better UX
+- Simplified collapse logic with localStorage persistence
+- Close sidebar drawer on date selection in mobile view
+- Added rounded corners to resizable splitter
+- Improved resizable splitter with semantic naming and theme colors
+
 ## [v0.26.5](https://github.com/chriscurrycc/memos/releases/tag/v0.26.5) - 2026-01-29
 
 ### Removed

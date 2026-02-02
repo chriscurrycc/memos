@@ -4,6 +4,21 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.27.0](https://github.com/chriscurrycc/memos/releases/tag/v0.27.0) - 2026-02-02
+
+### 新功能
+- 新增禅模式，提供沉浸式备忘录编辑体验
+- 新增可调整分割面板，支持时间线/置顶布局宽度调整
+- 新增日历月份选择器抽屉，支持快速导航
+- 在备忘录编辑器工具栏中启用 Markdown 菜单
+
+### 优化
+- 改进备忘录内容折叠功能，支持外部控制和更好的用户体验
+- 简化折叠逻辑，使用 localStorage 持久化状态
+- 移动端日历侧边栏选择日期后自动关闭抽屉
+- 为可调整分割面板添加圆角样式
+- 使用语义化命名和主题色改进分割面板代码
+
 ## [v0.26.5](https://github.com/chriscurrycc/memos/releases/tag/v0.26.5) - 2026-01-29
 
 ### 移除
