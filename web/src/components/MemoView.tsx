@@ -193,7 +193,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
   return (
     <div
       className={clsx(
-        "group relative flex flex-col justify-start items-start w-full p-3 pb-2 mb-2 gap-2 bg-white dark:bg-zinc-800 rounded-lg border border-white dark:border-zinc-800 hover:border-gray-200 dark:hover:border-zinc-700",
+        "group relative flex flex-col justify-start items-start w-full p-3 pb-2 mb-2 gap-2 bg-white dark:bg-zinc-800 rounded-lg border border-white dark:border-zinc-800 sm:hover:border-gray-200 sm:dark:hover:border-zinc-700",
         props.showPinned && memo.pinned && "border-gray-200 border dark:border-zinc-700",
         className,
       )}
@@ -271,7 +271,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
               )}
             </div>
             <div className="flex flex-row justify-end items-center select-none shrink-0 gap-2">
-              <div className="w-auto invisible group-hover:visible flex flex-row justify-between items-center gap-2">
+              <div className="w-auto sm:invisible sm:group-hover:visible flex flex-row justify-between items-center gap-2">
                 {props.showVisibility && memo.visibility !== Visibility.PRIVATE && (
                   <Tooltip title={t(`memo.visibility.${convertVisibilityToString(memo.visibility).toLowerCase()}` as any)} placement="top">
                     <span className="flex justify-center items-center hover:opacity-70">
@@ -292,7 +292,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                 <Link
                   className={clsx(
                     "flex flex-row justify-start items-center hover:opacity-70",
-                    commentAmount === 0 && "invisible group-hover:visible",
+                    commentAmount === 0 && "sm:invisible sm:group-hover:visible",
                   )}
                   to={`/m/${memo.uid}#comments`}
                   viewTransition
