@@ -68,7 +68,7 @@ const ReactionSelector = (props: Props) => {
           <SmilePlusIcon className="w-4 h-4 mx-auto text-gray-500 dark:text-gray-400" />
         </span>
       </MenuButton>
-      <Menu className="relative" component="div" size="sm" placement="bottom-start">
+      <Menu size="sm" placement="bottom-start" sx={{ zIndex: 1400 }}>
         <div ref={containerRef}>
           <div className="flex flex-row flex-wrap py-0.5 px-2 h-auto gap-1 max-w-56">
             {workspaceMemoRelatedSetting.reactions.map((reactionType) => {
