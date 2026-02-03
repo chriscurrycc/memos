@@ -122,7 +122,10 @@ export const useMemoStore = create(
       // Used to decide between replace-in-place vs prepend for pinned ordering.
       const hasPinnedMemo = Boolean(pinnedMemoMap[memo.name]);
 
-      memoMap[memo.name] = memo;
+      // Preserve displayTime to prevent reordering until refresh.
+      const existingMemo = memoMap[memo.name];
+      const updatedMemo = existingMemo ? { ...memo, displayTime: existingMemo.displayTime } : memo;
+      memoMap[memo.name] = updatedMemo;
 
       // Update pinnedMemoMapByName based on the memo's pinned status.
       const newMutationVersion = get().mutationVersion + 1;
@@ -130,11 +133,11 @@ export const useMemoStore = create(
         if (hasPinnedMemo) {
           // Replace value without reordering for existing pinned memos.
           const newPinnedMemoMap = { ...pinnedMemoMap };
-          newPinnedMemoMap[memo.name] = memo;
+          newPinnedMemoMap[memo.name] = updatedMemo;
           set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
         } else {
           // New pinned memos go to the front to preserve pin order.
-          const newPinnedMemoMap = { [memo.name]: memo, ...pinnedMemoMap };
+          const newPinnedMemoMap = { [memo.name]: updatedMemo, ...pinnedMemoMap };
           set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
         }
       } else if (hasPinnedMemo) {
@@ -145,7 +148,7 @@ export const useMemoStore = create(
       } else {
         set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
       }
-      return memo;
+      return updatedMemo;
     },
     deleteMemo: async (name: string) => {
       const memoMap = get().memoMapByName;
