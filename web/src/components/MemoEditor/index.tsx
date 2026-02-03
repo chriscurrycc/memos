@@ -23,7 +23,6 @@ import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
 import { convertVisibilityFromString, convertVisibilityToString } from "@/utils/memo";
 import VisibilityIcon from "../VisibilityIcon";
-import { showZenModeDialogPortal } from "../Dialog/showZenModeDialogHelper";
 import AddMemoRelationPopover from "./ActionButton/AddMemoRelationPopover";
 import LocationSelector from "./ActionButton/LocationSelector";
 import MarkdownMenu from "./ActionButton/MarkdownMenu";
@@ -33,6 +32,7 @@ import ZenModeButton from "./ActionButton/ZenModeButton";
 import Editor, { EditorRefActions } from "./Editor";
 import RelationListView from "./RelationListView";
 import ResourceListView from "./ResourceListView";
+import ZenModeEditorDialog from "./ZenModeEditorDialog";
 import { handleEditorKeydownWithMarkdownShortcuts, hyperlinkHighlightedText } from "./handlers";
 import { MemoEditorContext } from "./types";
 
@@ -85,6 +85,7 @@ const MemoEditor = (props: Props) => {
   });
   const [displayTime, setDisplayTime] = useState<Date | undefined>();
   const [hasContent, setHasContent] = useState<boolean>(false);
+  const [zenModeOpen, setZenModeOpen] = useState(false);
   const editorRef = useRef<EditorRefActions>(null);
   const userSetting = userStore.userSetting as UserSetting;
   const contentCacheKey = `${currentUser.name}-${cacheKey || ""}`;
@@ -105,7 +106,7 @@ const MemoEditor = (props: Props) => {
 
   useEffect(() => {
     if (autoFocus) {
-      handleEditorFocus();
+      focusEditor();
     }
   }, [autoFocus]);
 
@@ -127,7 +128,7 @@ const MemoEditor = (props: Props) => {
 
     const memo = await memoStore.getOrFetchMemoByName(memoName);
     if (memo) {
-      handleEditorFocus();
+      focusEditor();
       setDisplayTime(memo.displayTime);
       setState((prevState) => ({
         ...prevState,
@@ -158,23 +159,22 @@ const MemoEditor = (props: Props) => {
 
   const handleOpenZenMode = () => {
     if (!enableZenMode) return;
-    showZenModeDialogPortal(
-      {
-        ...props,
-        enableZenMode: true,
-        onConfirm: (memoName: string) => {
-          editorRef.current?.setContent("");
-          localStorage.removeItem(contentCacheKey);
-          onConfirm?.(memoName);
-        },
-      },
-      () => {
-        // Sync content from localStorage and refocus
-        const cachedContent = localStorage.getItem(contentCacheKey);
-        editorRef.current?.setContent(cachedContent ? JSON.parse(cachedContent) : "");
-        editorRef.current?.focus();
-      },
-    );
+    setZenModeOpen(true);
+  };
+
+  const handleZenModeOpenChange = (open: boolean) => {
+    setZenModeOpen(open);
+    if (!open) {
+      const cachedContent = localStorage.getItem(contentCacheKey);
+      editorRef.current?.setContent(cachedContent ? JSON.parse(cachedContent) : "");
+      editorRef.current?.focus();
+    }
+  };
+
+  const handleZenModeConfirm = (memoName: string) => {
+    editorRef.current?.setContent("");
+    localStorage.removeItem(contentCacheKey);
+    onConfirm?.(memoName);
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
@@ -416,8 +416,14 @@ const MemoEditor = (props: Props) => {
     }
   };
 
-  const handleEditorFocus = () => {
+  const focusEditor = () => {
     editorRef.current?.focus();
+  };
+
+  const handleContainerFocus = (e: React.FocusEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      focusEditor();
+    }
   };
 
   const editorConfig = useMemo(
@@ -434,102 +440,115 @@ const MemoEditor = (props: Props) => {
   const allowSave = (hasContent || state.resourceList.length > 0) && !state.isUploadingResource && !state.isRequesting;
 
   return (
-    <MemoEditorContext.Provider
-      value={{
-        resourceList: state.resourceList,
-        relationList: state.relationList,
-        setResourceList: (resourceList: Resource[]) => {
-          setState((prevState) => ({
-            ...prevState,
-            resourceList,
-          }));
-        },
-        setRelationList: (relationList: MemoRelation[]) => {
-          setState((prevState) => ({
-            ...prevState,
-            relationList,
-          }));
-        },
-        memoName,
-      }}
-    >
-      <div
-        className={`${
-          className ?? ""
-        } relative w-full flex flex-col justify-start items-start bg-white dark:bg-zinc-800 p-3 pb-2 rounded-lg border border-gray-200 dark:border-zinc-700`}
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
-        onDrop={handleDropEvent}
-        onFocus={handleEditorFocus}
-        onCompositionStart={handleCompositionStart}
-        onCompositionEnd={handleCompositionEnd}
+    <>
+      {enableZenMode && (
+        <ZenModeEditorDialog
+          open={zenModeOpen}
+          onOpenChange={handleZenModeOpenChange}
+          editorProps={{
+            ...props,
+            enableZenMode: true,
+            onConfirm: handleZenModeConfirm,
+          }}
+        />
+      )}
+      <MemoEditorContext.Provider
+        value={{
+          resourceList: state.resourceList,
+          relationList: state.relationList,
+          setResourceList: (resourceList: Resource[]) => {
+            setState((prevState) => ({
+              ...prevState,
+              resourceList,
+            }));
+          },
+          setRelationList: (relationList: MemoRelation[]) => {
+            setState((prevState) => ({
+              ...prevState,
+              relationList,
+            }));
+          },
+          memoName,
+        }}
       >
-        {enableZenMode && <ZenModeButton isZenMode={isZenMode} onClick={isZenMode ? onZenModeClose! : handleOpenZenMode} />}
-        {memoName && displayTime && (
-          <DatePicker
-            selected={displayTime}
-            onChange={(date) => date && setDisplayTime(date)}
-            showTimeSelect
-            customInput={<span className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">{displayTime.toLocaleString()}</span>}
-            calendarClassName="ml-24 sm:ml-44"
-          />
-        )}
-        <Editor ref={editorRef} {...editorConfig} />
-        <ResourceListView resourceList={state.resourceList} setResourceList={handleSetResourceList} />
-        <RelationListView relationList={referenceRelations} setRelationList={handleSetRelationList} />
-        <div className="w-full mt-2 flex flex-row justify-between items-center" onFocus={(e) => e.stopPropagation()}>
-          <div className="flex flex-row justify-start items-center gap-0.5 opacity-80 dark:opacity-60">
-            <TagSelector editorRef={editorRef} />
-            <MarkdownMenu editorRef={editorRef} />
-            <UploadResourceButton />
-            <AddMemoRelationPopover editorRef={editorRef} />
-            {workspaceMemoRelatedSetting.enableLocation && (
-              <LocationSelector
-                location={state.location}
-                onChange={(location) =>
-                  setState((prevState) => ({
-                    ...prevState,
-                    location,
-                  }))
-                }
-              />
-            )}
-          </div>
-          <div className="shrink-0 flex flex-row justify-end items-center gap-0.5">
-            <Select
-              className="!min-w-0"
-              variant="plain"
-              size="sm"
-              value={state.memoVisibility}
-              renderValue={() => <VisibilityIcon visibility={state.memoVisibility} />}
-              onChange={(_, visibility) => {
-                if (visibility) {
-                  handleMemoVisibilityChange(visibility);
-                }
-              }}
-            >
-              {[Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PUBLIC].map((item) => (
-                <Option key={item} value={item} className="whitespace-nowrap text-sm">
-                  {t(`memo.visibility.${convertVisibilityToString(item).toLowerCase()}` as any)}
-                </Option>
-              ))}
-            </Select>
-            {props.onCancel && (
-              <Button variant="plain" size="sm" disabled={state.isRequesting} onClick={handleCancelBtnClick}>
-                <XIcon className="w-4 h-4 mx-auto text-gray-500 dark:text-gray-400" />
-              </Button>
-            )}
-            <Button variant="plain" size="sm" disabled={!allowSave || state.isRequesting} onClick={handleSaveBtnClick} className="group">
-              {!state.isRequesting ? (
-                <SendIcon className="w-4 h-4 mx-auto text-primary" />
-              ) : (
-                <LoaderIcon className="w-4 h-4 mx-auto animate-spin text-primary" />
+        <div
+          className={`${
+            className ?? ""
+          } relative w-full flex flex-col justify-start items-start bg-white dark:bg-zinc-800 p-3 pb-2 rounded-lg border border-gray-200 dark:border-zinc-700`}
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+          onDrop={handleDropEvent}
+          onFocus={handleContainerFocus}
+          onCompositionStart={handleCompositionStart}
+          onCompositionEnd={handleCompositionEnd}
+        >
+          {enableZenMode && <ZenModeButton isZenMode={isZenMode} onClick={isZenMode ? onZenModeClose! : handleOpenZenMode} />}
+          {memoName && displayTime && (
+            <DatePicker
+              selected={displayTime}
+              onChange={(date) => date && setDisplayTime(date)}
+              showTimeSelect
+              customInput={<span className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">{displayTime.toLocaleString()}</span>}
+              calendarClassName="ml-24 sm:ml-44"
+            />
+          )}
+          <Editor ref={editorRef} {...editorConfig} />
+          <ResourceListView resourceList={state.resourceList} setResourceList={handleSetResourceList} />
+          <RelationListView relationList={referenceRelations} setRelationList={handleSetRelationList} />
+          <div className="w-full mt-2 flex flex-row justify-between items-center" onFocus={(e) => e.stopPropagation()}>
+            <div className="flex flex-row justify-start items-center gap-0.5 opacity-80 dark:opacity-60">
+              <TagSelector editorRef={editorRef} />
+              <MarkdownMenu editorRef={editorRef} />
+              <UploadResourceButton />
+              <AddMemoRelationPopover editorRef={editorRef} />
+              {workspaceMemoRelatedSetting.enableLocation && (
+                <LocationSelector
+                  location={state.location}
+                  onChange={(location) =>
+                    setState((prevState) => ({
+                      ...prevState,
+                      location,
+                    }))
+                  }
+                />
               )}
-            </Button>
+            </div>
+            <div className="shrink-0 flex flex-row justify-end items-center gap-0.5">
+              <Select
+                className="!min-w-0"
+                variant="plain"
+                size="sm"
+                value={state.memoVisibility}
+                renderValue={() => <VisibilityIcon visibility={state.memoVisibility} />}
+                onChange={(_, visibility) => {
+                  if (visibility) {
+                    handleMemoVisibilityChange(visibility);
+                  }
+                }}
+              >
+                {[Visibility.PRIVATE, Visibility.PROTECTED, Visibility.PUBLIC].map((item) => (
+                  <Option key={item} value={item} className="whitespace-nowrap text-sm">
+                    {t(`memo.visibility.${convertVisibilityToString(item).toLowerCase()}` as any)}
+                  </Option>
+                ))}
+              </Select>
+              {props.onCancel && (
+                <Button variant="plain" size="sm" disabled={state.isRequesting} onClick={handleCancelBtnClick}>
+                  <XIcon className="w-4 h-4 mx-auto text-gray-500 dark:text-gray-400" />
+                </Button>
+              )}
+              <Button variant="plain" size="sm" disabled={!allowSave || state.isRequesting} onClick={handleSaveBtnClick} className="group">
+                {!state.isRequesting ? (
+                  <SendIcon className="w-4 h-4 mx-auto text-primary" />
+                ) : (
+                  <LoaderIcon className="w-4 h-4 mx-auto animate-spin text-primary" />
+                )}
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
-    </MemoEditorContext.Provider>
+      </MemoEditorContext.Provider>
+    </>
   );
 };
 

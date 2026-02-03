@@ -67,7 +67,7 @@ const MarkdownMenu = (props: Props) => {
           <SquareSlashIcon className="w-4 h-4 mx-auto" />
         </Button>
       </MenuButton>
-      <Menu className="text-sm" size="sm" sx={{ py: 0.5, minWidth: "auto" }} placement="bottom-start">
+      <Menu className="text-sm" size="sm" sx={{ py: 0.5, minWidth: "auto", zIndex: 1400 }} placement="bottom-start">
         <MenuItem sx={{ py: 0.5, minHeight: "auto", gap: 0.75 }} onClick={handleCodeBlockClick}>
           <Code2Icon className="w-3.5 h-auto" />
           <span>{t("markdown.code-block")}</span>
