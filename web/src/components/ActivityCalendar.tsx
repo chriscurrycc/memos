@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import { useWorkspaceSettingStore } from "@/store/v1";

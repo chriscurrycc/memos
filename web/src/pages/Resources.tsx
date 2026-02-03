@@ -1,4 +1,5 @@
-import { Divider, Tooltip } from "@mui/joy";
+import { Divider } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import { Button, Input } from "@usememos/mui";
 import dayjs from "dayjs";
 import { includes } from "lodash-es";

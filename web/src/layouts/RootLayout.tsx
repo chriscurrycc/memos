@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import { Button } from "@usememos/mui";
 import clsx from "clsx";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";

@@ -1,4 +1,5 @@
-import { Divider, Drawer, Skeleton, Tooltip } from "@mui/joy";
+import { Divider, Drawer, Skeleton } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import {

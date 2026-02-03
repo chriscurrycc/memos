@@ -1,8 +1,8 @@
-import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
 import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon, ChevronDownIcon } from "lucide-react";
 import { memo, useCallback, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import Tooltip from "@/components/kit/Tooltip";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useNavigateTo from "@/hooks/useNavigateTo";
@@ -226,7 +226,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                       {creator.nickname || creator.username}
                     </Link>
                     <div className="w-auto -mt-0.5 flex flex-row items-center gap-2">
-                      <Tooltip title={t("memo.view-detail")} placement="top" disableTouchListener>
+                      <Tooltip title={t("memo.view-detail")} placement="top">
                         <span
                           className="text-xs leading-tight text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
                           onClick={handleGotoMemoDetailPage}
@@ -235,7 +235,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                         </span>
                       </Tooltip>
                       {collapsible && (
-                        <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top" disableTouchListener>
+                        <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
                           <span
                             className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                             onClick={handleToggleCollapse}
@@ -249,7 +249,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                 </div>
               ) : (
                 <div className="w-full flex flex-row items-center gap-2">
-                  <Tooltip title={t("memo.view-detail")} placement="top" disableTouchListener>
+                  <Tooltip title={t("memo.view-detail")} placement="top">
                     <span
                       className="text-sm leading-tight text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
                       onClick={handleGotoMemoDetailPage}
@@ -258,7 +258,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                     </span>
                   </Tooltip>
                   {collapsible && (
-                    <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top" disableTouchListener>
+                    <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
                       <span
                         className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                         onClick={handleToggleCollapse}
@@ -273,14 +273,14 @@ const MemoView: React.FC<Props> = (props: Props) => {
             <div className="flex flex-row justify-end items-center select-none shrink-0 gap-2">
               <div className="w-auto invisible group-hover:visible flex flex-row justify-between items-center gap-2">
                 {props.showVisibility && memo.visibility !== Visibility.PRIVATE && (
-                  <Tooltip title={t(`memo.visibility.${convertVisibilityToString(memo.visibility).toLowerCase()}` as any)} placement="top" disableTouchListener>
+                  <Tooltip title={t(`memo.visibility.${convertVisibilityToString(memo.visibility).toLowerCase()}` as any)} placement="top">
                     <span className="flex justify-center items-center hover:opacity-70">
                       <VisibilityIcon visibility={memo.visibility} />
                     </span>
                   </Tooltip>
                 )}
                 {props.showExport && (
-                  <Tooltip title={t("common.export")} placement="top" disableTouchListener>
+                  <Tooltip title={t("common.export")} placement="top">
                     <span className="flex justify-center items-center hover:opacity-70 cursor-pointer" onClick={handleExportClick}>
                       <ImageIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     </span>
@@ -305,7 +305,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
                 </Link>
               )}
               {props.showPinned && memo.pinned && (
-                <Tooltip title={t("common.unpin")} placement="top" disableTouchListener>
+                <Tooltip title={t("common.unpin")} placement="top">
                   <span className="cursor-pointer">
                     <BookmarkIcon className="w-4 h-auto text-amber-500" onClick={onPinIconClick} />
                   </span>

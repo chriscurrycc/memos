@@ -1,4 +1,5 @@
-import { Divider, List, ListItem, Radio, RadioGroup, Tooltip } from "@mui/joy";
+import { Divider, List, ListItem, Radio, RadioGroup } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import { Button, Input } from "@usememos/mui";
 import { isEqual } from "lodash-es";
 import { HelpCircleIcon } from "lucide-react";

@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import clsx from "clsx";
 import { InboxIcon, LoaderIcon, MessageCircleIcon } from "lucide-react";
 import { useState } from "react";

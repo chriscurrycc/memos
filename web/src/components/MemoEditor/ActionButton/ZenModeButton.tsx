@@ -1,4 +1,4 @@
-import { Tooltip } from "@mui/joy";
+import Tooltip from "@/components/kit/Tooltip";
 import { Button } from "@usememos/mui";
 import { Maximize2Icon, Minimize2Icon } from "lucide-react";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
