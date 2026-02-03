@@ -428,13 +428,13 @@ const MemoEditor = (props: Props) => {
 
   const editorConfig = useMemo(
     () => ({
-      className: isZenMode ? "zen-mode-editor-inner" : "",
+      className: isZenMode ? "zen-mode-editor-inner" : enableZenMode ? "pr-5" : "",
       initialContent: "",
       placeholder: props.placeholder ?? t("editor.any-thoughts"),
       onContentChange: handleContentChange,
       onPaste: handlePasteEvent,
     }),
-    [i18n.language, isZenMode],
+    [i18n.language, isZenMode, enableZenMode],
   );
 
   const allowSave = (hasContent || state.resourceList.length > 0) && !state.isUploadingResource && !state.isRequesting;
