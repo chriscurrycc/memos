@@ -1,5 +1,4 @@
 import { Divider } from "@mui/joy";
-import Tooltip from "@/components/kit/Tooltip";
 import { Button, Input } from "@usememos/mui";
 import dayjs from "dayjs";
 import { includes } from "lodash-es";
@@ -8,6 +7,7 @@ import { useEffect, useState } from "react";
 import Empty from "@/components/Empty";
 import MobileHeader from "@/components/MobileHeader";
 import ResourceIcon from "@/components/ResourceIcon";
+import Tooltip from "@/components/kit/Tooltip";
 import { resourceServiceClient } from "@/grpcweb";
 import useLoading from "@/hooks/useLoading";
 import i18n from "@/i18n";

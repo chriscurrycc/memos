@@ -1,4 +1,3 @@
-import Tooltip from "@/components/kit/Tooltip";
 import { Button } from "@usememos/mui";
 import clsx from "clsx";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
@@ -7,6 +6,7 @@ import { Outlet, useLocation, useSearchParams } from "react-router-dom";
 import useLocalStorage from "react-use/lib/useLocalStorage";
 import usePrevious from "react-use/lib/usePrevious";
 import Navigation from "@/components/Navigation";
+import Tooltip from "@/components/kit/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import Loading from "@/pages/Loading";

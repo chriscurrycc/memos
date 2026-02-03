@@ -1,8 +1,8 @@
-import Tooltip from "@/components/kit/Tooltip";
 import clsx from "clsx";
 import { ArrowUpIcon, InboxIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import Tooltip from "@/components/kit/Tooltip";
 import { activityServiceClient } from "@/grpcweb";
 import { activityNamePrefix, useInboxStore } from "@/store/v1";
 import { Activity } from "@/types/proto/api/v1/activity_service";

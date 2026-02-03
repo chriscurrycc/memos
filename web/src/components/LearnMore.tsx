@@ -1,5 +1,5 @@
-import Tooltip from "@/components/kit/Tooltip";
 import { ExternalLinkIcon } from "lucide-react";
+import Tooltip from "@/components/kit/Tooltip";
 import { useTranslate } from "@/utils/i18n";
 
 interface Props {

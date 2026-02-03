@@ -1,6 +1,6 @@
-import Tooltip from "@/components/kit/Tooltip";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import Tooltip from "@/components/kit/Tooltip";
 import { useWorkspaceSettingStore } from "@/store/v1";
 import { WorkspaceGeneralSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
