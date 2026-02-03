@@ -78,7 +78,13 @@ export const useMemoStore = create(
       });
       if (!options?.skipStore) {
         memoMap[name] = memo;
-        set({ stateId: uniqueId(), memoMapByName: memoMap });
+        const pinnedMemoMap = get().pinnedMemoMapByName;
+        if (pinnedMemoMap[name]) {
+          pinnedMemoMap[name] = memo;
+          set({ stateId: uniqueId(), memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
+        } else {
+          set({ stateId: uniqueId(), memoMapByName: memoMap });
+        }
       }
       return memo;
     },
