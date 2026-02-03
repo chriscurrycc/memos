@@ -205,6 +205,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
           className="border-none !p-0"
           cacheKey={`inline-memo-editor-${memo.name}`}
           memoName={memo.name}
+          enableZenMode
           onConfirm={() => setShowEditor(false)}
           onCancel={() => setShowEditor(false)}
         />
