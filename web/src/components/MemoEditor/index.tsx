@@ -23,7 +23,7 @@ import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
 import { convertVisibilityFromString, convertVisibilityToString } from "@/utils/memo";
 import VisibilityIcon from "../VisibilityIcon";
-import showZenModeDialog from "../ZenModeDialog";
+import { showZenModeDialogPortal } from "../Dialog/showZenModeDialogHelper";
 import AddMemoRelationPopover from "./ActionButton/AddMemoRelationPopover";
 import LocationSelector from "./ActionButton/LocationSelector";
 import MarkdownMenu from "./ActionButton/MarkdownMenu";
@@ -158,7 +158,7 @@ const MemoEditor = (props: Props) => {
 
   const handleOpenZenMode = () => {
     if (!enableZenMode) return;
-    showZenModeDialog(
+    showZenModeDialogPortal(
       {
         ...props,
         enableZenMode: true,

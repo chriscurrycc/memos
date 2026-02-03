@@ -20,7 +20,7 @@ const OverflowTip = ({ children, className }: Props) => {
   }, []);
 
   return (
-    <Tooltip title={children} placement="top" arrow disableHoverListener={!isOverflowed}>
+    <Tooltip title={children} placement="top" arrow disableHoverListener={!isOverflowed} disableTouchListener>
       <div ref={textElementRef} className={clsx("truncate", className)}>
         {children}
       </div>
