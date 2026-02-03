@@ -152,6 +152,7 @@ export const useMemoStore = create(
     },
     deleteMemo: async (name: string) => {
       const memoMap = get().memoMapByName;
+      const pinnedMemoMap = get().pinnedMemoMapByName;
       const memo = memoMap[name];
 
       await memoServiceClient.deleteMemo({
@@ -163,7 +164,8 @@ export const useMemoStore = create(
       }
 
       delete memoMap[name];
-      set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap });
+      delete pinnedMemoMap[name];
+      set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
     },
     fetchPinnedMemos: async (creatorName: string) => {
       const { memos, nextPageToken } = await memoServiceClient.listMemos({
