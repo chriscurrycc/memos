@@ -1,11 +1,15 @@
 import { ChevronRightIcon, PinIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import useToggle from "react-use/lib/useToggle";
 import { useMemoFilterStore, useTag, useTagTree } from "@/store/v1";
 import { TagTreeNode } from "@/store/v1/memoMetadata";
 import { EmojiPickerPopover } from "./EmojiPickerPopover";
 
-const TagTree = () => {
+interface TagTreeProps {
+  onTagClick?: () => void;
+}
+
+const TagTree = ({ onTagClick }: TagTreeProps) => {
   const tags = useTagTree();
   const { fetchEmojiTags, fetchPinnedTags, pinnedTags: pinnedTagsFromStore } = useTag();
 
@@ -47,7 +51,7 @@ const TagTree = () => {
       {pinnedTags.length > 0 && (
         <>
           {pinnedTags.map((t, idx) => (
-            <TagItemContainer key={t.text + "-pinned-" + idx} tag={t} isPinned={true} />
+            <TagItemContainer key={t.text + "-pinned-" + idx} tag={t} isPinned={true} onTagClick={onTagClick} />
           ))}
           <div className="w-full h-px bg-gray-300 dark:bg-zinc-500 my-1" />
         </>
@@ -55,7 +59,7 @@ const TagTree = () => {
 
       {/* Render unpinned tags */}
       {unpinnedTags.map((t, idx) => (
-        <TagItemContainer key={t.text + "-unpinned-" + idx} tag={t} isPinned={false} />
+        <TagItemContainer key={t.text + "-unpinned-" + idx} tag={t} isPinned={false} onTagClick={onTagClick} />
       ))}
     </div>
   );
@@ -64,17 +68,17 @@ const TagTree = () => {
 interface TagItemContainerProps {
   tag: TagTreeNode;
   isPinned?: boolean;
+  onTagClick?: () => void;
 }
 
-const TagItemContainer: React.FC<TagItemContainerProps> = (props: TagItemContainerProps) => {
-  const { tag, isPinned = false } = props;
+const TagItemContainer = (props: TagItemContainerProps) => {
+  const { tag, isPinned = false, onTagClick } = props;
   const memoFilterStore = useMemoFilterStore();
   const { emojiTags, updateTagEmoji, pinTag, unpinTag } = useTag();
   const tagFilters = memoFilterStore.getFiltersByFactor("tagSearch");
   const isActive = tagFilters.some((f) => f.value === tag.text);
   const hasSubTags = tag.subTags.length > 0;
   const [showSubTags, toggleSubTags] = useToggle(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   // Find emoji for this tag
   const tagEmoji = emojiTags.find((t) => t.tagName === tag.text)?.emoji;
@@ -91,6 +95,7 @@ const TagItemContainer: React.FC<TagItemContainerProps> = (props: TagItemContain
         value: tag.text,
       });
     }
+    onTagClick?.();
   };
 
   const handleToggleBtnClick = (event: React.MouseEvent) => {
@@ -98,8 +103,7 @@ const TagItemContainer: React.FC<TagItemContainerProps> = (props: TagItemContain
     toggleSubTags();
   };
 
-  const handlePinClick = async (event: React.MouseEvent) => {
-    event.stopPropagation();
+  const handlePinToggle = async () => {
     try {
       if (isPinned) {
         await unpinTag(tag.text);
@@ -129,31 +133,31 @@ const TagItemContainer: React.FC<TagItemContainerProps> = (props: TagItemContain
 
   return (
     <>
-      <div
-        className="relative flex flex-row justify-between items-center w-full leading-6 py-0 mt-px rounded-lg text-sm select-none shrink-0"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
+      <div className="group relative flex flex-row justify-between items-center w-full leading-6 py-0 mt-px rounded-lg text-sm select-none shrink-0">
         <div
           className={`flex flex-row justify-start items-center truncate shrink leading-5 mr-1 text-gray-600 dark:text-gray-400 ${
             isActive && "!text-blue-600"
           }`}
         >
           <div className="shrink-0 mr-1">
-            <EmojiPickerPopover emoji={tagEmoji} onEmojiSelect={handleEmojiSelect} onEmojiRemove={handleEmojiRemove} />
+            <EmojiPickerPopover
+              emoji={tagEmoji}
+              onEmojiSelect={handleEmojiSelect}
+              onEmojiRemove={handleEmojiRemove}
+              isPinned={isFirstLevelTag ? isPinned : undefined}
+              onPinToggle={isFirstLevelTag ? handlePinToggle : undefined}
+            />
           </div>
           <span className="truncate cursor-pointer hover:opacity-80" onClick={handleTagClick}>
             {tag.key} {tag.amount > 1 && `(${tag.amount})`}
           </span>
         </div>
         <div className="flex flex-row justify-end items-center">
-          {/* Pin/Unpin button - only show for first-level tags and on hover */}
+          {/* PC: Pin icon with hover */}
           {isFirstLevelTag && (
             <span
-              className={`flex flex-row justify-center items-center w-6 h-6 shrink-0 transition-all ${
-                isHovered ? "opacity-100" : "opacity-0"
-              }`}
-              onClick={handlePinClick}
+              className="hidden sm:flex flex-row justify-center items-center w-6 h-6 shrink-0 transition-all opacity-0 group-hover:opacity-100"
+              onClick={handlePinToggle}
             >
               <PinIcon
                 className={`w-4 h-4 cursor-pointer transition-colors ${
@@ -162,14 +166,13 @@ const TagItemContainer: React.FC<TagItemContainerProps> = (props: TagItemContain
               />
             </span>
           )}
-          {hasSubTags ? (
-            <span
-              className={`flex flex-row justify-center items-center w-6 h-6 shrink-0 transition-all rotate-0 ${showSubTags && "rotate-90"}`}
-              onClick={handleToggleBtnClick}
-            >
-              <ChevronRightIcon className="w-5 h-5 cursor-pointer text-gray-400 dark:text-gray-500" />
-            </span>
-          ) : null}
+          {/* Always reserve space for expand button to keep pin icon position fixed */}
+          <span
+            className={`flex flex-row justify-center items-center w-6 h-6 shrink-0 transition-all rotate-0 ${showSubTags && "rotate-90"} ${!hasSubTags && "invisible"}`}
+            onClick={hasSubTags ? handleToggleBtnClick : undefined}
+          >
+            <ChevronRightIcon className="w-5 h-5 cursor-pointer text-gray-400 dark:text-gray-500" />
+          </span>
         </div>
       </div>
       {hasSubTags ? (
@@ -179,7 +182,7 @@ const TagItemContainer: React.FC<TagItemContainerProps> = (props: TagItemContain
           }`}
         >
           {tag.subTags.map((st, idx) => (
-            <TagItemContainer key={st.text + "-" + idx} tag={st} isPinned={false} />
+            <TagItemContainer key={st.text + "-" + idx} tag={st} isPinned={false} onTagClick={onTagClick} />
           ))}
         </div>
       ) : null}

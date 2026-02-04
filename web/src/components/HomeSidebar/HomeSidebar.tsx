@@ -31,7 +31,7 @@ const HomeSidebar = (props: Props) => {
     >
       <SearchBar />
       <UserStatisticsView onCloseHomeSidebarDrawer={props.onCloseHomeSidebarDrawer} />
-      <TagsSection />
+      <TagsSection onTagClick={props.onCloseHomeSidebarDrawer} />
     </aside>
   );
 };
