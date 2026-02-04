@@ -4,6 +4,27 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.27.2](https://github.com/chriscurrycc/memos/releases/tag/v0.27.2) - 2026-02-04
+
+### Features
+- Enabled zen mode for inline memo and comment editors
+- Improved tag management UX for mobile and desktop
+
+### Improvements
+- Improved zen mode mobile experience with virtual keyboard handling
+- Show MemoView action buttons by default on mobile
+- Created custom Tooltip component for mobile optimization
+
+### Fixes
+- Fixed text overlap with zen mode button by adding padding
+- Fixed pinned memo state sync when fetching memo
+- Fixed memo reordering issue by preserving displayTime on update
+- Removed deleted memo from pinned memo map
+- Added z-index to MemoActionMenu for mobile pinned drawer
+- Updated content-syntax documentation link in editor
+- Enabled emoji picker and expand buttons in mobile pinned drawer
+- Improved mobile performance with tooltip and dialog optimizations
+
 ## [v0.27.1](https://github.com/chriscurrycc/memos/releases/tag/v0.27.1) - 2026-02-02
 
 ### Improvements
