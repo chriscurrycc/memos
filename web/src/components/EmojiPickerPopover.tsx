@@ -1,5 +1,5 @@
 import { EmojiPicker, EmojiPickerListCategoryHeaderProps, EmojiPickerListEmojiProps } from "frimousse";
-import { HashIcon, XIcon } from "lucide-react";
+import { HashIcon, PinIcon, PinOffIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 
@@ -12,9 +12,20 @@ interface EmojiPickerPopoverProps {
   onEmojiRemove: () => void;
   /** Additional className for the trigger */
   className?: string;
+  /** Whether the item is pinned (optional, for pin functionality) */
+  isPinned?: boolean;
+  /** Callback when pin is toggled (optional, for pin functionality) */
+  onPinToggle?: () => void;
 }
 
-export const EmojiPickerPopover: React.FC<EmojiPickerPopoverProps> = ({ emoji, onEmojiSelect, onEmojiRemove, className = "" }) => {
+export const EmojiPickerPopover = ({
+  emoji,
+  onEmojiSelect,
+  onEmojiRemove,
+  className = "",
+  isPinned,
+  onPinToggle,
+}: EmojiPickerPopoverProps) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [hoveredEmoji, setHoveredEmoji] = React.useState<{ emoji: string; name: string } | null>(null);
 
@@ -47,20 +58,41 @@ export const EmojiPickerPopover: React.FC<EmojiPickerPopoverProps> = ({ emoji, o
             handleEmojiSelect(selectedEmoji);
           }}
         >
-          {/* Search bar with delete button */}
+          {/* Search bar with action buttons */}
           <div className="flex items-center gap-2 mx-2 mt-2 mb-1">
-            {emoji && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEmojiRemove();
-                  setIsOpen(false);
-                }}
-                className="flex-shrink-0 p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
-                title="Remove emoji"
-              >
-                <XIcon className="w-4 h-4" />
-              </button>
+            {(onPinToggle || emoji) && (
+              <div className="flex items-center gap-0.5 flex-shrink-0">
+                {onPinToggle && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onPinToggle();
+                      setIsOpen(false);
+                    }}
+                    className={`p-1.5 rounded-md transition-colors ${
+                      isPinned
+                        ? "text-blue-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                        : "text-gray-400 hover:text-blue-500 hover:bg-gray-50 dark:hover:bg-gray-800"
+                    }`}
+                    title={isPinned ? "Unpin" : "Pin"}
+                  >
+                    {isPinned ? <PinOffIcon className="w-4 h-4" /> : <PinIcon className="w-4 h-4" />}
+                  </button>
+                )}
+                {emoji && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEmojiRemove();
+                      setIsOpen(false);
+                    }}
+                    className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                    title="Remove emoji"
+                  >
+                    <XIcon className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
             )}
             <EmojiPicker.Search
               placeholder="Search emoji..."

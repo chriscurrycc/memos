@@ -84,6 +84,24 @@ docker run -d --init --name memos --publish 5230:5230 --volume ~/.memos/:/var/op
 - **Config**: Environment variables prefixed with `MEMOS_` (e.g., `MEMOS_PORT`, `MEMOS_DRIVER`, `MEMOS_DSN`)
 - **Frontend Build**: `pnpm release` embeds built assets into `server/router/frontend/dist` for Go binary
 
+## Code Style
+
+### React Components
+
+When generating React component code, use regular function with typed props instead of `React.FC<Props>`:
+
+```tsx
+// Good
+const MyComponent = ({ open, onClose }: Props) => {
+  return <div>...</div>;
+};
+
+// Bad - causes props validation issues
+const MyComponent: React.FC<Props> = ({ open, onClose }) => {
+  return <div>...</div>;
+};
+```
+
 ## Project-Specific Notes
 
 1. This project does not require typecheck and prettier operations

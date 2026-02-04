@@ -1,8 +1,8 @@
-import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
 import { ArchiveIcon, BellIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import Tooltip from "@/components/kit/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Routes } from "@/router";
 import { useInboxStore } from "@/store/v1";

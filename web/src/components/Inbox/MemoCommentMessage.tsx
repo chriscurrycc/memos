@@ -1,8 +1,8 @@
-import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
 import { InboxIcon, LoaderIcon, MessageCircleIcon } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import Tooltip from "@/components/kit/Tooltip";
 import { activityServiceClient } from "@/grpcweb";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import useNavigateTo from "@/hooks/useNavigateTo";

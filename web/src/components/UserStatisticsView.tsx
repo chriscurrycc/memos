@@ -1,4 +1,4 @@
-import { Divider, Drawer, Skeleton, Tooltip } from "@mui/joy";
+import { Divider, Drawer, Skeleton } from "@mui/joy";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import {
@@ -12,6 +12,7 @@ import {
   RotateCcwIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
+import Tooltip from "@/components/kit/Tooltip";
 import i18n from "@/i18n";
 import { useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";

@@ -1,5 +1,5 @@
-import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
+import Tooltip from "@/components/kit/Tooltip";
 import { memoServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoStore } from "@/store/v1";

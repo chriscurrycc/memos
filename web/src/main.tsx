@@ -19,6 +19,7 @@ import theme from "./theme";
 (async () => {
   const container = document.getElementById("root");
   const root = createRoot(container as HTMLElement);
+
   root.render(
     <Provider store={store}>
       <CssVarsProvider theme={theme}>

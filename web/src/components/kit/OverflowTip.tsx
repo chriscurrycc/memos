@@ -1,6 +1,6 @@
-import { Tooltip } from "@mui/joy";
 import clsx from "clsx";
 import { useRef, useState, useEffect } from "react";
+import Tooltip from "./Tooltip";
 
 interface Props {
   children: React.ReactNode;

@@ -1,4 +1,3 @@
-import { Tooltip } from "@mui/joy";
 import dayjs from "dayjs";
 import { ArchiveIcon, ArchiveRestoreIcon, TrashIcon } from "lucide-react";
 import { ClientError } from "nice-grpc-web";
@@ -9,6 +8,7 @@ import MemoFilters from "@/components/MemoFilters";
 import MobileHeader from "@/components/MobileHeader";
 import PagedMemoList from "@/components/PagedMemoList";
 import SearchBar from "@/components/SearchBar";
+import Tooltip from "@/components/kit/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoFilterStore, useMemoStore } from "@/store/v1";
 import { RowStatus } from "@/types/proto/api/v1/common";
