@@ -1,5 +1,6 @@
 import { Select, Option } from "@mui/joy";
 import { Button } from "@usememos/mui";
+import clsx from "clsx";
 import { isEqual } from "lodash-es";
 import { LoaderIcon, SendIcon, XIcon } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -426,15 +427,20 @@ const MemoEditor = (props: Props) => {
     }
   };
 
+  const showDisplayTime = useMemo(() => {
+    return memoName && displayTime;
+  }, [memoName, displayTime]);
+
   const editorConfig = useMemo(
     () => ({
-      className: isZenMode ? "zen-mode-editor-inner" : enableZenMode ? "pr-5" : "",
+      className: isZenMode ? "zen-mode-editor-inner" : undefined,
+      textareaClassName: clsx(enableZenMode && "pr-8", showDisplayTime && "pt-0"),
       initialContent: "",
       placeholder: props.placeholder ?? t("editor.any-thoughts"),
       onContentChange: handleContentChange,
       onPaste: handlePasteEvent,
     }),
-    [i18n.language, isZenMode, enableZenMode],
+    [i18n.language, isZenMode, enableZenMode, showDisplayTime],
   );
 
   const allowSave = (hasContent || state.resourceList.length > 0) && !state.isUploadingResource && !state.isRequesting;
@@ -474,7 +480,7 @@ const MemoEditor = (props: Props) => {
         <div
           className={`${
             className ?? ""
-          } relative w-full flex flex-col justify-start items-start bg-white dark:bg-zinc-800 p-3 pb-2 rounded-lg border border-gray-200 dark:border-zinc-700`}
+          } overflow-hidden relative w-full flex flex-col justify-start items-start bg-white dark:bg-zinc-800 rounded-lg border border-gray-200 dark:border-zinc-700`}
           tabIndex={0}
           onKeyDown={handleKeyDown}
           onDrop={handleDropEvent}
@@ -483,19 +489,23 @@ const MemoEditor = (props: Props) => {
           onCompositionEnd={handleCompositionEnd}
         >
           {enableZenMode && <ZenModeButton isZenMode={isZenMode} onClick={isZenMode ? onZenModeClose! : handleOpenZenMode} />}
-          {memoName && displayTime && (
-            <DatePicker
-              selected={displayTime}
-              onChange={(date) => date && setDisplayTime(date)}
-              showTimeSelect
-              customInput={<span className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">{displayTime.toLocaleString()}</span>}
-              calendarClassName="ml-24 sm:ml-44"
-            />
+          {showDisplayTime && (
+            <div className="p-3 pb-2">
+              <DatePicker
+                selected={displayTime}
+                onChange={(date) => date && setDisplayTime(date)}
+                showTimeSelect
+                customInput={
+                  <span className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">{displayTime?.toLocaleString()}</span>
+                }
+                calendarClassName="ml-24 sm:ml-44"
+              />
+            </div>
           )}
           <Editor ref={editorRef} {...editorConfig} />
           <ResourceListView resourceList={state.resourceList} setResourceList={handleSetResourceList} />
           <RelationListView relationList={referenceRelations} setRelationList={handleSetRelationList} />
-          <div className="w-full mt-2 flex flex-row justify-between items-center" onFocus={(e) => e.stopPropagation()}>
+          <div className="w-full p-2 mt-2 flex flex-row justify-between items-center" onFocus={(e) => e.stopPropagation()}>
             <div className="flex flex-row justify-start items-center gap-0.5 opacity-80 dark:opacity-60">
               <TagSelector editorRef={editorRef} />
               <MarkdownMenu editorRef={editorRef} />

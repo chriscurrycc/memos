@@ -34,7 +34,7 @@ const ZenModeButton = ({ isZenMode, onClick }: Props) => {
   );
 
   return (
-    <div className="absolute top-1.5 right-1.5 z-10">
+    <div className="absolute top-0.5 right-0.5 z-10">
       {sm ? (
         <Tooltip title={t("editor.zen-mode-tooltip", { shortcut })} placement="bottom">
           {button}
