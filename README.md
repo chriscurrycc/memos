@@ -102,24 +102,19 @@ docker run -d \
 
 ## Update
 
-### Manual Update
+### With Watchtower (Recommended)
+
+One-time update:
 
 ```bash
-docker pull chriscurrycc/memos:latest
-docker stop memos
-docker rm memos
-docker run -d \
-  --init \
-  --name memos \
-  --restart unless-stopped \
-  --publish 5230:5230 \
-  --volume ~/.memos/:/var/opt/memos \
-  chriscurrycc/memos:latest
+docker run --rm \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  containrrr/watchtower \
+  --run-once \
+  memos
 ```
 
-### Auto Update with Watchtower
-
-Automatically update the container when a new version is available (e.g., at 3:00 AM UTC+8 daily):
+Scheduled auto-update (e.g., at 3:00 AM UTC+8 daily):
 
 ```bash
 docker run -d \
@@ -130,6 +125,20 @@ docker run -d \
   containrrr/watchtower \
   --schedule "0 0 3 * * *" \
   memos
+```
+
+### Without Watchtower
+
+```bash
+docker pull chriscurrycc/memos:latest
+docker stop memos && docker rm memos
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
 ```
 
 ## Migration from usememos/memos

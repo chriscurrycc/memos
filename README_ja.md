@@ -102,24 +102,19 @@ docker run -d \
 
 ## 更新
 
-### 手動更新
+### Watchtower を使用（推奨）
+
+単発更新：
 
 ```bash
-docker pull chriscurrycc/memos:latest
-docker stop memos
-docker rm memos
-docker run -d \
-  --init \
-  --name memos \
-  --restart unless-stopped \
-  --publish 5230:5230 \
-  --volume ~/.memos/:/var/opt/memos \
-  chriscurrycc/memos:latest
+docker run --rm \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  containrrr/watchtower \
+  --run-once \
+  memos
 ```
 
-### Watchtower で自動更新
-
-新しいバージョンがリリースされた際に自動更新（例：毎日 UTC+8 の午前3時に確認）：
+定期自動更新（例：毎日 UTC+8 の午前3時に確認）：
 
 ```bash
 docker run -d \
@@ -130,6 +125,20 @@ docker run -d \
   containrrr/watchtower \
   --schedule "0 0 3 * * *" \
   memos
+```
+
+### Watchtower を使用しない
+
+```bash
+docker pull chriscurrycc/memos:latest
+docker stop memos && docker rm memos
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
 ```
 
 ## usememos/memos からの移行

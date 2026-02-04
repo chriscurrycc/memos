@@ -102,24 +102,19 @@ docker run -d \
 
 ## 更新
 
-### 手動更新
+### 使用 Watchtower（推薦）
+
+單次更新：
 
 ```bash
-docker pull chriscurrycc/memos:latest
-docker stop memos
-docker rm memos
-docker run -d \
-  --init \
-  --name memos \
-  --restart unless-stopped \
-  --publish 5230:5230 \
-  --volume ~/.memos/:/var/opt/memos \
-  chriscurrycc/memos:latest
+docker run --rm \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  containrrr/watchtower \
+  --run-once \
+  memos
 ```
 
-### 使用 Watchtower 自動更新
-
-自動更新容器到最新版本（例如：每天凌晨 3:00 UTC+8 自動檢查更新）：
+定時自動更新（例如：每天凌晨 3:00 UTC+8 自動檢查更新）：
 
 ```bash
 docker run -d \
@@ -130,6 +125,20 @@ docker run -d \
   containrrr/watchtower \
   --schedule "0 0 3 * * *" \
   memos
+```
+
+### 不使用 Watchtower
+
+```bash
+docker pull chriscurrycc/memos:latest
+docker stop memos && docker rm memos
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
 ```
 
 ## 從 usememos/memos 遷移
