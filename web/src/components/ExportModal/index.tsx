@@ -66,12 +66,17 @@ const ExportModal = ({ memo, onClose }: ExportModalProps) => {
 
     setIsExporting(true);
     try {
+      // Wait for any pending layout calculations
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const dataUrl = await toPng(exportRef.current, {
         quality: 1.0,
         pixelRatio: 2,
         cacheBust: true,
         skipFonts: false,
         fontEmbedCSS: "",
+        // These options help with flexbox rendering
+        includeQueryParams: true,
       });
 
       // Download the image
