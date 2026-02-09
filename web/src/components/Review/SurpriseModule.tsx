@@ -4,23 +4,15 @@ import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import { useReviewStore } from "@/store/v1/review";
-import { ReviewSource } from "@/types/proto/api/v1/review_service";
 import { useTranslate } from "@/utils/i18n";
 
 const SurpriseModule = () => {
   const t = useTranslate();
-  const { surpriseMemo, isSurpriseLoading, fetchSurpriseMemo, recordReview } = useReviewStore();
+  const { surpriseMemo, isSurpriseLoading, fetchSurpriseMemo } = useReviewStore();
 
   useEffect(() => {
     fetchSurpriseMemo();
   }, []);
-
-  const handleSurprise = async () => {
-    if (surpriseMemo) {
-      await recordReview(ReviewSource.REVIEW_SOURCE_SURPRISE);
-    }
-    fetchSurpriseMemo();
-  };
 
   if (isSurpriseLoading) {
     return (
@@ -104,7 +96,7 @@ const SurpriseModule = () => {
 
       <div className="flex justify-center">
         <button
-          onClick={handleSurprise}
+          onClick={fetchSurpriseMemo}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium shadow-sm transition-all active:scale-[0.98]"
         >
           <DicesIcon className="w-4 h-4" />

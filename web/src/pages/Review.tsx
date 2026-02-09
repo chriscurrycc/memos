@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { BookOpenIcon, CalendarHeartIcon, CompassIcon, SparklesIcon } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import MobileHeader from "@/components/MobileHeader";
 import OnThisDayModule from "@/components/Review/OnThisDayModule";
@@ -95,26 +95,19 @@ const Review = () => {
               </div>
             </div>
 
-            {/* Tab content */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-              >
-                {activeTab === "on-this-day" ? (
-                  <OnThisDayModule />
-                ) : activeTab === "time-travel" ? (
-                  <TimeTravelModule />
-                ) : activeTab === "surprise" ? (
-                  <SurpriseModule />
-                ) : (
-                  <ReviewModule />
-                )}
-              </motion.div>
-            </AnimatePresence>
+            {/* Tab content — all tabs stay mounted, only active one is visible */}
+            <div className={activeTab === "review" ? "" : "hidden"}>
+              <ReviewModule />
+            </div>
+            <div className={activeTab === "on-this-day" ? "" : "hidden"}>
+              <OnThisDayModule />
+            </div>
+            <div className={activeTab === "time-travel" ? "" : "hidden"}>
+              <TimeTravelModule />
+            </div>
+            <div className={clsx(activeTab === "surprise" ? "" : "hidden", "lg:hidden")}>
+              <SurpriseModule />
+            </div>
           </div>
 
           {/* Surprise sidebar — desktop only */}

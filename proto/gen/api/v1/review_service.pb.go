@@ -201,7 +201,11 @@ type ListOnThisDayMemosRequest struct {
 	// The month (1-12) to filter by. Defaults to current month.
 	Month int32 `protobuf:"varint,1,opt,name=month,proto3" json:"month,omitempty"`
 	// The day (1-31) to filter by. Defaults to current day.
-	Day           int32 `protobuf:"varint,2,opt,name=day,proto3" json:"day,omitempty"`
+	Day int32 `protobuf:"varint,2,opt,name=day,proto3" json:"day,omitempty"`
+	// Number of items to skip for pagination.
+	Offset int32 `protobuf:"varint,3,opt,name=offset,proto3" json:"offset,omitempty"`
+	// Maximum number of memos to return per page.
+	PageSize      int32 `protobuf:"varint,4,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -250,10 +254,26 @@ func (x *ListOnThisDayMemosRequest) GetDay() int32 {
 	return 0
 }
 
+func (x *ListOnThisDayMemosRequest) GetOffset() int32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+func (x *ListOnThisDayMemosRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
 type ListOnThisDayMemosResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The memos from this day in previous years, grouped by year.
-	Groups        []*OnThisDayGroup `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
+	Groups []*OnThisDayGroup `protobuf:"bytes,1,rep,name=groups,proto3" json:"groups,omitempty"`
+	// Total count of memos across all years.
+	TotalCount    int32 `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -293,6 +313,13 @@ func (x *ListOnThisDayMemosResponse) GetGroups() []*OnThisDayGroup {
 		return x.Groups
 	}
 	return nil
+}
+
+func (x *ListOnThisDayMemosResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
 }
 
 type OnThisDayGroup struct {
@@ -387,8 +414,14 @@ func (*GetRandomMemoRequest) Descriptor() ([]byte, []int) {
 
 type GetTimeTravelMemosRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maximum number of memos to return.
-	PageSize      int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// Maximum number of memos to return per page.
+	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	// Optional: user-specified start date. If not set, a random period is chosen.
+	PeriodStart *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=period_start,json=periodStart,proto3,oneof" json:"period_start,omitempty"`
+	// Optional: user-specified end date.
+	PeriodEnd *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=period_end,json=periodEnd,proto3,oneof" json:"period_end,omitempty"`
+	// Number of items to skip for pagination.
+	Offset        int32 `protobuf:"varint,4,opt,name=offset,proto3" json:"offset,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -430,6 +463,27 @@ func (x *GetTimeTravelMemosRequest) GetPageSize() int32 {
 	return 0
 }
 
+func (x *GetTimeTravelMemosRequest) GetPeriodStart() *timestamppb.Timestamp {
+	if x != nil {
+		return x.PeriodStart
+	}
+	return nil
+}
+
+func (x *GetTimeTravelMemosRequest) GetPeriodEnd() *timestamppb.Timestamp {
+	if x != nil {
+		return x.PeriodEnd
+	}
+	return nil
+}
+
+func (x *GetTimeTravelMemosRequest) GetOffset() int32 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
 type GetTimeTravelMemosResponse struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The memos from the random time period.
@@ -437,7 +491,9 @@ type GetTimeTravelMemosResponse struct {
 	// The start date of the time period.
 	PeriodStart *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=period_start,json=periodStart,proto3" json:"period_start,omitempty"`
 	// The end date of the time period.
-	PeriodEnd     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=period_end,json=periodEnd,proto3" json:"period_end,omitempty"`
+	PeriodEnd *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=period_end,json=periodEnd,proto3" json:"period_end,omitempty"`
+	// Total count of memos in the period.
+	TotalCount    int32 `protobuf:"varint,4,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -491,6 +547,13 @@ func (x *GetTimeTravelMemosResponse) GetPeriodEnd() *timestamppb.Timestamp {
 		return x.PeriodEnd
 	}
 	return nil
+}
+
+func (x *GetTimeTravelMemosResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
 }
 
 type RecordReviewRequest struct {
@@ -722,23 +785,35 @@ const file_api_v1_review_service_proto_rawDesc = "" +
 	"\x17ListReviewMemosResponse\x12(\n" +
 	"\x05memos\x18\x01 \x03(\v2\x12.memos.api.v1.MemoR\x05memos\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
-	"totalCount\"C\n" +
+	"totalCount\"x\n" +
 	"\x19ListOnThisDayMemosRequest\x12\x14\n" +
 	"\x05month\x18\x01 \x01(\x05R\x05month\x12\x10\n" +
-	"\x03day\x18\x02 \x01(\x05R\x03day\"R\n" +
+	"\x03day\x18\x02 \x01(\x05R\x03day\x12\x16\n" +
+	"\x06offset\x18\x03 \x01(\x05R\x06offset\x12\x1b\n" +
+	"\tpage_size\x18\x04 \x01(\x05R\bpageSize\"s\n" +
 	"\x1aListOnThisDayMemosResponse\x124\n" +
-	"\x06groups\x18\x01 \x03(\v2\x1c.memos.api.v1.OnThisDayGroupR\x06groups\"N\n" +
+	"\x06groups\x18\x01 \x03(\v2\x1c.memos.api.v1.OnThisDayGroupR\x06groups\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x05R\n" +
+	"totalCount\"N\n" +
 	"\x0eOnThisDayGroup\x12\x12\n" +
 	"\x04year\x18\x01 \x01(\x05R\x04year\x12(\n" +
 	"\x05memos\x18\x02 \x03(\v2\x12.memos.api.v1.MemoR\x05memos\"\x16\n" +
-	"\x14GetRandomMemoRequest\"8\n" +
+	"\x14GetRandomMemoRequest\"\xf4\x01\n" +
 	"\x19GetTimeTravelMemosRequest\x12\x1b\n" +
-	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\"\xc0\x01\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12B\n" +
+	"\fperiod_start\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampH\x00R\vperiodStart\x88\x01\x01\x12>\n" +
+	"\n" +
+	"period_end\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampH\x01R\tperiodEnd\x88\x01\x01\x12\x16\n" +
+	"\x06offset\x18\x04 \x01(\x05R\x06offsetB\x0f\n" +
+	"\r_period_startB\r\n" +
+	"\v_period_end\"\xe1\x01\n" +
 	"\x1aGetTimeTravelMemosResponse\x12(\n" +
 	"\x05memos\x18\x01 \x03(\v2\x12.memos.api.v1.MemoR\x05memos\x12=\n" +
 	"\fperiod_start\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\vperiodStart\x129\n" +
 	"\n" +
-	"period_end\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tperiodEnd\"h\n" +
+	"period_end\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tperiodEnd\x12\x1f\n" +
+	"\vtotal_count\x18\x04 \x01(\x05R\n" +
+	"totalCount\"h\n" +
 	"\x13RecordReviewRequest\x12\x1d\n" +
 	"\n" +
 	"memo_names\x18\x01 \x03(\tR\tmemoNames\x122\n" +
@@ -804,27 +879,29 @@ var file_api_v1_review_service_proto_depIdxs = []int32{
 	13, // 0: memos.api.v1.ListReviewMemosResponse.memos:type_name -> memos.api.v1.Memo
 	5,  // 1: memos.api.v1.ListOnThisDayMemosResponse.groups:type_name -> memos.api.v1.OnThisDayGroup
 	13, // 2: memos.api.v1.OnThisDayGroup.memos:type_name -> memos.api.v1.Memo
-	13, // 3: memos.api.v1.GetTimeTravelMemosResponse.memos:type_name -> memos.api.v1.Memo
-	14, // 4: memos.api.v1.GetTimeTravelMemosResponse.period_start:type_name -> google.protobuf.Timestamp
-	14, // 5: memos.api.v1.GetTimeTravelMemosResponse.period_end:type_name -> google.protobuf.Timestamp
-	0,  // 6: memos.api.v1.RecordReviewRequest.source:type_name -> memos.api.v1.ReviewSource
-	1,  // 7: memos.api.v1.ReviewService.ListReviewMemos:input_type -> memos.api.v1.ListReviewMemosRequest
-	3,  // 8: memos.api.v1.ReviewService.ListOnThisDayMemos:input_type -> memos.api.v1.ListOnThisDayMemosRequest
-	6,  // 9: memos.api.v1.ReviewService.GetRandomMemo:input_type -> memos.api.v1.GetRandomMemoRequest
-	7,  // 10: memos.api.v1.ReviewService.GetTimeTravelMemos:input_type -> memos.api.v1.GetTimeTravelMemosRequest
-	9,  // 11: memos.api.v1.ReviewService.RecordReview:input_type -> memos.api.v1.RecordReviewRequest
-	11, // 12: memos.api.v1.ReviewService.GetReviewStats:input_type -> memos.api.v1.GetReviewStatsRequest
-	2,  // 13: memos.api.v1.ReviewService.ListReviewMemos:output_type -> memos.api.v1.ListReviewMemosResponse
-	4,  // 14: memos.api.v1.ReviewService.ListOnThisDayMemos:output_type -> memos.api.v1.ListOnThisDayMemosResponse
-	13, // 15: memos.api.v1.ReviewService.GetRandomMemo:output_type -> memos.api.v1.Memo
-	8,  // 16: memos.api.v1.ReviewService.GetTimeTravelMemos:output_type -> memos.api.v1.GetTimeTravelMemosResponse
-	10, // 17: memos.api.v1.ReviewService.RecordReview:output_type -> memos.api.v1.RecordReviewResponse
-	12, // 18: memos.api.v1.ReviewService.GetReviewStats:output_type -> memos.api.v1.GetReviewStatsResponse
-	13, // [13:19] is the sub-list for method output_type
-	7,  // [7:13] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	14, // 3: memos.api.v1.GetTimeTravelMemosRequest.period_start:type_name -> google.protobuf.Timestamp
+	14, // 4: memos.api.v1.GetTimeTravelMemosRequest.period_end:type_name -> google.protobuf.Timestamp
+	13, // 5: memos.api.v1.GetTimeTravelMemosResponse.memos:type_name -> memos.api.v1.Memo
+	14, // 6: memos.api.v1.GetTimeTravelMemosResponse.period_start:type_name -> google.protobuf.Timestamp
+	14, // 7: memos.api.v1.GetTimeTravelMemosResponse.period_end:type_name -> google.protobuf.Timestamp
+	0,  // 8: memos.api.v1.RecordReviewRequest.source:type_name -> memos.api.v1.ReviewSource
+	1,  // 9: memos.api.v1.ReviewService.ListReviewMemos:input_type -> memos.api.v1.ListReviewMemosRequest
+	3,  // 10: memos.api.v1.ReviewService.ListOnThisDayMemos:input_type -> memos.api.v1.ListOnThisDayMemosRequest
+	6,  // 11: memos.api.v1.ReviewService.GetRandomMemo:input_type -> memos.api.v1.GetRandomMemoRequest
+	7,  // 12: memos.api.v1.ReviewService.GetTimeTravelMemos:input_type -> memos.api.v1.GetTimeTravelMemosRequest
+	9,  // 13: memos.api.v1.ReviewService.RecordReview:input_type -> memos.api.v1.RecordReviewRequest
+	11, // 14: memos.api.v1.ReviewService.GetReviewStats:input_type -> memos.api.v1.GetReviewStatsRequest
+	2,  // 15: memos.api.v1.ReviewService.ListReviewMemos:output_type -> memos.api.v1.ListReviewMemosResponse
+	4,  // 16: memos.api.v1.ReviewService.ListOnThisDayMemos:output_type -> memos.api.v1.ListOnThisDayMemosResponse
+	13, // 17: memos.api.v1.ReviewService.GetRandomMemo:output_type -> memos.api.v1.Memo
+	8,  // 18: memos.api.v1.ReviewService.GetTimeTravelMemos:output_type -> memos.api.v1.GetTimeTravelMemosResponse
+	10, // 19: memos.api.v1.ReviewService.RecordReview:output_type -> memos.api.v1.RecordReviewResponse
+	12, // 20: memos.api.v1.ReviewService.GetReviewStats:output_type -> memos.api.v1.GetReviewStatsResponse
+	15, // [15:21] is the sub-list for method output_type
+	9,  // [9:15] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_api_v1_review_service_proto_init() }
@@ -833,6 +910,7 @@ func file_api_v1_review_service_proto_init() {
 		return
 	}
 	file_api_v1_memo_service_proto_init()
+	file_api_v1_review_service_proto_msgTypes[6].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

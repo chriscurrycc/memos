@@ -151,21 +151,58 @@ func (s *APIV1Service) ListOnThisDayMemos(ctx context.Context, request *v1pb.Lis
 		return nil, status.Errorf(codes.Internal, "failed to list memos: %v", err)
 	}
 
-	// Group memos by year if they match the month/day
-	memosByYear := make(map[int][]*store.Memo)
+	// Collect all matching memos (sorted by year desc, then by created time)
+	type memoWithYear struct {
+		memo *store.Memo
+		year int
+	}
+	var allMatching []memoWithYear
 	currentYear := now.Year()
 
 	for _, memo := range memos {
 		createdTime := time.Unix(memo.CreatedTs, 0)
 		if int(createdTime.Month()) == month && createdTime.Day() == day && createdTime.Year() != currentYear {
-			year := createdTime.Year()
-			memosByYear[year] = append(memosByYear[year], memo)
+			allMatching = append(allMatching, memoWithYear{memo: memo, year: createdTime.Year()})
 		}
+	}
+
+	totalCount := int32(len(allMatching))
+
+	// Sort by year descending, then by created time descending
+	for i := 0; i < len(allMatching); i++ {
+		for j := i + 1; j < len(allMatching); j++ {
+			if allMatching[j].year > allMatching[i].year ||
+				(allMatching[j].year == allMatching[i].year && allMatching[j].memo.CreatedTs > allMatching[i].memo.CreatedTs) {
+				allMatching[i], allMatching[j] = allMatching[j], allMatching[i]
+			}
+		}
+	}
+
+	// Apply pagination
+	pageSize := int(request.PageSize)
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+	offset := int(request.Offset)
+	if offset > len(allMatching) {
+		offset = len(allMatching)
+	}
+	end := offset + pageSize
+	if end > len(allMatching) {
+		end = len(allMatching)
+	}
+	paginated := allMatching[offset:end]
+
+	// Group paginated memos by year
+	memosByYear := make(map[int][]*store.Memo)
+	for _, m := range paginated {
+		memosByYear[m.year] = append(memosByYear[m.year], m.memo)
 	}
 
 	// Convert to response
 	response := &v1pb.ListOnThisDayMemosResponse{
-		Groups: []*v1pb.OnThisDayGroup{},
+		Groups:     []*v1pb.OnThisDayGroup{},
+		TotalCount: totalCount,
 	}
 
 	for year, yearMemos := range memosByYear {
@@ -245,64 +282,67 @@ func (s *APIV1Service) GetTimeTravelMemos(ctx context.Context, request *v1pb.Get
 		return nil, status.Errorf(codes.NotFound, "no memos found")
 	}
 
-	// Find date range
-	var minTs, maxTs int64 = memos[0].CreatedTs, memos[0].CreatedTs
-	for _, memo := range memos {
-		if memo.CreatedTs < minTs {
-			minTs = memo.CreatedTs
-		}
-		if memo.CreatedTs > maxTs {
-			maxTs = memo.CreatedTs
-		}
-	}
+	var periodStart, periodEnd int64
 
-	// Pick a random week within the range
-	dateRange := maxTs - minTs
-	if dateRange < 7*24*60*60 {
-		// Less than a week of memos, return all
-		response := &v1pb.GetTimeTravelMemosResponse{
-			Memos:       []*v1pb.Memo{},
-			PeriodStart: timestamppb.New(time.Unix(minTs, 0)),
-			PeriodEnd:   timestamppb.New(time.Unix(maxTs, 0)),
-		}
+	if request.PeriodStart != nil && request.PeriodEnd != nil {
+		// User-specified date range
+		periodStart = request.PeriodStart.AsTime().Unix()
+		periodEnd = request.PeriodEnd.AsTime().Unix()
+	} else {
+		// Find date range for random selection
+		var minTs, maxTs int64 = memos[0].CreatedTs, memos[0].CreatedTs
 		for _, memo := range memos {
-			memoMessage, err := s.convertMemoFromStore(ctx, memo, v1pb.MemoView_MEMO_VIEW_FULL)
-			if err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to convert memo: %v", err)
+			if memo.CreatedTs < minTs {
+				minTs = memo.CreatedTs
 			}
-			response.Memos = append(response.Memos, memoMessage)
+			if memo.CreatedTs > maxTs {
+				maxTs = memo.CreatedTs
+			}
 		}
-		return response, nil
-	}
 
-	// Random start point
-	randomStart := minTs + rand.Int63n(dateRange-7*24*60*60)
-	periodEnd := randomStart + 7*24*60*60
+		dateRange := maxTs - minTs
+		if dateRange < 7*24*60*60 {
+			periodStart = minTs
+			periodEnd = maxTs
+		} else {
+			periodStart = minTs + rand.Int63n(dateRange-7*24*60*60)
+			periodEnd = periodStart + 7*24*60*60
+		}
+	}
 
 	// Filter memos within the period
 	var periodMemos []*store.Memo
 	for _, memo := range memos {
-		if memo.CreatedTs >= randomStart && memo.CreatedTs <= periodEnd {
+		if memo.CreatedTs >= periodStart && memo.CreatedTs <= periodEnd {
 			periodMemos = append(periodMemos, memo)
 		}
 	}
 
-	// Apply limit
+	totalCount := int32(len(periodMemos))
+
+	// Apply pagination
 	pageSize := int(request.PageSize)
 	if pageSize <= 0 {
 		pageSize = 10
 	}
-	if len(periodMemos) > pageSize {
-		periodMemos = periodMemos[:pageSize]
+	offset := int(request.Offset)
+	if offset > len(periodMemos) {
+		offset = len(periodMemos)
 	}
+	end := offset + pageSize
+	if end > len(periodMemos) {
+		end = len(periodMemos)
+	}
+	paginated := periodMemos[offset:end]
 
 	response := &v1pb.GetTimeTravelMemosResponse{
 		Memos:       []*v1pb.Memo{},
-		PeriodStart: timestamppb.New(time.Unix(randomStart, 0)),
+		PeriodStart: timestamppb.New(time.Unix(periodStart, 0)),
 		PeriodEnd:   timestamppb.New(time.Unix(periodEnd, 0)),
+		TotalCount:  totalCount,
 	}
 
-	for _, memo := range periodMemos {
+	for _, memo := range paginated {
 		memoMessage, err := s.convertMemoFromStore(ctx, memo, v1pb.MemoView_MEMO_VIEW_FULL)
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to convert memo: %v", err)

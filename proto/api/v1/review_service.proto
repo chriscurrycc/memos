@@ -73,11 +73,20 @@ message ListOnThisDayMemosRequest {
 
   // The day (1-31) to filter by. Defaults to current day.
   int32 day = 2;
+
+  // Number of items to skip for pagination.
+  int32 offset = 3;
+
+  // Maximum number of memos to return per page.
+  int32 page_size = 4;
 }
 
 message ListOnThisDayMemosResponse {
   // The memos from this day in previous years, grouped by year.
   repeated OnThisDayGroup groups = 1;
+
+  // Total count of memos across all years.
+  int32 total_count = 2;
 }
 
 message OnThisDayGroup {
@@ -93,8 +102,17 @@ message GetRandomMemoRequest {
 }
 
 message GetTimeTravelMemosRequest {
-  // Maximum number of memos to return.
+  // Maximum number of memos to return per page.
   int32 page_size = 1;
+
+  // Optional: user-specified start date. If not set, a random period is chosen.
+  optional google.protobuf.Timestamp period_start = 2;
+
+  // Optional: user-specified end date.
+  optional google.protobuf.Timestamp period_end = 3;
+
+  // Number of items to skip for pagination.
+  int32 offset = 4;
 }
 
 message GetTimeTravelMemosResponse {
@@ -106,6 +124,9 @@ message GetTimeTravelMemosResponse {
 
   // The end date of the time period.
   google.protobuf.Timestamp period_end = 3;
+
+  // Total count of memos in the period.
+  int32 total_count = 4;
 }
 
 message RecordReviewRequest {

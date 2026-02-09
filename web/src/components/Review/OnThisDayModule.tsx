@@ -3,12 +3,13 @@ import { RefreshCwIcon } from "lucide-react";
 import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
+import StableMasonry from "@/components/Review/StableMasonry";
 import { useReviewStore } from "@/store/v1/review";
 import { useTranslate } from "@/utils/i18n";
 
 const OnThisDayModule = () => {
   const t = useTranslate();
-  const { onThisDayData, isOnThisDayLoading, fetchOnThisDayMemos } = useReviewStore();
+  const { onThisDayData, isOnThisDayLoading, isOnThisDayLoadingMore, fetchOnThisDayMemos, loadMoreOnThisDayMemos } = useReviewStore();
 
   useEffect(() => {
     fetchOnThisDayMemos();
@@ -59,6 +60,10 @@ const OnThisDayModule = () => {
   const now = new Date();
   const dateStr = `${now.getMonth() + 1}/${now.getDate()}`;
 
+  const sortedGroups = [...onThisDayData.groups].sort((a, b) => b.year - a.year);
+  const currentMemoCount = sortedGroups.reduce((sum, g) => sum + g.memos.length, 0);
+  const hasMore = currentMemoCount < onThisDayData.totalCount;
+
   return (
     <div>
       <motion.div
@@ -70,46 +75,52 @@ const OnThisDayModule = () => {
         <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-0.5">{t("review.on-this-day-desc")}</p>
       </motion.div>
 
-      <div className="space-y-4">
-        {onThisDayData.groups
-          .sort((a, b) => b.year - a.year)
-          .map((group, groupIdx) => (
-            <motion.div
-              key={group.year}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: groupIdx * 0.08 }}
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl font-bold text-zinc-300 dark:text-zinc-600 tabular-nums">{group.year}</span>
-                <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
-                <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
-                  {group.memos.length} {group.memos.length === 1 ? "memo" : "memos"}
-                </span>
-              </div>
+      <div className="max-h-[calc(100vh-280px)] overflow-y-auto">
+        <div className="space-y-4">
+          {sortedGroups.map((group, groupIdx) => (
+              <motion.div
+                key={group.year}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: groupIdx * 0.08 }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-2xl font-bold text-zinc-300 dark:text-zinc-600 tabular-nums">{group.year}</span>
+                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                  <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
+                    {group.memos.length} {group.memos.length === 1 ? "memo" : "memos"}
+                  </span>
+                </div>
 
-              <div className="columns-1 lg:columns-2 gap-3">
-                {group.memos.map((memo, memoIdx) => (
-                  <motion.div
-                    key={memo.name}
-                    className="break-inside-avoid mb-3"
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: groupIdx * 0.08 + memoIdx * 0.04 }}
-                  >
-                    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
-                      <MemoContent memoName={memo.name} nodes={memo.nodes} />
-                      {memo.resources.length > 0 && (
-                        <div className="mt-2">
-                          <MemoResourceListView resources={memo.resources} />
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+                <StableMasonry
+                  items={group.memos.map((memo) => ({
+                    key: memo.name,
+                    node: (
+                      <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
+                        <MemoContent memoName={memo.name} nodes={memo.nodes} />
+                        {memo.resources.length > 0 && (
+                          <div className="mt-2">
+                            <MemoResourceListView resources={memo.resources} />
+                          </div>
+                        )}
+                      </div>
+                    ),
+                  }))}
+                />
+              </motion.div>
+            ))}
+        </div>
+        {hasMore && (
+          <div className="flex justify-center py-3">
+            <button
+              onClick={loadMoreOnThisDayMemos}
+              disabled={isOnThisDayLoadingMore}
+              className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50"
+            >
+              {isOnThisDayLoadingMore ? "..." : t("memo.show-more")}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

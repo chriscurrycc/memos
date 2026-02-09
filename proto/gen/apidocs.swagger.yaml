@@ -525,6 +525,18 @@ paths:
           required: false
           type: integer
           format: int32
+        - name: offset
+          description: Number of items to skip for pagination.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          description: Maximum number of memos to return per page.
+          in: query
+          required: false
+          type: integer
+          format: int32
       tags:
         - ReviewService
   /api/v1/review/random:
@@ -593,7 +605,25 @@ paths:
             $ref: '#/definitions/googleRpcStatus'
       parameters:
         - name: pageSize
-          description: Maximum number of memos to return.
+          description: Maximum number of memos to return per page.
+          in: query
+          required: false
+          type: integer
+          format: int32
+        - name: periodStart
+          description: 'Optional: user-specified start date. If not set, a random period is chosen.'
+          in: query
+          required: false
+          type: string
+          format: date-time
+        - name: periodEnd
+          description: 'Optional: user-specified end date.'
+          in: query
+          required: false
+          type: string
+          format: date-time
+        - name: offset
+          description: Number of items to skip for pagination.
           in: query
           required: false
           type: integer
@@ -2673,6 +2703,10 @@ definitions:
         type: string
         format: date-time
         description: The end date of the time period.
+      totalCount:
+        type: integer
+        format: int32
+        description: Total count of memos in the period.
   v1HTMLElementNode:
     type: object
     properties:
@@ -2867,6 +2901,10 @@ definitions:
           type: object
           $ref: '#/definitions/v1OnThisDayGroup'
         description: The memos from this day in previous years, grouped by year.
+      totalCount:
+        type: integer
+        format: int32
+        description: Total count of memos across all years.
   v1ListPinnedTagsResponse:
     type: object
     properties:

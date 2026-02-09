@@ -4,7 +4,6 @@ import { reviewServiceClient } from "@/grpcweb";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import {
   GetReviewStatsResponse,
-  ListOnThisDayMemosResponse,
   ListReviewMemosRequest,
   ReviewSource,
 } from "@/types/proto/api/v1/review_service";
@@ -15,6 +14,11 @@ interface ReviewSettings {
   includeTags: string[];
   excludeTags: string[];
   pageSize: number;
+}
+
+interface OnThisDayData {
+  groups: { year: number; memos: Memo[] }[];
+  totalCount: number;
 }
 
 interface State {
@@ -29,8 +33,11 @@ interface State {
   totalCount: number;
   stats: GetReviewStatsResponse | null;
   settings: ReviewSettings;
-  onThisDayData: ListOnThisDayMemosResponse | null;
+  onThisDayData: OnThisDayData | null;
+  isOnThisDayLoadingMore: boolean;
   timeTravelMemos: Memo[];
+  timeTravelTotalCount: number;
+  isTimeTravelLoadingMore: boolean;
   timeTravelPeriod: { start: Date | null; end: Date | null };
   surpriseMemo: Memo | null;
 }
@@ -52,7 +59,10 @@ const getDefaultState = (): State => ({
     pageSize: 5,
   },
   onThisDayData: null,
+  isOnThisDayLoadingMore: false,
   timeTravelMemos: [],
+  timeTravelTotalCount: 0,
+  isTimeTravelLoadingMore: false,
   timeTravelPeriod: { start: null, end: null },
   surpriseMemo: null,
 });
@@ -93,20 +103,66 @@ export const useReviewStore = create(
         const response = await reviewServiceClient.listOnThisDayMemos({
           month: now.getMonth() + 1,
           day: now.getDate(),
+          offset: 0,
+          pageSize: 10,
         });
-        set({ onThisDayData: response, isOnThisDayLoading: false });
+        const groups = (response.groups || []).map((g) => ({ year: g.year, memos: g.memos }));
+        set({ onThisDayData: { groups, totalCount: response.totalCount }, isOnThisDayLoading: false });
       } catch (error) {
         console.error("Failed to fetch on this day memos:", error);
         set({ isOnThisDayLoading: false, onThisDayData: null });
       }
     },
 
-    fetchTimeTravelMemos: async () => {
+    loadMoreOnThisDayMemos: async () => {
+      const { onThisDayData } = get();
+      if (!onThisDayData) return;
+      const currentCount = onThisDayData.groups.reduce((sum, g) => sum + g.memos.length, 0);
+      if (currentCount >= onThisDayData.totalCount) return;
+
+      set({ isOnThisDayLoadingMore: true });
+      try {
+        const now = new Date();
+        const response = await reviewServiceClient.listOnThisDayMemos({
+          month: now.getMonth() + 1,
+          day: now.getDate(),
+          offset: currentCount,
+          pageSize: 10,
+        });
+        // Merge new groups into existing data
+        const existingGroups = [...onThisDayData.groups];
+        for (const newGroup of response.groups || []) {
+          const existing = existingGroups.find((g) => g.year === newGroup.year);
+          if (existing) {
+            existing.memos = [...existing.memos, ...newGroup.memos];
+          } else {
+            existingGroups.push({ year: newGroup.year, memos: newGroup.memos });
+          }
+        }
+        set({
+          onThisDayData: { groups: existingGroups, totalCount: response.totalCount },
+          isOnThisDayLoadingMore: false,
+        });
+      } catch (error) {
+        console.error("Failed to load more on this day memos:", error);
+        set({ isOnThisDayLoadingMore: false });
+      }
+    },
+
+    setTimeTravelPeriod: (period: { start: Date | null; end: Date | null }) => set({ timeTravelPeriod: period }),
+
+    fetchTimeTravelMemos: async (periodStart?: Date, periodEnd?: Date) => {
       set({ isTimeTravelLoading: true });
       try {
-        const response = await reviewServiceClient.getTimeTravelMemos({ pageSize: 10 });
+        const response = await reviewServiceClient.getTimeTravelMemos({
+          pageSize: 10,
+          periodStart: periodStart ?? undefined,
+          periodEnd: periodEnd ?? undefined,
+          offset: 0,
+        });
         set({
           timeTravelMemos: response.memos,
+          timeTravelTotalCount: response.totalCount,
           timeTravelPeriod: {
             start: response.periodStart || null,
             end: response.periodEnd || null,
@@ -115,7 +171,30 @@ export const useReviewStore = create(
         });
       } catch (error) {
         console.error("Failed to fetch time travel memos:", error);
-        set({ isTimeTravelLoading: false, timeTravelMemos: [] });
+        set({ isTimeTravelLoading: false, timeTravelMemos: [], timeTravelTotalCount: 0 });
+      }
+    },
+
+    loadMoreTimeTravelMemos: async () => {
+      const { timeTravelMemos, timeTravelTotalCount, timeTravelPeriod } = get();
+      if (timeTravelMemos.length >= timeTravelTotalCount) return;
+
+      set({ isTimeTravelLoadingMore: true });
+      try {
+        const response = await reviewServiceClient.getTimeTravelMemos({
+          pageSize: 10,
+          periodStart: timeTravelPeriod.start ?? undefined,
+          periodEnd: timeTravelPeriod.end ?? undefined,
+          offset: timeTravelMemos.length,
+        });
+        set({
+          timeTravelMemos: [...timeTravelMemos, ...response.memos],
+          timeTravelTotalCount: response.totalCount,
+          isTimeTravelLoadingMore: false,
+        });
+      } catch (error) {
+        console.error("Failed to load more time travel memos:", error);
+        set({ isTimeTravelLoadingMore: false });
       }
     },
 
