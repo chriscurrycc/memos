@@ -92,7 +92,7 @@ const ReviewSettingsModal = ({ open, onClose }: Props) => {
               )}
               renderTags={(tags, getTagProps) =>
                 tags.map((tag, index) => (
-                  <Chip size="sm" variant="soft" color="primary" {...getTagProps({ index })}>
+                  <Chip size="sm" variant="soft" color="primary" {...getTagProps({ index })} key={tag}>
                     #{tag}
                   </Chip>
                 ))
@@ -119,7 +119,7 @@ const ReviewSettingsModal = ({ open, onClose }: Props) => {
               )}
               renderTags={(tags, getTagProps) =>
                 tags.map((tag, index) => (
-                  <Chip size="sm" variant="soft" color="danger" {...getTagProps({ index })}>
+                  <Chip size="sm" variant="soft" color="danger" {...getTagProps({ index })} key={tag}>
                     #{tag}
                   </Chip>
                 ))

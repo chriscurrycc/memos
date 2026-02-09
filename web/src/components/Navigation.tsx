@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ArchiveIcon, BellIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, RefreshCwIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
+import { ArchiveIcon, BellIcon, BookOpenIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Tooltip from "@/components/kit/Tooltip";
@@ -89,7 +89,7 @@ const Navigation = (props: Props) => {
     id: "header-review",
     path: Routes.REVIEW,
     title: t("common.review"),
-    icon: <RefreshCwIcon className="w-6 h-auto opacity-70 shrink-0" />,
+    icon: <BookOpenIcon className="w-6 h-auto opacity-70 shrink-0" />,
   };
   const archivedNavLink: NavLinkItem = {
     id: "header-archived",

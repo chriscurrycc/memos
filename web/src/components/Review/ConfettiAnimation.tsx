@@ -10,10 +10,7 @@ interface ConfettiPiece {
   rotation: number;
 }
 
-const palette = [
-  "#f59e0b", "#fb923c", "#f87171", "#e879f9",
-  "#60a5fa", "#34d399", "#fbbf24", "#a78bfa",
-];
+const palette = ["#f59e0b", "#fb923c", "#f87171", "#e879f9", "#60a5fa", "#34d399", "#fbbf24", "#a78bfa"];
 
 const ConfettiAnimation = () => {
   const [pieces, setPieces] = useState<ConfettiPiece[]>([]);

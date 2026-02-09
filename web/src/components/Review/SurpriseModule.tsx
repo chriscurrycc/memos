@@ -1,5 +1,5 @@
-import { motion, AnimatePresence } from "motion/react";
 import { DicesIcon, RefreshCwIcon, SparklesIcon } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
@@ -29,11 +29,7 @@ const SurpriseModule = () => {
   if (!surpriseMemo) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center"
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-100 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/20 flex items-center justify-center mb-4">
             <DicesIcon className="w-8 h-8 text-teal-500 dark:text-teal-400" />
           </div>
@@ -53,11 +49,7 @@ const SurpriseModule = () => {
 
   return (
     <div className="space-y-3">
-      <motion.div
-        className="text-center"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div className="text-center" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-50 dark:bg-teal-900/20 border border-teal-100/60 dark:border-teal-800/30 mb-1.5">
           <SparklesIcon className="w-3 h-3 text-teal-500 dark:text-teal-400" />
           <span className="text-xs font-medium text-teal-600 dark:text-teal-400">{t("review.surprise-title")}</span>

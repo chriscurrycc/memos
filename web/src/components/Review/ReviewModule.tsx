@@ -1,19 +1,44 @@
-import { motion } from "motion/react";
-import { ChevronLeftIcon, ChevronRightIcon, SlidersHorizontalIcon, RefreshCwIcon } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
-import ConfettiAnimation from "./ConfettiAnimation";
-import ReviewSettingsModal from "./ReviewSettingsModal";
+import { ChevronLeftIcon, ChevronRightIcon, SlidersHorizontalIcon, RefreshCwIcon } from "lucide-react";
+import { motion } from "motion/react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import type { Swiper as SwiperType } from "swiper";
+import "swiper/css";
+import { Swiper, SwiperSlide } from "swiper/react";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import { useReviewStore } from "@/store/v1/review";
+import { Memo } from "@/types/proto/api/v1/memo_service";
 import { useTranslate } from "@/utils/i18n";
+import ConfettiAnimation from "./ConfettiAnimation";
+import ReviewSettingsModal from "./ReviewSettingsModal";
+
+const MemoCard = ({ memo }: { memo: Memo }) => (
+  <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
+    <div className="flex items-center gap-2 mb-2">
+      <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
+      <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
+        {memo.displayTime
+          ? new Date(memo.displayTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+          : ""}
+      </span>
+    </div>
+    <MemoContent memoName={memo.name} nodes={memo.nodes} />
+    {memo.resources.length > 0 && (
+      <div className="mt-2">
+        <MemoResourceListView resources={memo.resources} />
+      </div>
+    )}
+  </div>
+);
 
 const ReviewModule = () => {
   const t = useTranslate();
-  const { memos, currentIndex, isReviewLoading, isCompleted, totalCount, fetchReviewMemos, nextMemo, prevMemo, recordReview } = useReviewStore();
+  const { memos, currentIndex, isReviewLoading, isCompleted, totalCount, fetchReviewMemos, nextMemo, prevMemo, recordReview } =
+    useReviewStore();
   const [showSettings, setShowSettings] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const swiperRef = useRef<SwiperType | null>(null);
   const isLast = currentIndex >= memos.length - 1;
 
   useEffect(() => {
@@ -28,6 +53,26 @@ const ReviewModule = () => {
       return () => clearTimeout(timer);
     }
   }, [isCompleted, memos.length]);
+
+  // Sync Swiper with store's currentIndex (for button/keyboard navigation)
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.activeIndex !== currentIndex) {
+      swiperRef.current.slideTo(currentIndex);
+    }
+  }, [currentIndex]);
+
+  const handleSlideChange = useCallback(
+    (swiper: SwiperType) => {
+      const newIndex = swiper.activeIndex;
+      const storeIndex = useReviewStore.getState().currentIndex;
+      if (newIndex > storeIndex) {
+        nextMemo();
+      } else if (newIndex < storeIndex) {
+        prevMemo();
+      }
+    },
+    [nextMemo, prevMemo],
+  );
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -67,13 +112,17 @@ const ReviewModule = () => {
   if (totalCount === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center"
-        >
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-100 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/20 flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-teal-500 dark:text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              className="w-8 h-8 text-teal-500 dark:text-teal-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M20 6L9 17l-5-5" />
             </svg>
           </div>
@@ -94,14 +143,19 @@ const ReviewModule = () => {
   if (memos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center"
-        >
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-100 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/20 flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-teal-500 dark:text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 20h9" /><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+            <svg
+              className="w-8 h-8 text-teal-500 dark:text-teal-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
             </svg>
           </div>
           <h3 className="text-lg font-semibold mb-1.5 text-zinc-700 dark:text-zinc-200">{t("review.not-enough-memos")}</h3>
@@ -111,10 +165,8 @@ const ReviewModule = () => {
     );
   }
 
-  const memo = memos[currentIndex];
-
   return (
-    <div className="relative">
+    <div className="relative h-full flex flex-col">
       {showConfetti && <ConfettiAnimation />}
 
       {/* Settings button */}
@@ -137,7 +189,7 @@ const ReviewModule = () => {
 
       {isCompleted ? (
         <motion.div
-          className="flex flex-col items-center justify-center py-12 text-center"
+          className="flex flex-col flex-1 items-center justify-center py-12 text-center"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
         >
@@ -167,31 +219,28 @@ const ReviewModule = () => {
           </button>
         </motion.div>
       ) : (
-        <div className="flex flex-col" style={{ height: "calc(100vh - 280px)" }}>
-          {/* Card area — scrollable */}
-          <div className="flex-1 min-h-0 overflow-y-auto">
-            <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
-                <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
-                  {memo.displayTime
-                    ? new Date(memo.displayTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-                    : ""}
-                </span>
-              </div>
-              <MemoContent memoName={memo.name} nodes={memo.nodes} />
-              {memo.resources.length > 0 && (
-                <div className="mt-2">
-                  <MemoResourceListView resources={memo.resources} />
-                </div>
-              )}
-            </div>
+        <>
+          {/* Card area — Swiper */}
+          <div className="flex-1 min-h-0 overflow-hidden">
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              onSlideChange={handleSlideChange}
+              spaceBetween={16}
+              slidesPerView={1}
+              className="h-full"
+            >
+              {memos.map((memo) => (
+                <SwiperSlide key={memo.name} className="h-full overflow-y-auto">
+                  <MemoCard memo={memo} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
           {/* Pagination — pinned at bottom */}
           <div className="shrink-0 flex flex-col items-center gap-3 pt-4">
             <div className="flex items-center gap-2">
               <button
-                onClick={prevMemo}
+                onClick={() => currentIndex > 0 && prevMemo()}
                 disabled={currentIndex === 0}
                 className={clsx(
                   "p-2 rounded-lg transition-colors",
@@ -206,7 +255,7 @@ const ReviewModule = () => {
                 {currentIndex + 1} / {memos.length}
               </span>
               <button
-                onClick={nextMemo}
+                onClick={() => !isLast && nextMemo()}
                 disabled={isLast}
                 className={clsx(
                   "p-2 rounded-lg transition-colors",
@@ -227,7 +276,7 @@ const ReviewModule = () => {
               </button>
             )}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
