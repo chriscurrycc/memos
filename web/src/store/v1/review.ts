@@ -131,7 +131,9 @@ export const useReviewStore = create(
         const response = await reviewServiceClient.listReviewMemos({ force });
         const { currentIndex: prevIndex } = get();
         const newIndex = showLoading
-          ? (response.completed ? response.memos.length - 1 : 0)
+          ? response.completed
+            ? response.memos.length - 1
+            : 0
           : Math.min(prevIndex, response.memos.length - 1);
         set({
           memos: response.memos,
