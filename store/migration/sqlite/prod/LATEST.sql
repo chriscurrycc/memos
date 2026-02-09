@@ -161,8 +161,8 @@ CREATE TABLE tag (
 CREATE INDEX idx_tag_creator_id ON tag(creator_id);
 CREATE INDEX idx_tag_pinned_ts ON tag(pinned_ts);
 
--- review_session
-CREATE TABLE review_session (
+-- memo_review_session
+CREATE TABLE memo_review_session (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
   completed_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
@@ -170,7 +170,7 @@ CREATE TABLE review_session (
   source TEXT NOT NULL DEFAULT 'review'
 );
 
-CREATE INDEX idx_review_session_user ON review_session(user_id, completed_at);
+CREATE INDEX idx_memo_review_session_user ON memo_review_session(user_id, completed_at);
 
 -- memo_review
 CREATE TABLE memo_review (
@@ -179,7 +179,7 @@ CREATE TABLE memo_review (
   memo_id INTEGER NOT NULL,
   reviewed_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
   source TEXT NOT NULL DEFAULT 'review',
-  session_id INTEGER REFERENCES review_session(id)
+  session_id INTEGER REFERENCES memo_review_session(id)
 );
 
 CREATE INDEX idx_memo_review_user ON memo_review(user_id);

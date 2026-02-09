@@ -12,7 +12,7 @@ func (d *DB) CreateReviewSession(ctx context.Context, create *store.ReviewSessio
 	fields := []string{"user_id", "memo_count", "source"}
 	args := []any{create.UserID, create.MemoCount, create.Source.String()}
 
-	stmt := "INSERT INTO review_session (" + strings.Join(fields, ", ") + ") VALUES (" + placeholders(len(args)) + ") RETURNING id, completed_at"
+	stmt := "INSERT INTO memo_review_session (" + strings.Join(fields, ", ") + ") VALUES (" + placeholders(len(args)) + ") RETURNING id, completed_at"
 	if err := d.db.QueryRowContext(ctx, stmt, args...).Scan(
 		&create.ID,
 		&create.CompletedAt,
@@ -43,7 +43,7 @@ func (d *DB) ListReviewSessions(ctx context.Context, find *store.FindReviewSessi
 			completed_at,
 			memo_count,
 			source
-		FROM review_session
+		FROM memo_review_session
 		WHERE ` + strings.Join(where, " AND ") + `
 		ORDER BY completed_at DESC`
 
