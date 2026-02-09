@@ -161,6 +161,7 @@ const MemoDetail = () => {
                   placeholder={t("editor.add-your-comment-here")}
                   parentMemoName={memo.name}
                   autoFocus
+                  enableZenMode
                   onConfirm={handleCommentCreated}
                   onCancel={() => setShowCommentEditor(false)}
                 />

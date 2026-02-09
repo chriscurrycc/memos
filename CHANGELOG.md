@@ -4,6 +4,47 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.27.2](https://github.com/chriscurrycc/memos/releases/tag/v0.27.2) - 2026-02-04
+
+### Features
+- Enabled zen mode for inline memo and comment editors
+- Improved tag management UX for mobile and desktop
+
+### Improvements
+- Improved zen mode mobile experience with virtual keyboard handling
+- Show MemoView action buttons by default on mobile
+- Created custom Tooltip component for mobile optimization
+
+### Fixes
+- Fixed text overlap with zen mode button by adding padding
+- Fixed pinned memo state sync when fetching memo
+- Fixed memo reordering issue by preserving displayTime on update
+- Removed deleted memo from pinned memo map
+- Added z-index to MemoActionMenu for mobile pinned drawer
+- Updated content-syntax documentation link in editor
+- Enabled emoji picker and expand buttons in mobile pinned drawer
+- Improved mobile performance with tooltip and dialog optimizations
+
+## [v0.27.1](https://github.com/chriscurrycc/memos/releases/tag/v0.27.1) - 2026-02-02
+
+### Improvements
+- Added multi-architecture Docker build support (linux/amd64, linux/arm64)
+
+## [v0.27.0](https://github.com/chriscurrycc/memos/releases/tag/v0.27.0) - 2026-02-02
+
+### Features
+- Added Zen mode for immersive memo editing
+- Added resizable splitter for Timeline/Pinned layout
+- Added month picker drawer with quick navigation in calendar
+- Enabled MarkdownMenu in memo editor toolbar
+
+### Improvements
+- Improved memo content collapse with external control and better UX
+- Simplified collapse logic with localStorage persistence
+- Close sidebar drawer on date selection in mobile view
+- Added rounded corners to resizable splitter
+- Improved resizable splitter with semantic naming and theme colors
+
 ## [v0.26.5](https://github.com/chriscurrycc/memos/releases/tag/v0.26.5) - 2026-01-29
 
 ### Removed

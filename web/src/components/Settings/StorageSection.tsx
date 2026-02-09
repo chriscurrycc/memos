@@ -1,10 +1,11 @@
-import { Divider, List, ListItem, Radio, RadioGroup, Tooltip } from "@mui/joy";
+import { Divider, List, ListItem, Radio, RadioGroup } from "@mui/joy";
 import { Button, Input } from "@usememos/mui";
 import { isEqual } from "lodash-es";
 import { HelpCircleIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Tooltip from "@/components/kit/Tooltip";
 import { workspaceSettingNamePrefix, useWorkspaceSettingStore } from "@/store/v1";
 import {
   WorkspaceStorageSetting,

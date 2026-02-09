@@ -1,6 +1,7 @@
 import { Dropdown, Menu, MenuButton, MenuItem, Skeleton, Switch } from "@mui/joy";
 import clsx from "clsx";
 import { Edit3Icon, HashIcon, MoreVerticalIcon, TagsIcon, TrashIcon } from "lucide-react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import useLocalStorage from "react-use/lib/useLocalStorage";
@@ -8,12 +9,13 @@ import { memoServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore, useSortedTags } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
-import showRenameTagDialog from "../RenameTagDialog";
+import RenameTagDialog from "../RenameTagDialog";
 import TagTree from "../TagTree";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popover";
 
 interface Props {
   readonly?: boolean;
+  onTagClick?: () => void;
 }
 
 const TagItemSkeleton = ({ width }: { width: number }) => (
@@ -58,6 +60,7 @@ const TagsSection = (props: Props) => {
   const initialized = useMemoMetadataInitialized();
   const [treeMode, setTreeMode] = useLocalStorage<boolean>("tag-view-as-tree", false);
   const tags = useSortedTags();
+  const [renameDialogState, setRenameDialogState] = useState<{ open: boolean; tag: string }>({ open: false, tag: "" });
 
   if (!initialized) {
     return <TagsSectionSkeleton />;
@@ -73,6 +76,7 @@ const TagsSection = (props: Props) => {
         value: tag,
       });
     }
+    props.onTagClick?.();
   };
 
   const handleDeleteTag = async (tag: string) => {
@@ -107,7 +111,7 @@ const TagsSection = (props: Props) => {
       </div>
       {tags.length > 0 ? (
         treeMode ? (
-          <TagTree />
+          <TagTree onTagClick={props.onTagClick} />
         ) : (
           <div className="w-full flex flex-row justify-start items-center relative flex-wrap gap-x-2 gap-y-1">
             {tags.map(([tag, amount]) => (
@@ -118,12 +122,12 @@ const TagsSection = (props: Props) => {
                 <Dropdown>
                   <MenuButton slots={{ root: "div" }}>
                     <div className="shrink-0 group">
-                      <HashIcon className="group-hover:hidden w-4 h-auto shrink-0 opacity-40" />
+                      <HashIcon className="block group-hover:hidden w-4 h-auto shrink-0 opacity-40" />
                       <MoreVerticalIcon className="hidden group-hover:block w-4 h-auto shrink-0 opacity-60" />
                     </div>
                   </MenuButton>
-                  <Menu size="sm" placement="bottom-start">
-                    <MenuItem onClick={() => showRenameTagDialog({ tag: tag })}>
+                  <Menu size="sm" placement="bottom-start" sx={{ zIndex: 1400 }}>
+                    <MenuItem onClick={() => setRenameDialogState({ open: true, tag })}>
                       <Edit3Icon className="w-4 h-auto" />
                       {t("common.rename")}
                     </MenuItem>
@@ -152,6 +156,11 @@ const TagsSection = (props: Props) => {
           </div>
         )
       )}
+      <RenameTagDialog
+        open={renameDialogState.open}
+        tag={renameDialogState.tag}
+        onClose={() => setRenameDialogState({ open: false, tag: "" })}
+      />
     </div>
   );
 };

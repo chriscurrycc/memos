@@ -22,7 +22,8 @@ export interface EditorRefActions {
 }
 
 interface Props {
-  className: string;
+  className?: string;
+  textareaClassName?: string;
   initialContent: string;
   placeholder: string;
   tools?: ReactNode;
@@ -31,7 +32,7 @@ interface Props {
 }
 
 const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<EditorRefActions>) {
-  const { className, initialContent, placeholder, onPaste, onContentChange: handleContentChangeCallback } = props;
+  const { className, textareaClassName, initialContent, placeholder, onPaste, onContentChange: handleContentChangeCallback } = props;
   const [isInIME, setIsInIME] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
@@ -193,7 +194,10 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
       )}
     >
       <textarea
-        className="w-full h-full text-sm resize-none overflow-x-hidden overflow-y-auto bg-transparent outline-none whitespace-pre-wrap word-break"
+        className={clsx(
+          "p-3 pb-0 w-full h-full text-sm resize-none overflow-x-hidden overflow-y-auto bg-transparent outline-none whitespace-pre-wrap word-break scrollbar-hide",
+          textareaClassName,
+        )}
         rows={2}
         placeholder={placeholder}
         ref={editorRef}

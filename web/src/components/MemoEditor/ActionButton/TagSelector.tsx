@@ -46,7 +46,7 @@ const TagSelector = (props: Props) => {
           <HashIcon className="w-4 h-4 mx-auto" />
         </Button>
       </MenuButton>
-      <Menu className="relative" component="div" size="sm" placement="bottom-start">
+      <Menu className="relative" component="div" size="sm" placement="bottom-start" sx={{ zIndex: 1400 }}>
         <div ref={containerRef}>
           {tags.length > 0 ? (
             <div className="flex flex-row justify-start items-start flex-wrap px-2 py-1 max-w-[12rem] h-auto max-h-48 overflow-y-auto gap-x-2 gap-y-0.5">

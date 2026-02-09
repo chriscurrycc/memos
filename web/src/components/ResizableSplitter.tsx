@@ -86,14 +86,14 @@ const ResizableSplitter = (props: Props) => {
 
   return (
     <div
-      className={`hidden lg:flex relative w-1 mx-2 cursor-col-resize group hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors ${
+      className={`hidden lg:flex relative w-1 mx-2 cursor-col-resize group hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors rounded-full ${
         isDragging ? "bg-teal-600 dark:bg-teal-500" : "bg-transparent"
       }`}
       onMouseDown={handleMouseDown}
     >
       <div className="absolute inset-y-0 -left-1 -right-1 z-10" />
       <div
-        className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 transition-opacity ${
+        className={`absolute inset-y-0 left-1/2 -translate-x-1/2 w-1 rounded-full transition-opacity ${
           isDragging ? "opacity-100" : "opacity-0 group-hover:opacity-100"
         } bg-teal-600 dark:bg-teal-500`}
       />

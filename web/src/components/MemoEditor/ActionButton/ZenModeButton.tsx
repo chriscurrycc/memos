@@ -1,6 +1,6 @@
-import { Tooltip } from "@mui/joy";
 import { Button } from "@usememos/mui";
 import { Maximize2Icon, Minimize2Icon } from "lucide-react";
+import Tooltip from "@/components/kit/Tooltip";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useTranslate } from "@/utils/i18n";
 
@@ -34,7 +34,7 @@ const ZenModeButton = ({ isZenMode, onClick }: Props) => {
   );
 
   return (
-    <div className="absolute top-1.5 right-1.5 z-10">
+    <div className="absolute top-0.5 right-0.5 z-10">
       {sm ? (
         <Tooltip title={t("editor.zen-mode-tooltip", { shortcut })} placement="bottom">
           {button}

@@ -154,7 +154,7 @@ const MemoActionMenu = (props: Props) => {
           <MoreVerticalIcon className="w-4 h-4 mx-auto text-gray-500 dark:text-gray-400" />
         </span>
       </MenuButton>
-      <Menu className="text-sm" size="sm" placement="bottom-end">
+      <Menu className="text-sm" size="sm" placement="bottom-end" sx={{ zIndex: 1400 }}>
         {!hiddenActions?.includes("pin") && (
           <MenuItem onClick={handleTogglePinMemoBtnClick}>
             {memo.pinned ? <BookmarkMinusIcon className="w-4 h-auto" /> : <BookmarkPlusIcon className="w-4 h-auto" />}

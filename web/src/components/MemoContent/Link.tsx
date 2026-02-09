@@ -1,5 +1,6 @@
-import { Link as MLink, Tooltip } from "@mui/joy";
+import { Link as MLink } from "@mui/joy";
 import { useState } from "react";
+import Tooltip from "@/components/kit/Tooltip";
 import { markdownServiceClient } from "@/grpcweb";
 import { useWorkspaceSettingStore } from "@/store/v1";
 import { LinkMetadata } from "@/types/proto/api/v1/markdown_service";
