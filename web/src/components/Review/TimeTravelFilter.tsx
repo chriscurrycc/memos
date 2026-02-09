@@ -23,11 +23,11 @@ const TimeTravelFilter = () => {
   const handleSearch = () => {
     const start = startInput ? new Date(startInput + "T00:00:00") : undefined;
     const end = endInput ? new Date(endInput + "T23:59:59") : undefined;
-    fetchTimeTravelMemos(start, end);
+    fetchTimeTravelMemos({ periodStart: start, periodEnd: end });
   };
 
   const handleRandom = () => {
-    fetchTimeTravelMemos();
+    fetchTimeTravelMemos({ force: true });
   };
 
   const handleStartChange = (value: string) => {

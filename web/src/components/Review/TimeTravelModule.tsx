@@ -5,10 +5,11 @@ import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import StableMasonry from "@/components/Review/StableMasonry";
 import { useReviewStore } from "@/store/v1/review";
-import { useTranslate } from "@/utils/i18n";
+import { useLocale, useTranslate } from "@/utils/i18n";
 
 const TimeTravelModule = () => {
   const t = useTranslate();
+  const locale = useLocale();
   const {
     timeTravelMemos,
     timeTravelTotalCount,
@@ -27,7 +28,7 @@ const TimeTravelModule = () => {
 
   const formatDate = (date: Date | null) => {
     if (!date) return "";
-    return new Date(date).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+    return new Date(date).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
   };
 
   return (
@@ -80,7 +81,7 @@ const TimeTravelModule = () => {
                       <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
                       <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
                         {memo.displayTime
-                          ? new Date(memo.displayTime).toLocaleString(undefined, {
+                          ? new Date(memo.displayTime).toLocaleString(locale, {
                               year: "numeric",
                               month: "short",
                               day: "numeric",

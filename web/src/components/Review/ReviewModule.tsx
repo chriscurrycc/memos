@@ -9,28 +9,31 @@ import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import { useReviewStore } from "@/store/v1/review";
 import { Memo } from "@/types/proto/api/v1/memo_service";
-import { useTranslate } from "@/utils/i18n";
+import { useLocale, useTranslate } from "@/utils/i18n";
 import ConfettiAnimation from "./ConfettiAnimation";
 import ReviewSettingsModal from "./ReviewSettingsModal";
 
-const MemoCard = ({ memo }: { memo: Memo }) => (
-  <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
-    <div className="flex items-center gap-2 mb-2">
-      <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
-      <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
-        {memo.displayTime
-          ? new Date(memo.displayTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-          : ""}
-      </span>
-    </div>
-    <MemoContent memoName={memo.name} nodes={memo.nodes} />
-    {memo.resources.length > 0 && (
-      <div className="mt-2">
-        <MemoResourceListView resources={memo.resources} />
+const MemoCard = ({ memo }: { memo: Memo }) => {
+  const locale = useLocale();
+  return (
+    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
+      <div className="flex items-center gap-2 mb-2">
+        <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
+        <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
+          {memo.displayTime
+            ? new Date(memo.displayTime).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" })
+            : ""}
+        </span>
       </div>
-    )}
-  </div>
-);
+      <MemoContent memoName={memo.name} nodes={memo.nodes} />
+      {memo.resources.length > 0 && (
+        <div className="mt-2">
+          <MemoResourceListView resources={memo.resources} />
+        </div>
+      )}
+    </div>
+  );
+};
 
 const ReviewModule = () => {
   const t = useTranslate();
@@ -221,16 +224,16 @@ const ReviewModule = () => {
       ) : (
         <>
           {/* Card area — Swiper */}
-          <div className="flex-1 min-h-0 overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-y-auto">
             <Swiper
               onSwiper={(swiper) => (swiperRef.current = swiper)}
               onSlideChange={handleSlideChange}
               spaceBetween={16}
               slidesPerView={1}
-              className="h-full"
+              autoHeight
             >
               {memos.map((memo) => (
-                <SwiperSlide key={memo.name} className="h-full overflow-y-auto">
+                <SwiperSlide key={memo.name}>
                   <MemoCard memo={memo} />
                 </SwiperSlide>
               ))}

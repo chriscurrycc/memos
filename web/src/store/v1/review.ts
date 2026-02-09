@@ -120,6 +120,8 @@ export const useReviewStore = create(
     },
 
     fetchReviewMemos: async (force = false) => {
+      const { isReviewLoading, memos } = get();
+      if (!force && (isReviewLoading || memos.length > 0)) return;
       set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
 
       try {
@@ -138,6 +140,8 @@ export const useReviewStore = create(
     },
 
     fetchOnThisDayMemos: async () => {
+      const { isOnThisDayLoading, onThisDayData } = get();
+      if (isOnThisDayLoading || onThisDayData) return;
       set({ isOnThisDayLoading: true });
       try {
         const now = new Date();
@@ -192,13 +196,16 @@ export const useReviewStore = create(
 
     setTimeTravelPeriod: (period: { start: Date | null; end: Date | null }) => set({ timeTravelPeriod: period }),
 
-    fetchTimeTravelMemos: async (periodStart?: Date, periodEnd?: Date) => {
+    fetchTimeTravelMemos: async (options?: { periodStart?: Date; periodEnd?: Date; force?: boolean }) => {
+      const { periodStart, periodEnd, force } = options ?? {};
+      const { isTimeTravelLoading, timeTravelMemos } = get();
+      if (!force && !periodStart && !periodEnd && (isTimeTravelLoading || timeTravelMemos.length > 0)) return;
       set({ isTimeTravelLoading: true });
       try {
         const response = await reviewServiceClient.getTimeTravelMemos({
           pageSize: 10,
-          periodStart: periodStart ?? undefined,
-          periodEnd: periodEnd ?? undefined,
+          periodStart,
+          periodEnd,
           offset: 0,
         });
         set({
@@ -239,7 +246,9 @@ export const useReviewStore = create(
       }
     },
 
-    fetchSurpriseMemo: async () => {
+    fetchSurpriseMemo: async (force = false) => {
+      const { isSurpriseLoading, surpriseMemo } = get();
+      if (!force && (isSurpriseLoading || surpriseMemo)) return;
       set({ isSurpriseLoading: true });
       try {
         const response = await reviewServiceClient.getRandomMemo({});

@@ -4,10 +4,11 @@ import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import { useReviewStore } from "@/store/v1/review";
-import { useTranslate } from "@/utils/i18n";
+import { useLocale, useTranslate } from "@/utils/i18n";
 
 const SurpriseModule = () => {
   const t = useTranslate();
+  const locale = useLocale();
   const { surpriseMemo, isSurpriseLoading, fetchSurpriseMemo } = useReviewStore();
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const SurpriseModule = () => {
           <h3 className="text-lg font-semibold mb-1.5 text-zinc-700 dark:text-zinc-200">{t("review.no-surprise")}</h3>
           <p className="text-zinc-400 dark:text-zinc-500 mb-4 max-w-xs text-sm">{t("review.no-surprise-desc")}</p>
           <button
-            onClick={fetchSurpriseMemo}
+            onClick={() => fetchSurpriseMemo(true)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
           >
             <RefreshCwIcon className="w-4 h-4" />
@@ -72,7 +73,7 @@ const SurpriseModule = () => {
               <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
               <span className="text-xs font-medium tracking-widest uppercase text-zinc-400 dark:text-zinc-500">
                 {surpriseMemo.displayTime
-                  ? new Date(surpriseMemo.displayTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                  ? new Date(surpriseMemo.displayTime).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" })
                   : ""}
               </span>
             </div>
@@ -88,7 +89,7 @@ const SurpriseModule = () => {
 
       <div className="flex justify-center">
         <button
-          onClick={fetchSurpriseMemo}
+          onClick={() => fetchSurpriseMemo(true)}
           className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium shadow-sm transition-all active:scale-[0.98]"
         >
           <DicesIcon className="w-4 h-4" />

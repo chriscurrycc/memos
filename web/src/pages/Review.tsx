@@ -104,11 +104,13 @@ const Review = () => {
 
   const tabContent = (
     <>
-      {tabPanels.map(({ key, component, className }) => (
-        <div key={key} className={clsx(activeTab !== key && "hidden", "overflow-y-auto h-full px-4 md:px-0", className)}>
-          {component}
-        </div>
-      ))}
+      {tabPanels
+        .filter(({ key }) => activeTab === key)
+        .map(({ key, component, className }) => (
+          <div key={key} className={clsx("overflow-y-auto h-full px-4 md:px-0", className)}>
+            {component}
+          </div>
+        ))}
     </>
   );
 
