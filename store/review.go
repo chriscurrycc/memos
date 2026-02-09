@@ -42,6 +42,16 @@ type FindMemoReview struct {
 	Limit           *int
 }
 
+type MemoReviewSummary struct {
+	MemoID         int32
+	ReviewCount    int32
+	LastReviewedAt int64
+}
+
+type FindMemoReviewSummary struct {
+	UserID *int32
+}
+
 type FindReviewSession struct {
 	UserID           *int32
 	CompletedAtAfter *int64
@@ -67,4 +77,8 @@ func (s *Store) ListMemoReviews(ctx context.Context, find *FindMemoReview) ([]*M
 
 func (s *Store) BatchCreateMemoReviews(ctx context.Context, reviews []*MemoReview) error {
 	return s.driver.BatchCreateMemoReviews(ctx, reviews)
+}
+
+func (s *Store) ListMemoReviewSummaries(ctx context.Context, find *FindMemoReviewSummary) ([]*MemoReviewSummary, error) {
+	return s.driver.ListMemoReviewSummaries(ctx, find)
 }

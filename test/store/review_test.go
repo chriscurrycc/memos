@@ -229,6 +229,74 @@ func TestMemoReviewFilterByTime(t *testing.T) {
 	ts.Close()
 }
 
+func TestListMemoReviewSummaries(t *testing.T) {
+	ctx := context.Background()
+	ts := NewTestingStore(ctx, t)
+	user, err := createTestingHostUser(ctx, ts)
+	require.NoError(t, err)
+
+	// No reviews yet — summaries should be empty.
+	summaries, err := ts.ListMemoReviewSummaries(ctx, &store.FindMemoReviewSummary{
+		UserID: &user.ID,
+	})
+	require.NoError(t, err)
+	require.Len(t, summaries, 0)
+
+	// Create two memos.
+	memo1, err := ts.CreateMemo(ctx, &store.Memo{
+		UID:        "summary-test-memo-1",
+		CreatorID:  user.ID,
+		Content:    "test memo 1",
+		Visibility: store.Private,
+	})
+	require.NoError(t, err)
+
+	memo2, err := ts.CreateMemo(ctx, &store.Memo{
+		UID:        "summary-test-memo-2",
+		CreatorID:  user.ID,
+		Content:    "test memo 2",
+		Visibility: store.Private,
+	})
+	require.NoError(t, err)
+
+	// Review memo1 three times.
+	for i := 0; i < 3; i++ {
+		_, err = ts.CreateMemoReview(ctx, &store.MemoReview{
+			UserID: user.ID,
+			MemoID: memo1.ID,
+			Source: store.ReviewSourceReview,
+		})
+		require.NoError(t, err)
+	}
+
+	// Review memo2 once.
+	_, err = ts.CreateMemoReview(ctx, &store.MemoReview{
+		UserID: user.ID,
+		MemoID: memo2.ID,
+		Source: store.ReviewSourceReview,
+	})
+	require.NoError(t, err)
+
+	// Verify summaries.
+	summaries, err = ts.ListMemoReviewSummaries(ctx, &store.FindMemoReviewSummary{
+		UserID: &user.ID,
+	})
+	require.NoError(t, err)
+	require.Len(t, summaries, 2)
+
+	summaryMap := map[int32]*store.MemoReviewSummary{}
+	for _, s := range summaries {
+		summaryMap[s.MemoID] = s
+	}
+
+	require.Equal(t, int32(3), summaryMap[memo1.ID].ReviewCount)
+	require.NotZero(t, summaryMap[memo1.ID].LastReviewedAt)
+	require.Equal(t, int32(1), summaryMap[memo2.ID].ReviewCount)
+	require.NotZero(t, summaryMap[memo2.ID].LastReviewedAt)
+
+	ts.Close()
+}
+
 func TestReviewSettingStore(t *testing.T) {
 	ctx := context.Background()
 	ts := NewTestingStore(ctx, t)

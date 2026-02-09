@@ -3,7 +3,9 @@ package v1
 import (
 	"context"
 	"fmt"
+	"math"
 	"math/rand"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -17,9 +19,33 @@ import (
 	"github.com/usememos/memos/store"
 )
 
-const (
-	reviewDeduplicationDays = 30
-)
+// Spaced repetition intervals in days based on review count.
+var spacedIntervals = []int{0, 1, 3, 7, 14, 30}
+
+// getRequiredInterval returns the minimum days that must pass before a memo
+// is eligible for review again, based on how many times it has been reviewed.
+func getRequiredInterval(reviewCount int32) time.Duration {
+	idx := int(reviewCount)
+	if idx >= len(spacedIntervals) {
+		idx = len(spacedIntervals) - 1
+	}
+	return time.Duration(spacedIntervals[idx]) * 24 * time.Hour
+}
+
+// isEligibleForReview checks whether enough time has passed since the last
+// review based on the spaced repetition schedule.
+func isEligibleForReview(summary *store.MemoReviewSummary, now time.Time) bool {
+	if summary == nil {
+		return true
+	}
+	interval := getRequiredInterval(summary.ReviewCount)
+	return now.Sub(time.Unix(summary.LastReviewedAt, 0)) >= interval
+}
+
+type scoredMemo struct {
+	memoID int32
+	score  float64
+}
 
 // dailyReviewCache caches memo IDs per user per day so that repeated
 // calls within the same day return a consistent review set.
@@ -85,8 +111,8 @@ func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListRe
 	return s.loadMemosFromCache(ctx, entry)
 }
 
-// generateReviewMemoIDs picks memo IDs for a review session.
-// It reads the user's review settings from the database.
+// generateReviewMemoIDs picks memo IDs for a review session using spaced
+// repetition eligibility and a scoring system for priority + randomness.
 func (s *APIV1Service) generateReviewMemoIDs(ctx context.Context, userID int32) ([]int32, int32, error) {
 	// Read user review settings.
 	sessionSize := 10
@@ -105,25 +131,25 @@ func (s *APIV1Service) generateReviewMemoIDs(ctx context.Context, userID int32) 
 		}
 	}
 
-	thirtyDaysAgo := time.Now().Unix() - int64(reviewDeduplicationDays*24*60*60)
-	recentReviews, err := s.Store.ListMemoReviews(ctx, &store.FindMemoReview{
-		UserID:          &userID,
-		ReviewedAtAfter: &thirtyDaysAgo,
+	// Load aggregated review summaries instead of all individual review rows.
+	summaries, err := s.Store.ListMemoReviewSummaries(ctx, &store.FindMemoReviewSummary{
+		UserID: &userID,
 	})
 	if err != nil {
-		return nil, 0, status.Errorf(codes.Internal, "failed to list recent reviews: %v", err)
+		return nil, 0, status.Errorf(codes.Internal, "failed to list review summaries: %v", err)
+	}
+	summaryMap := make(map[int32]*store.MemoReviewSummary, len(summaries))
+	for _, sm := range summaries {
+		summaryMap[sm.MemoID] = sm
 	}
 
-	reviewedMemoIDs := make(map[int32]bool)
-	for _, review := range recentReviews {
-		reviewedMemoIDs[review.MemoID] = true
-	}
-
+	// Load memos without content for performance.
 	normalStatus := store.Normal
 	memoFind := &store.FindMemo{
 		CreatorID:       &userID,
 		RowStatus:       &normalStatus,
 		ExcludeComments: true,
+		ExcludeContent:  true,
 	}
 	if len(includeTags) > 0 {
 		memoFind.PayloadFind = &store.FindMemoPayload{
@@ -136,11 +162,12 @@ func (s *APIV1Service) generateReviewMemoIDs(ctx context.Context, userID int32) 
 		return nil, 0, status.Errorf(codes.Internal, "failed to list memos: %v", err)
 	}
 
-	var filteredIDs []int32
+	now := time.Now()
+	oneYearSeconds := float64(365 * 24 * 60 * 60)
+	var candidates []scoredMemo
+
 	for _, memo := range memos {
-		if reviewedMemoIDs[memo.ID] {
-			continue
-		}
+		// Exclude by tags.
 		if len(excludeTags) > 0 && memo.Payload != nil {
 			excluded := false
 			for _, excludeTag := range excludeTags {
@@ -158,16 +185,63 @@ func (s *APIV1Service) generateReviewMemoIDs(ctx context.Context, userID int32) 
 				continue
 			}
 		}
-		filteredIDs = append(filteredIDs, memo.ID)
+
+		summary := summaryMap[memo.ID]
+
+		// Spaced repetition eligibility check.
+		if !isEligibleForReview(summary, now) {
+			continue
+		}
+
+		// Scoring system.
+		var score float64
+
+		// Never-reviewed bonus: 50 pts.
+		if summary == nil {
+			score += 50
+		}
+
+		// Overdue ratio: up to 60 pts based on how far past the interval.
+		if summary != nil {
+			interval := getRequiredInterval(summary.ReviewCount)
+			elapsed := now.Sub(time.Unix(summary.LastReviewedAt, 0))
+			if interval > 0 {
+				ratio := float64(elapsed) / float64(interval)
+				score += math.Min(ratio-1, 5) / 5 * 60
+			}
+		}
+
+		// Age factor: up to 10 pts for older memos (normalized to 1 year).
+		ageSeconds := float64(now.Unix() - memo.CreatedTs)
+		score += math.Min(ageSeconds/oneYearSeconds, 1) * 10
+
+		// Random jitter: 0-10 pts for variety.
+		score += rand.Float64() * 10
+
+		candidates = append(candidates, scoredMemo{memoID: memo.ID, score: score})
 	}
 
-	totalCount := int32(len(filteredIDs))
+	totalCount := int32(len(candidates))
 
-	if len(filteredIDs) > sessionSize {
-		filteredIDs = filteredIDs[:sessionSize]
+	// Sort by score descending, take top N.
+	sort.Slice(candidates, func(i, j int) bool {
+		return candidates[i].score > candidates[j].score
+	})
+	if len(candidates) > sessionSize {
+		candidates = candidates[:sessionSize]
 	}
 
-	return filteredIDs, totalCount, nil
+	// Shuffle for display order.
+	rand.Shuffle(len(candidates), func(i, j int) {
+		candidates[i], candidates[j] = candidates[j], candidates[i]
+	})
+
+	ids := make([]int32, len(candidates))
+	for i, c := range candidates {
+		ids[i] = c.memoID
+	}
+
+	return ids, totalCount, nil
 }
 
 // loadMemosFromCache loads full memo objects from cached IDs.
@@ -514,23 +588,33 @@ func (s *APIV1Service) GetReviewStats(ctx context.Context, _ *v1pb.GetReviewStat
 	}
 	totalMemos := int32(len(memos))
 
-	// Get memos reviewed in the last 30 days
-	thirtyDaysAgo := time.Now().Unix() - int64(reviewDeduplicationDays*24*60*60)
-	recentReviews, err := s.Store.ListMemoReviews(ctx, &store.FindMemoReview{
-		UserID:          &user.ID,
-		ReviewedAtAfter: &thirtyDaysAgo,
+	// Get aggregated review summaries.
+	summaries, err := s.Store.ListMemoReviewSummaries(ctx, &store.FindMemoReviewSummary{
+		UserID: &user.ID,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to list recent reviews: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to list review summaries: %v", err)
+	}
+	summaryMap := make(map[int32]*store.MemoReviewSummary, len(summaries))
+	for _, sm := range summaries {
+		summaryMap[sm.MemoID] = sm
 	}
 
-	// Count unique memos reviewed
-	reviewedMemoIDs := make(map[int32]bool)
-	for _, review := range recentReviews {
-		reviewedMemoIDs[review.MemoID] = true
+	// Count reviewed (not yet eligible) and available using spaced repetition.
+	now := time.Now()
+	var reviewedLast30Days, availableForReview int32
+	for _, memo := range memos {
+		summary := summaryMap[memo.ID]
+		if summary == nil {
+			availableForReview++
+			continue
+		}
+		if isEligibleForReview(summary, now) {
+			availableForReview++
+		} else {
+			reviewedLast30Days++
+		}
 	}
-	reviewedLast30Days := int32(len(reviewedMemoIDs))
-	availableForReview := totalMemos - reviewedLast30Days
 
 	// Get total sessions
 	sessions, err := s.Store.ListReviewSessions(ctx, &store.FindReviewSession{

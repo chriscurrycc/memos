@@ -243,6 +243,41 @@ func (d *DB) ListMemoReviews(ctx context.Context, find *store.FindMemoReview) ([
 	return list, nil
 }
 
+func (d *DB) ListMemoReviewSummaries(ctx context.Context, find *store.FindMemoReviewSummary) ([]*store.MemoReviewSummary, error) {
+	where, args := []string{"1 = 1"}, []any{}
+
+	if find.UserID != nil {
+		where, args = append(where, "`user_id` = ?"), append(args, *find.UserID)
+	}
+
+	query := `
+		SELECT memo_id, COUNT(*) AS review_count, MAX(reviewed_at) AS last_reviewed_at
+		FROM memo_review
+		WHERE ` + strings.Join(where, " AND ") + `
+		GROUP BY memo_id`
+
+	rows, err := d.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var list []*store.MemoReviewSummary
+	for rows.Next() {
+		s := &store.MemoReviewSummary{}
+		if err := rows.Scan(&s.MemoID, &s.ReviewCount, &s.LastReviewedAt); err != nil {
+			return nil, err
+		}
+		list = append(list, s)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return list, nil
+}
+
 func (d *DB) BatchCreateMemoReviews(ctx context.Context, reviews []*store.MemoReview) error {
 	if len(reviews) == 0 {
 		return nil

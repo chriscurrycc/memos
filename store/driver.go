@@ -89,4 +89,5 @@ type Driver interface {
 	CreateMemoReview(ctx context.Context, create *MemoReview) (*MemoReview, error)
 	ListMemoReviews(ctx context.Context, find *FindMemoReview) ([]*MemoReview, error)
 	BatchCreateMemoReviews(ctx context.Context, reviews []*MemoReview) error
+	ListMemoReviewSummaries(ctx context.Context, find *FindMemoReviewSummary) ([]*MemoReviewSummary, error)
 }
