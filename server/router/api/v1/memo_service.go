@@ -243,10 +243,12 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 		return nil, status.Errorf(codes.PermissionDenied, "permission denied")
 	}
 
-	currentTs := time.Now().Unix()
 	update := &store.UpdateMemo{
-		ID:        id,
-		UpdatedTs: &currentTs,
+		ID: id,
+	}
+	if !request.PreserveUpdateTime {
+		currentTs := time.Now().Unix()
+		update.UpdatedTs = &currentTs
 	}
 	for _, path := range request.UpdateMask.Paths {
 		if path == "content" {

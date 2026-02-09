@@ -1112,6 +1112,11 @@ paths:
               location:
                 $ref: '#/definitions/apiV1Location'
                 description: The location of the memo.
+        - name: preserveUpdateTime
+          description: When true, the memo's update_time will not be changed.
+          in: query
+          required: false
+          type: boolean
       tags:
         - MemoService
   /api/v1/{name_1}:

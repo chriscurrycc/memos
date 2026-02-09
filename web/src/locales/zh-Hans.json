@@ -96,7 +96,8 @@
     "any-thoughts": "此刻的想法...",
     "save": "保存",
     "zen-mode": "禅定模式",
-    "zen-mode-tooltip": "禅定模式 ({{shortcut}})"
+    "zen-mode-tooltip": "禅定模式 ({{shortcut}})",
+    "preserve-update-time": "保留更新时间"
   },
   "inbox": {
     "memo-comment": "{{user}} 评论了您的“{{memo}}”。",

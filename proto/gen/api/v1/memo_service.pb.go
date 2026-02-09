@@ -750,11 +750,13 @@ func (x *GetMemoByUidRequest) GetUid() string {
 }
 
 type UpdateMemoRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Memo          *Memo                  `protobuf:"bytes,1,opt,name=memo,proto3" json:"memo,omitempty"`
-	UpdateMask    *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state      protoimpl.MessageState `protogen:"open.v1"`
+	Memo       *Memo                  `protobuf:"bytes,1,opt,name=memo,proto3" json:"memo,omitempty"`
+	UpdateMask *fieldmaskpb.FieldMask `protobuf:"bytes,2,opt,name=update_mask,json=updateMask,proto3" json:"update_mask,omitempty"`
+	// When true, the memo's update_time will not be changed.
+	PreserveUpdateTime bool `protobuf:"varint,3,opt,name=preserve_update_time,json=preserveUpdateTime,proto3" json:"preserve_update_time,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *UpdateMemoRequest) Reset() {
@@ -799,6 +801,13 @@ func (x *UpdateMemoRequest) GetUpdateMask() *fieldmaskpb.FieldMask {
 		return x.UpdateMask
 	}
 	return nil
+}
+
+func (x *UpdateMemoRequest) GetPreserveUpdateTime() bool {
+	if x != nil {
+		return x.PreserveUpdateTime
+	}
+	return false
 }
 
 type DeleteMemoRequest struct {
@@ -1654,11 +1663,12 @@ const file_api_v1_memo_service_proto_rawDesc = "" +
 	"\x0eGetMemoRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"'\n" +
 	"\x13GetMemoByUidRequest\x12\x10\n" +
-	"\x03uid\x18\x01 \x01(\tR\x03uid\"x\n" +
+	"\x03uid\x18\x01 \x01(\tR\x03uid\"\xaa\x01\n" +
 	"\x11UpdateMemoRequest\x12&\n" +
 	"\x04memo\x18\x01 \x01(\v2\x12.memos.api.v1.MemoR\x04memo\x12;\n" +
 	"\vupdate_mask\x18\x02 \x01(\v2\x1a.google.protobuf.FieldMaskR\n" +
-	"updateMask\"'\n" +
+	"updateMask\x120\n" +
+	"\x14preserve_update_time\x18\x03 \x01(\bR\x12preserveUpdateTime\"'\n" +
 	"\x11DeleteMemoRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\"`\n" +
 	"\x14RenameMemoTagRequest\x12\x16\n" +

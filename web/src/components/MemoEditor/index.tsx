@@ -2,13 +2,14 @@ import { Select, Option } from "@mui/joy";
 import { Button } from "@usememos/mui";
 import clsx from "clsx";
 import { isEqual } from "lodash-es";
-import { LoaderIcon, SendIcon, XIcon } from "lucide-react";
+import { CalendarClockIcon, LoaderIcon, SendIcon, XIcon } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import useLocalStorage from "react-use/lib/useLocalStorage";
+import Tooltip from "@/components/kit/Tooltip";
 import { memoServiceClient } from "@/grpcweb";
 import { TAB_SPACE_WIDTH } from "@/helpers/consts";
 import { isValidUrl } from "@/helpers/utils";
@@ -86,6 +87,7 @@ const MemoEditor = (props: Props) => {
   });
   const [displayTime, setDisplayTime] = useState<Date | undefined>();
   const [hasContent, setHasContent] = useState<boolean>(false);
+  const [preserveUpdateTime, setPreserveUpdateTime] = useState<boolean>(false);
   const [zenModeOpen, setZenModeOpen] = useState(false);
   const editorRef = useRef<EditorRefActions>(null);
   const userSetting = userStore.userSetting as UserSetting;
@@ -359,7 +361,7 @@ const MemoEditor = (props: Props) => {
             updateMask.push("location");
             memoPatch.location = state.location;
           }
-          const memo = await memoStore.updateMemo(memoPatch, updateMask);
+          const memo = await memoStore.updateMemo(memoPatch, updateMask, preserveUpdateTime);
           if (onConfirm) {
             onConfirm(memo.name);
           }
@@ -521,6 +523,19 @@ const MemoEditor = (props: Props) => {
                     }))
                   }
                 />
+              )}
+              {memoName && (
+                <Tooltip title={t("editor.preserve-update-time")} placement="top">
+                  <button
+                    className={clsx(
+                      "flex items-center justify-center p-1 rounded cursor-pointer",
+                      preserveUpdateTime ? "text-teal-600 dark:text-teal-400" : "text-gray-500 dark:text-gray-400",
+                    )}
+                    onClick={() => setPreserveUpdateTime(!preserveUpdateTime)}
+                  >
+                    <CalendarClockIcon className="w-4 h-4" />
+                  </button>
+                </Tooltip>
               )}
             </div>
             <div className="shrink-0 flex flex-row justify-end items-center gap-0.5">

@@ -91,7 +91,8 @@
   "editor": {
     "add-your-comment-here": "ここにコメントを追加...",
     "any-thoughts": "今思ったことは...",
-    "save": "保存"
+    "save": "保存",
+    "preserve-update-time": "更新日時を保持"
   },
   "inbox": {
     "memo-comment": "{{user}} があなたの {{memo}} にコメントしました。",

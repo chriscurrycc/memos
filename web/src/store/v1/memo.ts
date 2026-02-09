@@ -111,10 +111,11 @@ export const useMemoStore = create(
       set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap });
       return memo;
     },
-    updateMemo: async (update: Partial<Memo>, updateMask: string[]) => {
+    updateMemo: async (update: Partial<Memo>, updateMask: string[], preserveUpdateTime?: boolean) => {
       const memo = await memoServiceClient.updateMemo({
         memo: update,
         updateMask,
+        preserveUpdateTime: preserveUpdateTime ?? false,
       });
 
       const memoMap = get().memoMapByName;

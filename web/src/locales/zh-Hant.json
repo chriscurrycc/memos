@@ -91,7 +91,8 @@
   "editor": {
     "add-your-comment-here": "在這裡添加您的評論...",
     "any-thoughts": "任何想法...",
-    "save": "儲存"
+    "save": "儲存",
+    "preserve-update-time": "保留更新時間"
   },
   "inbox": {
     "memo-comment": "{{user}} 對您的 {{memo}} 發表了評論。",

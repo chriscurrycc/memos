@@ -99,7 +99,8 @@
     "any-thoughts": "Any thoughts...",
     "save": "Save",
     "zen-mode": "Zen Mode",
-    "zen-mode-tooltip": "Zen Mode ({{shortcut}})"
+    "zen-mode-tooltip": "Zen Mode ({{shortcut}})",
+    "preserve-update-time": "Preserve update time"
   },
   "inbox": {
     "memo-comment": "{{user}} has a comment on your {{memo}}.",

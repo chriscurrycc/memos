@@ -252,6 +252,9 @@ message UpdateMemoRequest {
   Memo memo = 1;
 
   google.protobuf.FieldMask update_mask = 2;
+
+  // When true, the memo's update_time will not be changed.
+  bool preserve_update_time = 3;
 }
 
 message DeleteMemoRequest {
