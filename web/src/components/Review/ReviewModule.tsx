@@ -117,47 +117,19 @@ const ReviewModule = () => {
     <div className="relative">
       {showConfetti && <ConfettiAnimation />}
 
-      {/* Controls bar */}
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex items-center gap-1">
-          <button
-            onClick={prevMemo}
-            disabled={currentIndex === 0}
-            className={clsx(
-              "p-1.5 rounded-lg transition-colors",
-              currentIndex === 0
-                ? "text-zinc-200 dark:text-zinc-700 cursor-not-allowed"
-                : "text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300",
-            )}
-          >
-            <ChevronLeftIcon className="w-4 h-4" />
-          </button>
-          <span className="text-xs font-medium text-zinc-400 dark:text-zinc-500 tabular-nums min-w-[3rem] text-center">
-            {currentIndex + 1} / {memos.length}
-          </span>
-          <button
-            onClick={nextMemo}
-            disabled={isLast}
-            className={clsx(
-              "p-1.5 rounded-lg transition-colors",
-              isLast
-                ? "text-zinc-200 dark:text-zinc-700 cursor-not-allowed"
-                : "text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300",
-            )}
-          >
-            <ChevronRightIcon className="w-4 h-4" />
-          </button>
-        </div>
+      {/* Settings button */}
+      <div className="flex justify-end items-center mb-4">
         <button
           onClick={() => setShowSettings(!showSettings)}
           className={clsx(
-            "p-2 rounded-lg transition-colors",
+            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all",
             showSettings
-              ? "bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400"
-              : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 dark:text-zinc-500",
+              ? "bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 border border-teal-200/60 dark:border-teal-700/40"
+              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200/60 dark:border-zinc-700/40 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-300",
           )}
         >
-          <SlidersHorizontalIcon className="w-4 h-4" />
+          <SlidersHorizontalIcon className="w-3.5 h-3.5" />
+          {t("review.settings")}
         </button>
       </div>
 
@@ -212,16 +184,46 @@ const ReviewModule = () => {
               </div>
             )}
           </div>
-          {isLast && (
-            <div className="flex justify-center mt-4">
+          {/* Pagination */}
+          <div className="flex flex-col items-center gap-3 mt-4">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={prevMemo}
+                disabled={currentIndex === 0}
+                className={clsx(
+                  "p-2 rounded-lg transition-colors",
+                  currentIndex === 0
+                    ? "text-zinc-200 dark:text-zinc-700 cursor-not-allowed"
+                    : "text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300",
+                )}
+              >
+                <ChevronLeftIcon className="w-5 h-5" />
+              </button>
+              <span className="text-sm font-medium text-zinc-400 dark:text-zinc-500 tabular-nums min-w-[3.5rem] text-center">
+                {currentIndex + 1} / {memos.length}
+              </span>
               <button
                 onClick={nextMemo}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors shadow-sm"
+                disabled={isLast}
+                className={clsx(
+                  "p-2 rounded-lg transition-colors",
+                  isLast
+                    ? "text-zinc-200 dark:text-zinc-700 cursor-not-allowed"
+                    : "text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300",
+                )}
+              >
+                <ChevronRightIcon className="w-5 h-5" />
+              </button>
+            </div>
+            {isLast && (
+              <button
+                onClick={nextMemo}
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium shadow-sm transition-all active:scale-[0.98]"
               >
                 {t("review.session-complete")}
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </>
       )}
     </div>

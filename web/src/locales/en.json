@@ -376,6 +376,7 @@
     "session-complete": "Session Complete!",
     "session-complete-desc": "You reviewed {{count}} memos.",
     "start-new-session": "Start New Session",
+    "settings": "Settings",
     "previous": "Previous",
     "next": "Next",
     "settings": "Review Settings",

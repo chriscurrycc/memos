@@ -335,6 +335,7 @@
     "session-complete": "振り返り完了！",
     "session-complete-desc": "{{count}} 件のメモを振り返りました。",
     "start-new-session": "新しい振り返りを開始",
+    "settings": "設定",
     "previous": "前へ",
     "next": "次へ",
     "settings": "振り返り設定",

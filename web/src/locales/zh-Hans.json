@@ -335,6 +335,7 @@
     "session-complete": "回顾完成！",
     "session-complete-desc": "您回顾了 {{count}} 条 memos。",
     "start-new-session": "开始新的回顾",
+    "settings": "设置",
     "previous": "上一条",
     "next": "下一条",
     "settings": "回顾设置",
