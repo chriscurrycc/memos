@@ -121,16 +121,23 @@ export const useReviewStore = create(
 
     fetchReviewMemos: async (force = false) => {
       const { isReviewLoading, memos } = get();
-      if (!force && (isReviewLoading || memos.length > 0)) return;
-      set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
+      if (isReviewLoading) return;
+      const showLoading = force || memos.length === 0;
+      if (showLoading) {
+        set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
+      }
 
       try {
         const response = await reviewServiceClient.listReviewMemos({ force });
+        const { currentIndex: prevIndex } = get();
+        const newIndex = showLoading
+          ? (response.completed ? response.memos.length - 1 : 0)
+          : Math.min(prevIndex, response.memos.length - 1);
         set({
           memos: response.memos,
           totalCount: response.totalCount,
           isCompleted: response.completed,
-          currentIndex: response.completed ? response.memos.length - 1 : 0,
+          currentIndex: Math.max(newIndex, 0),
           isReviewLoading: false,
         });
       } catch (error) {

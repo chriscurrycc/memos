@@ -4,7 +4,7 @@ import { ArrowUpLeftFromCircleIcon, MessageCircleIcon } from "lucide-react";
 import { ClientError } from "nice-grpc-web";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { MemoDetailSidebar, MemoDetailSidebarDrawer } from "@/components/MemoDetailSidebar";
 import MemoEditor from "@/components/MemoEditor";
 import MemoView from "@/components/MemoView";
@@ -22,8 +22,10 @@ const MemoDetail = () => {
   const t = useTranslate();
   const { md } = useResponsiveWidth();
   const params = useParams();
+  const [searchParams] = useSearchParams();
   const navigateTo = useNavigateTo();
   const { state: locationState } = useLocation();
+  const editMode = searchParams.get("edit") === "true";
   const workspaceSettingStore = useWorkspaceSettingStore();
   const currentUser = useCurrentUser();
   const memoStore = useMemoStore();
@@ -110,6 +112,7 @@ const MemoDetail = () => {
             className="shadow hover:shadow-md transition-all"
             memo={memo}
             parentPage={locationState?.from}
+            initialEdit={editMode}
             showCreator
             showVisibility
             showPinned

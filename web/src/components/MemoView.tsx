@@ -36,6 +36,7 @@ interface Props {
   showVisibility?: boolean;
   showPinned?: boolean;
   showExport?: boolean;
+  initialEdit?: boolean;
   className?: string;
   parentPage?: string;
 }
@@ -50,7 +51,8 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const user = useCurrentUser();
   const memoStore = useMemoStore();
   const workspaceSettingStore = useWorkspaceSettingStore();
-  const [showEditor, setShowEditor] = useState<boolean>(false);
+  const readonly = memo.creator !== user?.name && !isSuperUser(user);
+  const [showEditor, setShowEditor] = useState<boolean>(!!props.initialEdit && !readonly);
   const [creator, setCreator] = useState(userStore.getUserByName(memo.creator));
   const [collapsible, setCollapsible] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
@@ -63,7 +65,6 @@ const MemoView: React.FC<Props> = (props: Props) => {
     (relation) => relation.type === MemoRelation_Type.COMMENT && relation.relatedMemo?.name === memo.name,
   ).length;
   const relativeTimeFormat = Date.now() - memo.displayTime!.getTime() > 1000 * 60 * 60 * 24 ? "datetime" : "auto";
-  const readonly = memo.creator !== user?.name && !isSuperUser(user);
   const isInMemoDetailPage = location.pathname.startsWith(`/m/${memo.uid}`);
   const parentPage = props.parentPage || location.pathname;
   const [showExportModal, setShowExportModal] = useState<boolean>(false);

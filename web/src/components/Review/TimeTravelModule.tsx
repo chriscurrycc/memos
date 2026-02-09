@@ -1,15 +1,17 @@
-import { ClockIcon, LoaderCircleIcon } from "lucide-react";
+import { ClockIcon, LoaderCircleIcon, SquarePenIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import StableMasonry from "@/components/Review/StableMasonry";
+import useNavigateTo from "@/hooks/useNavigateTo";
 import { useReviewStore } from "@/store/v1/review";
 import { useLocale, useTranslate } from "@/utils/i18n";
 
 const TimeTravelModule = () => {
   const t = useTranslate();
   const locale = useLocale();
+  const navigateTo = useNavigateTo();
   const {
     timeTravelMemos,
     timeTravelTotalCount,
@@ -75,8 +77,14 @@ const TimeTravelModule = () => {
             items={timeTravelMemos.map((memo) => ({
               key: memo.name,
               node: (
-                <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 overflow-hidden shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
+                <div className="group/card relative bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 overflow-hidden shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
                   <div className="p-4">
+                    <button
+                      onClick={() => navigateTo(`/m/${memo.uid}?edit=true`, { state: { from: "/review" } })}
+                      className="absolute top-2 right-2 p-1.5 rounded-lg text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors opacity-0 group-hover/card:opacity-100"
+                    >
+                      <SquarePenIcon className="w-3.5 h-3.5" />
+                    </button>
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
                       <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
