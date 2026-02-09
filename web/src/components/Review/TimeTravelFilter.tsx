@@ -11,7 +11,7 @@ const toDateInputValue = (date: Date | null) => {
 
 const TimeTravelFilter = () => {
   const t = useTranslate();
-  const { timeTravelPeriod, fetchTimeTravelMemos, setTimeTravelPeriod } = useReviewStore();
+  const { timeTravelPeriod, isTimeTravelLoading, fetchTimeTravelMemos, setTimeTravelPeriod } = useReviewStore();
   const [startInput, setStartInput] = useState("");
   const [endInput, setEndInput] = useState("");
 
@@ -69,14 +69,16 @@ const TimeTravelFilter = () => {
         <div className="flex gap-2 shrink-0">
           <button
             onClick={handleSearch}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium transition-colors"
+            disabled={isTimeTravelLoading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-700 text-white text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <SearchIcon className="w-3 h-3" />
             {t("review.time-travel-search")}
           </button>
           <button
             onClick={handleRandom}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-300 text-xs font-medium hover:bg-white dark:hover:bg-zinc-800 transition-colors border border-zinc-200/50 dark:border-zinc-700/30"
+            disabled={isTimeTravelLoading}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-300 text-xs font-medium hover:bg-white dark:hover:bg-zinc-800 transition-colors border border-zinc-200/50 dark:border-zinc-700/30 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCwIcon className="w-3 h-3" />
             {t("review.travel-again")}

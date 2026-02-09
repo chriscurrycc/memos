@@ -1,5 +1,5 @@
 import { Autocomplete, AutocompleteOption, Chip, Modal } from "@mui/joy";
-import { XIcon } from "lucide-react";
+import { LoaderCircleIcon, XIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoMetadataStore } from "@/store/v1/memoMetadata";
@@ -38,10 +38,14 @@ const ReviewSettingsModal = ({ open, onClose }: Props) => {
   const includeOptions = useMemo(() => allTags.filter((tag) => !excludeTags.includes(tag)), [allTags, excludeTags]);
   const excludeOptions = useMemo(() => allTags.filter((tag) => !includeTags.includes(tag)), [allTags, includeTags]);
 
-  const handleApply = () => {
+  const [isApplying, setIsApplying] = useState(false);
+
+  const handleApply = async () => {
     const v = parseInt(sessionSizeInput);
     const sessionSize = isNaN(v) ? 10 : Math.min(20, Math.max(1, v));
-    applySettings({ sessionSize, includeTags, excludeTags });
+    setIsApplying(true);
+    await applySettings({ sessionSize, includeTags, excludeTags });
+    setIsApplying(false);
     onClose();
   };
 
@@ -133,9 +137,10 @@ const ReviewSettingsModal = ({ open, onClose }: Props) => {
         <div className="px-5 py-3 border-t border-zinc-200/60 dark:border-zinc-700/50">
           <button
             onClick={handleApply}
-            className="w-full py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors"
+            disabled={isApplying}
+            className="w-full py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
-            {t("review.apply-settings")}
+            {isApplying ? <LoaderCircleIcon className="w-5 h-5 animate-spin" /> : t("review.apply-settings")}
           </button>
         </div>
       </div>

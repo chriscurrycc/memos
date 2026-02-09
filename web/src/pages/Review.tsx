@@ -62,7 +62,7 @@ const Review = () => {
   );
 
   const tabBar = (
-    <div className="relative mb-4">
+    <div className="relative mb-2">
       <div className="flex gap-1 p-1 rounded-xl bg-zinc-100/80 dark:bg-zinc-800/60 backdrop-blur-sm overflow-x-auto scrollbar-hide">
         {tabs.map((tab, idx) => {
           const Icon = tab.icon;

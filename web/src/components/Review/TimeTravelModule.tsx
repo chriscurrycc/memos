@@ -1,4 +1,4 @@
-import { ClockIcon } from "lucide-react";
+import { ClockIcon, LoaderCircleIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
@@ -109,7 +109,7 @@ const TimeTravelModule = () => {
                 disabled={isTimeTravelLoadingMore}
                 className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50"
               >
-                {isTimeTravelLoadingMore ? "..." : t("memo.show-more")}
+                {isTimeTravelLoadingMore ? <LoaderCircleIcon className="w-5 h-5 animate-spin" /> : t("memo.show-more")}
               </button>
             </div>
           )}

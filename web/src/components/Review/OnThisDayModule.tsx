@@ -1,4 +1,4 @@
-import { RefreshCwIcon } from "lucide-react";
+import { LoaderCircleIcon, RefreshCwIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
@@ -30,7 +30,8 @@ const OnThisDayModule = () => {
         <h3 className="text-base font-semibold text-zinc-700 dark:text-zinc-200">{t("review.on-this-day-title", { date: dateStr })}</h3>
         <button
           onClick={() => fetchOnThisDayMemos(true)}
-          className="p-1.5 rounded-lg text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+          disabled={isOnThisDayLoading}
+          className="p-1.5 rounded-lg text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <RefreshCwIcon className="w-4 h-4" />
         </button>
@@ -108,7 +109,7 @@ const OnThisDayModule = () => {
                 disabled={isOnThisDayLoadingMore}
                 className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50"
               >
-                {isOnThisDayLoadingMore ? "..." : t("memo.show-more")}
+                {isOnThisDayLoadingMore ? <LoaderCircleIcon className="w-5 h-5 animate-spin" /> : t("memo.show-more")}
               </button>
             </div>
           )}

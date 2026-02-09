@@ -133,7 +133,8 @@ const ReviewModule = () => {
           <p className="text-zinc-400 dark:text-zinc-500 mb-4 max-w-xs text-sm">{t("review.all-caught-up-desc")}</p>
           <button
             onClick={handleRefresh}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            disabled={isReviewLoading}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCwIcon className="w-4 h-4" />
             {t("review.refresh")}
@@ -215,7 +216,8 @@ const ReviewModule = () => {
           <p className="text-zinc-400 dark:text-zinc-500 mb-6 text-sm">{t("review.session-complete-desc", { count: memos.length })}</p>
           <button
             onClick={handleRefresh}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium shadow-lg shadow-teal-200/50 dark:shadow-teal-900/20 transition-all hover:shadow-xl"
+            disabled={isReviewLoading}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-medium shadow-lg shadow-teal-200/50 dark:shadow-teal-900/20 transition-all hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCwIcon className="w-4 h-4" />
             {t("review.start-new-session")}

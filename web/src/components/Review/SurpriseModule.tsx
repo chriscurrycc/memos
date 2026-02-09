@@ -38,7 +38,8 @@ const SurpriseModule = () => {
           <p className="text-zinc-400 dark:text-zinc-500 mb-4 max-w-xs text-sm">{t("review.no-surprise-desc")}</p>
           <button
             onClick={() => fetchSurpriseMemo(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+            disabled={isSurpriseLoading}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCwIcon className="w-4 h-4" />
             {t("review.try-again")}
@@ -90,7 +91,8 @@ const SurpriseModule = () => {
       <div className="flex justify-center">
         <button
           onClick={() => fetchSurpriseMemo(true)}
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium shadow-sm transition-all active:scale-[0.98]"
+          disabled={isSurpriseLoading}
+          className="inline-flex items-center gap-2 px-5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium shadow-sm transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <DicesIcon className="w-4 h-4" />
           {t("review.another-surprise")}
