@@ -285,7 +285,7 @@ func getDefaultUserSetting(workspaceMemoRelatedSetting *storepb.WorkspaceMemoRel
 		Appearance:     "system",
 		MemoVisibility: defaultVisibility,
 		ReviewSetting: &v1pb.ReviewUserSetting{
-			SessionSize:    10,
+			SessionSize: 10,
 			IncludeTags: []string{},
 			ExcludeTags: []string{},
 		},
@@ -322,7 +322,7 @@ func (s *APIV1Service) GetUserSetting(ctx context.Context, _ *v1pb.GetUserSettin
 			storedReviewSetting := setting.GetReviewSetting()
 			if storedReviewSetting != nil {
 				userSettingMessage.ReviewSetting = &v1pb.ReviewUserSetting{
-					SessionSize:    storedReviewSetting.SessionSize,
+					SessionSize: storedReviewSetting.SessionSize,
 					IncludeTags: storedReviewSetting.IncludeTags,
 					ExcludeTags: storedReviewSetting.ExcludeTags,
 				}
@@ -383,7 +383,7 @@ func (s *APIV1Service) UpdateUserSetting(ctx context.Context, request *v1pb.Upda
 				Key:    storepb.UserSettingKey_REVIEW_SETTING,
 				Value: &storepb.UserSetting_ReviewSetting{
 					ReviewSetting: &storepb.ReviewUserSetting{
-						SessionSize:    reviewSetting.SessionSize,
+						SessionSize: reviewSetting.SessionSize,
 						IncludeTags: reviewSetting.IncludeTags,
 						ExcludeTags: reviewSetting.ExcludeTags,
 					},

@@ -10,7 +10,6 @@ import (
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
@@ -768,7 +767,7 @@ var File_api_v1_review_service_proto protoreflect.FileDescriptor
 
 const file_api_v1_review_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1bapi/v1/review_service.proto\x12\fmemos.api.v1\x1a\x19api/v1/memo_service.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\".\n" +
+	"\x1bapi/v1/review_service.proto\x12\fmemos.api.v1\x1a\x19api/v1/memo_service.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\".\n" +
 	"\x16ListReviewMemosRequest\x12\x14\n" +
 	"\x05force\x18\x01 \x01(\bR\x05force\"\x82\x01\n" +
 	"\x17ListReviewMemosResponse\x12(\n" +

@@ -647,4 +647,3 @@ func convertReviewSourceToStore(source v1pb.ReviewSource) store.ReviewSource {
 		return store.ReviewSourceReview
 	}
 }
-
