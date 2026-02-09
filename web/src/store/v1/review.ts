@@ -139,9 +139,9 @@ export const useReviewStore = create(
       }
     },
 
-    fetchOnThisDayMemos: async () => {
+    fetchOnThisDayMemos: async (force = false) => {
       const { isOnThisDayLoading, onThisDayData } = get();
-      if (isOnThisDayLoading || onThisDayData) return;
+      if (!force && (isOnThisDayLoading || onThisDayData)) return;
       set({ isOnThisDayLoading: true });
       try {
         const now = new Date();

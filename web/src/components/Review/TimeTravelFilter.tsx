@@ -52,6 +52,7 @@ const TimeTravelFilter = () => {
             <input
               type="date"
               value={startInput}
+              max={endInput || undefined}
               onChange={(e) => handleStartChange(e.target.value)}
               className="flex-1 min-w-0 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-teal-600/20 dark:focus:ring-teal-500/20"
             />
@@ -59,6 +60,7 @@ const TimeTravelFilter = () => {
             <input
               type="date"
               value={endInput}
+              min={startInput || undefined}
               onChange={(e) => handleEndChange(e.target.value)}
               className="flex-1 min-w-0 px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm text-zinc-700 dark:text-zinc-200 focus:outline-none focus:ring-2 focus:ring-teal-600/20 dark:focus:ring-teal-500/20"
             />

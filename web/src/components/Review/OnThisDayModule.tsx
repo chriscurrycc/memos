@@ -50,7 +50,7 @@ const OnThisDayModule = () => {
           <h3 className="text-lg font-semibold mb-1.5 text-zinc-700 dark:text-zinc-200">{t("review.no-memories-today")}</h3>
           <p className="text-zinc-400 dark:text-zinc-500 mb-4 max-w-xs text-sm">{t("review.no-memories-today-desc")}</p>
           <button
-            onClick={fetchOnThisDayMemos}
+            onClick={() => fetchOnThisDayMemos(true)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
           >
             <RefreshCwIcon className="w-4 h-4" />
@@ -70,9 +70,15 @@ const OnThisDayModule = () => {
 
   return (
     <div>
-      <motion.div className="text-center mb-4" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
+      <motion.div className="text-center mb-4 relative" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}>
         <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{t("review.on-this-day-title", { date: dateStr })}</h3>
         <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-0.5">{t("review.on-this-day-desc")}</p>
+        <button
+          onClick={() => fetchOnThisDayMemos(true)}
+          className="absolute right-0 top-1/2 -translate-y-1/2 p-2 rounded-lg text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+        >
+          <RefreshCwIcon className="w-4 h-4" />
+        </button>
       </motion.div>
 
       <div className="max-h-[calc(100vh-280px)] overflow-y-auto">
