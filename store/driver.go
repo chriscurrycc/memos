@@ -82,4 +82,12 @@ type Driver interface {
 	// Tag model related methods.
 	UpdateTag(ctx context.Context, update *UpdateTag) (*Tag, error)
 	ListTags(ctx context.Context, find *FindTag) ([]*Tag, error)
+
+	// Review model related methods.
+	CreateReviewSession(ctx context.Context, create *ReviewSession) (*ReviewSession, error)
+	ListReviewSessions(ctx context.Context, find *FindReviewSession) ([]*ReviewSession, error)
+	CreateMemoReview(ctx context.Context, create *MemoReview) (*MemoReview, error)
+	ListMemoReviews(ctx context.Context, find *FindMemoReview) ([]*MemoReview, error)
+	BatchCreateMemoReviews(ctx context.Context, reviews []*MemoReview) error
+	ListMemoReviewSummaries(ctx context.Context, find *FindMemoReviewSummary) ([]*MemoReviewSummary, error)
 }

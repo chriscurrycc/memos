@@ -151,13 +151,22 @@ docker run -d \
 
 > **重要提示：** 遷移前請先停止服務並備份資料目錄（預設：`~/.memos/`）。
 
-**故障排除（僅限 SQLite）：**
+**故障排除：**
 
-如果從 v0.24.0+ 遷移後遇到 `no such table: tag` 錯誤，需要手動建立 tag 表：
+如果遷移後遇到 `no such table` 錯誤（如 `tag`、`memo_review`、`memo_review_session`），執行[遷移修復腳本](scripts/migration-repair.sh)來建立所有缺失的表：
 
 ```bash
-docker exec memos sh -c "apk add --no-cache sqlite && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 /var/opt/memos/memos_prod.db"
+# SQLite（預設，Docker 容器內）
+docker exec memos sh -c "apk add --no-cache sqlite curl bash && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite"
+
+# MySQL
+bash scripts/migration-repair.sh --driver mysql --dsn "user:password@tcp(host:3306)/memos"
+
+# PostgreSQL
+bash scripts/migration-repair.sh --driver postgres --dsn "postgresql://user:password@host:5432/memos"
 ```
+
+該腳本是冪等的，可以安全地多次執行。
 
 ## 文件
 

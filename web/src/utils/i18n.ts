@@ -46,3 +46,8 @@ export const useTranslate = (): TypedT => {
   const { t } = useTranslation<Translations>();
   return t;
 };
+
+export const useLocale = (): string => {
+  const { i18n } = useTranslation();
+  return i18n.language;
+};

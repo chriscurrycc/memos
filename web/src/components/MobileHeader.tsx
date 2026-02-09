@@ -8,11 +8,13 @@ import NavigationDrawer from "./NavigationDrawer";
 
 interface Props {
   className?: string;
+  title?: string;
+  subTitle?: string;
   children?: React.ReactNode;
 }
 
 const MobileHeader = (props: Props) => {
-  const { className, children } = props;
+  const { className, title, subTitle, children } = props;
   const { sm } = useResponsiveWidth();
   const { y: offsetTop } = useWindowScroll();
   const workspaceSettingStore = useWorkspaceSettingStore();
@@ -29,12 +31,15 @@ const MobileHeader = (props: Props) => {
     >
       <div className="flex flex-row justify-start items-center mr-2 shrink-0 overflow-hidden">
         {!sm && <NavigationDrawer />}
-        <span
-          className="font-bold text-lg leading-10 mr-1 text-ellipsis shrink-0 cursor-pointer overflow-hidden text-gray-700 dark:text-gray-300"
-          onDoubleClick={() => location.reload()}
-        >
-          {workspaceGeneralSetting.customProfile?.title || "Memos"}
-        </span>
+        <div className="flex items-baseline">
+          <span
+            className="font-bold text-lg leading-10 text-ellipsis shrink-0 cursor-pointer overflow-hidden text-gray-700 dark:text-gray-300"
+            onDoubleClick={() => location.reload()}
+          >
+            {title || workspaceGeneralSetting.customProfile?.title || "Memos"}
+          </span>
+          {subTitle && <span className="ml-2 text-xs text-zinc-400 dark:text-zinc-500 shrink-0">{subTitle}</span>}
+        </div>
       </div>
       <div className="flex flex-row justify-end items-center">{children}</div>
     </div>

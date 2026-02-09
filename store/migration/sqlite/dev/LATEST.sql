@@ -1,11 +1,11 @@
 -- migration_history
-CREATE TABLE IF NOT EXISTS migration_history (
+CREATE TABLE migration_history (
   version TEXT NOT NULL PRIMARY KEY,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now'))
 );
 
 -- system_setting
-CREATE TABLE IF NOT EXISTS system_setting (
+CREATE TABLE system_setting (
   name TEXT NOT NULL,
   value TEXT NOT NULL,
   description TEXT NOT NULL DEFAULT '',
@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS system_setting (
 );
 
 -- user
-CREATE TABLE IF NOT EXISTS user (
+CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
   updated_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS user (
   description TEXT NOT NULL DEFAULT ''
 );
 
-CREATE INDEX IF NOT EXISTS idx_user_username ON user (username);
+CREATE INDEX idx_user_username ON user (username);
 
 -- user_setting
-CREATE TABLE IF NOT EXISTS user_setting (
+CREATE TABLE user_setting (
   user_id INTEGER NOT NULL,
   key TEXT NOT NULL,
   value TEXT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS user_setting (
 );
 
 -- memo
-CREATE TABLE IF NOT EXISTS memo (
+CREATE TABLE memo (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   uid TEXT NOT NULL UNIQUE,
   creator_id INTEGER NOT NULL,
@@ -50,12 +50,12 @@ CREATE TABLE IF NOT EXISTS memo (
   payload TEXT NOT NULL DEFAULT '{}'
 );
 
-CREATE INDEX IF NOT EXISTS idx_memo_creator_id ON memo (creator_id);
-CREATE INDEX IF NOT EXISTS idx_memo_content ON memo (content);
-CREATE INDEX IF NOT EXISTS idx_memo_visibility ON memo (visibility);
+CREATE INDEX idx_memo_creator_id ON memo (creator_id);
+CREATE INDEX idx_memo_content ON memo (content);
+CREATE INDEX idx_memo_visibility ON memo (visibility);
 
 -- memo_organizer
-CREATE TABLE IF NOT EXISTS memo_organizer (
+CREATE TABLE memo_organizer (
   memo_id INTEGER NOT NULL,
   user_id INTEGER NOT NULL,
   pinned INTEGER NOT NULL CHECK (pinned IN (0, 1)) DEFAULT 0,
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS memo_organizer (
 );
 
 -- memo_relation
-CREATE TABLE IF NOT EXISTS memo_relation (
+CREATE TABLE memo_relation (
   memo_id INTEGER NOT NULL,
   related_memo_id INTEGER NOT NULL,
   type TEXT NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS memo_relation (
 );
 
 -- resource
-CREATE TABLE IF NOT EXISTS resource (
+CREATE TABLE resource (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   uid TEXT NOT NULL UNIQUE,
   creator_id INTEGER NOT NULL,
@@ -87,12 +87,12 @@ CREATE TABLE IF NOT EXISTS resource (
   payload TEXT NOT NULL DEFAULT '{}'
 );
 
-CREATE INDEX IF NOT EXISTS idx_resource_creator_id ON resource (creator_id);
+CREATE INDEX idx_resource_creator_id ON resource (creator_id);
 
-CREATE INDEX IF NOT EXISTS idx_resource_memo_id ON resource (memo_id);
+CREATE INDEX idx_resource_memo_id ON resource (memo_id);
 
 -- activity
-CREATE TABLE IF NOT EXISTS activity (
+CREATE TABLE activity (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   creator_id INTEGER NOT NULL,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS activity (
 );
 
 -- idp
-CREATE TABLE IF NOT EXISTS idp (
+CREATE TABLE idp (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL,
   type TEXT NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS idp (
 );
 
 -- inbox
-CREATE TABLE IF NOT EXISTS inbox (
+CREATE TABLE inbox (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
   sender_id INTEGER NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS inbox (
 );
 
 -- webhook
-CREATE TABLE IF NOT EXISTS webhook (
+CREATE TABLE webhook (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
   updated_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
@@ -131,10 +131,10 @@ CREATE TABLE IF NOT EXISTS webhook (
   url TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_webhook_creator_id ON webhook (creator_id);
+CREATE INDEX idx_webhook_creator_id ON webhook (creator_id);
 
 -- reaction
-CREATE TABLE IF NOT EXISTS reaction (
+CREATE TABLE reaction (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
   creator_id INTEGER NOT NULL,
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS reaction (
 );
 
 -- tag
-CREATE TABLE IF NOT EXISTS tag (
+CREATE TABLE tag (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
   updated_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
@@ -156,5 +156,30 @@ CREATE TABLE IF NOT EXISTS tag (
   UNIQUE(creator_id, tag_hash)
 );
 
-CREATE INDEX IF NOT EXISTS idx_tag_creator_id ON tag(creator_id);
-CREATE INDEX IF NOT EXISTS idx_tag_pinned_ts ON tag(pinned_ts);
+CREATE INDEX idx_tag_creator_id ON tag(creator_id);
+CREATE INDEX idx_tag_pinned_ts ON tag(pinned_ts);
+
+-- memo_review_session
+CREATE TABLE memo_review_session (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  completed_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
+  memo_count INTEGER NOT NULL,
+  source TEXT NOT NULL DEFAULT 'review'
+);
+
+CREATE INDEX idx_memo_review_session_user ON memo_review_session(user_id, completed_at);
+
+-- memo_review
+CREATE TABLE memo_review (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  memo_id INTEGER NOT NULL,
+  reviewed_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
+  source TEXT NOT NULL DEFAULT 'review',
+  session_id INTEGER REFERENCES memo_review_session(id)
+);
+
+CREATE INDEX idx_memo_review_user ON memo_review(user_id);
+CREATE INDEX idx_memo_review_user_time ON memo_review(user_id, reviewed_at);
+CREATE INDEX idx_memo_review_user_memo ON memo_review(user_id, memo_id);

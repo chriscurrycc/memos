@@ -13,6 +13,7 @@ import MemoDetail from "@/pages/MemoDetail";
 import NotFound from "@/pages/NotFound";
 import PermissionDenied from "@/pages/PermissionDenied";
 import Resources from "@/pages/Resources";
+import Review from "@/pages/Review";
 import Setting from "@/pages/Setting";
 import SignIn from "@/pages/SignIn";
 import SignUp from "@/pages/SignUp";
@@ -25,6 +26,7 @@ export enum Routes {
   ARCHIVED = "/archived",
   SETTING = "/setting",
   EXPLORE = "/explore",
+  REVIEW = "/review",
   ABOUT = "/about",
   AUTH = "/auth",
 }
@@ -83,6 +85,10 @@ const router = createBrowserRouter([
           {
             path: Routes.EXPLORE,
             element: <Explore />,
+          },
+          {
+            path: Routes.REVIEW,
+            element: <Review />,
           },
           {
             path: "m/:uid",

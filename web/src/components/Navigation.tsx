@@ -1,12 +1,21 @@
 import clsx from "clsx";
-import { ArchiveIcon, BellIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, SettingsIcon, SmileIcon, User2Icon } from "lucide-react";
+import {
+  ArchiveIcon,
+  BookOpenIcon,
+  Globe2Icon,
+  HomeIcon,
+  LogInIcon,
+  PaperclipIcon,
+  SettingsIcon,
+  SmileIcon,
+  User2Icon,
+} from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Tooltip from "@/components/kit/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Routes } from "@/router";
 import { useInboxStore } from "@/store/v1";
-import { Inbox_Status } from "@/types/proto/api/v1/inbox_service";
 import { useTranslate } from "@/utils/i18n";
 import UserBanner from "./UserBanner";
 
@@ -27,8 +36,6 @@ const Navigation = (props: Props) => {
   const t = useTranslate();
   const user = useCurrentUser();
   const inboxStore = useInboxStore();
-  const hasUnreadInbox = inboxStore.inboxes.some((inbox) => inbox.status === Inbox_Status.UNREAD);
-
   useEffect(() => {
     if (!user) {
       return;
@@ -72,18 +79,11 @@ const Navigation = (props: Props) => {
     title: t("common.profile"),
     icon: <User2Icon className="w-6 h-auto opacity-70 shrink-0" />,
   };
-  const inboxNavLink: NavLinkItem = {
-    id: "header-inbox",
-    path: Routes.INBOX,
-    title: t("common.inbox"),
-    icon: (
-      <>
-        <div className="relative">
-          <BellIcon className="w-6 h-auto opacity-70 shrink-0" />
-          {hasUnreadInbox && <div className="absolute top-0 left-5 w-2 h-2 rounded-full bg-blue-500"></div>}
-        </div>
-      </>
-    ),
+  const reviewNavLink: NavLinkItem = {
+    id: "header-review",
+    path: Routes.REVIEW,
+    title: t("common.review"),
+    icon: <BookOpenIcon className="w-6 h-auto opacity-70 shrink-0" />,
   };
   const archivedNavLink: NavLinkItem = {
     id: "header-archived",
@@ -111,7 +111,7 @@ const Navigation = (props: Props) => {
   };
 
   const navLinks: NavLinkItem[] = user
-    ? [homeNavLink, resourcesNavLink, exploreNavLink, profileNavLink, archivedNavLink, settingNavLink]
+    ? [homeNavLink, resourcesNavLink, exploreNavLink, reviewNavLink, profileNavLink, archivedNavLink, settingNavLink]
     : [exploreNavLink, signInNavLink, aboutNavLink];
 
   return (
