@@ -1,4 +1,3 @@
-import { Button } from "@mui/joy";
 import { motion } from "motion/react";
 import { RefreshCwIcon } from "lucide-react";
 import { useEffect } from "react";
@@ -9,29 +8,50 @@ import { useTranslate } from "@/utils/i18n";
 
 const OnThisDayModule = () => {
   const t = useTranslate();
-  const { onThisDayData, isLoading, fetchOnThisDayMemos } = useReviewStore();
+  const { onThisDayData, isOnThisDayLoading, fetchOnThisDayMemos } = useReviewStore();
 
   useEffect(() => {
     fetchOnThisDayMemos();
   }, []);
 
-  if (isLoading) {
+  if (isOnThisDayLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500" />
+      <div className="flex items-center justify-center py-12">
+        <motion.div
+          className="w-8 h-8 rounded-full border-2 border-teal-500 border-t-transparent"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+        />
       </div>
     );
   }
 
   if (!onThisDayData || onThisDayData.groups.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 text-center">
-        <div className="text-6xl mb-4">📅</div>
-        <h3 className="text-xl font-semibold mb-2 dark:text-gray-200">{t("review.no-memories-today")}</h3>
-        <p className="text-gray-500 dark:text-gray-400 mb-4">{t("review.no-memories-today-desc")}</p>
-        <Button onClick={fetchOnThisDayMemos} startDecorator={<RefreshCwIcon className="w-4 h-4" />}>
-          {t("review.refresh")}
-        </Button>
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center"
+        >
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-100 to-cyan-50 dark:from-teal-900/30 dark:to-cyan-900/20 flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-teal-500 dark:text-teal-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold mb-1.5 text-zinc-700 dark:text-zinc-200">{t("review.no-memories-today")}</h3>
+          <p className="text-zinc-400 dark:text-zinc-500 mb-4 max-w-xs text-sm">{t("review.no-memories-today-desc")}</p>
+          <button
+            onClick={fetchOnThisDayMemos}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+          >
+            <RefreshCwIcon className="w-4 h-4" />
+            {t("review.refresh")}
+          </button>
+        </motion.div>
       </div>
     );
   }
@@ -40,49 +60,57 @@ const OnThisDayModule = () => {
   const dateStr = `${now.getMonth() + 1}/${now.getDate()}`;
 
   return (
-    <div className="space-y-6">
-      <div className="text-center mb-6">
-        <h3 className="text-lg font-semibold dark:text-gray-200">{t("review.on-this-day-title", { date: dateStr })}</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400">{t("review.on-this-day-desc")}</p>
-      </div>
+    <div>
+      <motion.div
+        className="text-center mb-4"
+        initial={{ opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{t("review.on-this-day-title", { date: dateStr })}</h3>
+        <p className="text-sm text-zinc-400 dark:text-zinc-500 mt-0.5">{t("review.on-this-day-desc")}</p>
+      </motion.div>
 
-      {onThisDayData.groups
-        .sort((a, b) => b.year - a.year)
-        .map((group) => (
-          <motion.div
-            key={group.year}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-gray-200 dark:border-zinc-700 overflow-hidden"
-          >
-            <div className="px-4 py-3 bg-gray-50 dark:bg-zinc-700/50 border-b border-gray-200 dark:border-zinc-700">
-              <span className="font-semibold dark:text-gray-200">{group.year}</span>
-              <span className="text-sm text-gray-500 dark:text-gray-400 ml-2">
-                ({group.memos.length} {group.memos.length === 1 ? "memo" : "memos"})
-              </span>
-            </div>
-            <div className="divide-y divide-gray-100 dark:divide-zinc-700">
-              {group.memos.map((memo) => (
-                <div key={memo.name} className="p-4">
-                  <MemoContent memoName={memo.name} nodes={memo.nodes} />
-                  {memo.resources.length > 0 && <MemoResourceListView resources={memo.resources} />}
-                  {memo.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {memo.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="text-xs px-2 py-1 bg-gray-100 dark:bg-zinc-700 rounded-full text-gray-600 dark:text-gray-300"
-                        >
-                          #{tag}
-                        </span>
-                      ))}
+      <div className="space-y-4">
+        {onThisDayData.groups
+          .sort((a, b) => b.year - a.year)
+          .map((group, groupIdx) => (
+            <motion.div
+              key={group.year}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: groupIdx * 0.08 }}
+            >
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-2xl font-bold text-zinc-300 dark:text-zinc-600 tabular-nums">{group.year}</span>
+                <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
+                  {group.memos.length} {group.memos.length === 1 ? "memo" : "memos"}
+                </span>
+              </div>
+
+              <div className="columns-1 lg:columns-2 gap-3">
+                {group.memos.map((memo, memoIdx) => (
+                  <motion.div
+                    key={memo.name}
+                    className="break-inside-avoid mb-3"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: groupIdx * 0.08 + memoIdx * 0.04 }}
+                  >
+                    <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
+                      <MemoContent memoName={memo.name} nodes={memo.nodes} />
+                      {memo.resources.length > 0 && (
+                        <div className="mt-2">
+                          <MemoResourceListView resources={memo.resources} />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        ))}
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+      </div>
     </div>
   );
 };

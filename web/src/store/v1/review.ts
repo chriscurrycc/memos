@@ -21,7 +21,10 @@ interface State {
   activeTab: ReviewTab;
   memos: Memo[];
   currentIndex: number;
-  isLoading: boolean;
+  isReviewLoading: boolean;
+  isOnThisDayLoading: boolean;
+  isTimeTravelLoading: boolean;
+  isSurpriseLoading: boolean;
   isCompleted: boolean;
   totalCount: number;
   stats: GetReviewStatsResponse | null;
@@ -36,7 +39,10 @@ const getDefaultState = (): State => ({
   activeTab: "review",
   memos: [],
   currentIndex: 0,
-  isLoading: false,
+  isReviewLoading: false,
+  isOnThisDayLoading: false,
+  isTimeTravelLoading: false,
+  isSurpriseLoading: false,
   isCompleted: false,
   totalCount: 0,
   stats: null,
@@ -60,7 +66,7 @@ export const useReviewStore = create(
 
     fetchReviewMemos: async () => {
       const { settings } = get();
-      set({ isLoading: true, isCompleted: false, currentIndex: 0 });
+      set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
 
       try {
         const request: ListReviewMemosRequest = {
@@ -72,31 +78,31 @@ export const useReviewStore = create(
         set({
           memos: response.memos,
           totalCount: response.totalCount,
-          isLoading: false,
+          isReviewLoading: false,
         });
       } catch (error) {
         console.error("Failed to fetch review memos:", error);
-        set({ isLoading: false, memos: [] });
+        set({ isReviewLoading: false, memos: [] });
       }
     },
 
     fetchOnThisDayMemos: async () => {
-      set({ isLoading: true });
+      set({ isOnThisDayLoading: true });
       try {
         const now = new Date();
         const response = await reviewServiceClient.listOnThisDayMemos({
           month: now.getMonth() + 1,
           day: now.getDate(),
         });
-        set({ onThisDayData: response, isLoading: false });
+        set({ onThisDayData: response, isOnThisDayLoading: false });
       } catch (error) {
         console.error("Failed to fetch on this day memos:", error);
-        set({ isLoading: false, onThisDayData: null });
+        set({ isOnThisDayLoading: false, onThisDayData: null });
       }
     },
 
     fetchTimeTravelMemos: async () => {
-      set({ isLoading: true });
+      set({ isTimeTravelLoading: true });
       try {
         const response = await reviewServiceClient.getTimeTravelMemos({ pageSize: 10 });
         set({
@@ -105,22 +111,22 @@ export const useReviewStore = create(
             start: response.periodStart || null,
             end: response.periodEnd || null,
           },
-          isLoading: false,
+          isTimeTravelLoading: false,
         });
       } catch (error) {
         console.error("Failed to fetch time travel memos:", error);
-        set({ isLoading: false, timeTravelMemos: [] });
+        set({ isTimeTravelLoading: false, timeTravelMemos: [] });
       }
     },
 
     fetchSurpriseMemo: async () => {
-      set({ isLoading: true });
+      set({ isSurpriseLoading: true });
       try {
         const response = await reviewServiceClient.getRandomMemo({});
-        set({ surpriseMemo: response, isLoading: false });
+        set({ surpriseMemo: response, isSurpriseLoading: false });
       } catch (error) {
         console.error("Failed to fetch surprise memo:", error);
-        set({ isLoading: false, surpriseMemo: null });
+        set({ isSurpriseLoading: false, surpriseMemo: null });
       }
     },
 
@@ -162,6 +168,8 @@ export const useReviewStore = create(
         console.error("Failed to record review:", error);
       }
     },
+
+    completeSession: () => set({ isCompleted: true }),
 
     reset: () => set(getDefaultState()),
   })),
