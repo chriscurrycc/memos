@@ -56,6 +56,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const [creator, setCreator] = useState(userStore.getUserByName(memo.creator));
   const [collapsible, setCollapsible] = useState<boolean>(false);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const isInitialCollapseSet = useRef(false);
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const workspaceMemoRelatedSetting =
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED).memoRelatedSetting ||
@@ -164,18 +165,17 @@ const MemoView: React.FC<Props> = (props: Props) => {
 
   const handleCollapsibleChange = useCallback(
     (value: boolean) => {
-      setCollapsible((prev) => {
-        if (prev === value) return prev;
+      setCollapsible(value);
 
-        // When collapsible becomes true, initialize isCollapsed from localStorage or default to true
-        // Note: collapsible only changes when isCollapsed is false (MemoContent only checks height when expanded)
+      // Only auto-collapse on the initial height detection (mount), not on subsequent
+      // height changes caused by user interactions (e.g., expanding a code block).
+      if (!isInitialCollapseSet.current) {
+        isInitialCollapseSet.current = true;
         if (value) {
           const stored = getMemoCollapseState(memo.uid);
           setIsCollapsed(stored !== undefined ? stored : true);
         }
-
-        return value;
-      });
+      }
     },
     [memo.uid],
   );
