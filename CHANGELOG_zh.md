@@ -4,6 +4,12 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.0](https://github.com/chriscurrycc/memos/releases/tag/v0.28.0) - 2026-02-09
+
+### 新功能
+- 新增备忘录回顾功能，支持滑动卡片交互，包含四个模块：按标签筛选回顾、历史上的今天、随机穿越到过去某段时间、惊喜模式随机展示一条备忘录
+- 新增迁移修复脚本（`scripts/migration-repair.sh`），支持所有数据库驱动
+
 ## [v0.27.2](https://github.com/chriscurrycc/memos/releases/tag/v0.27.2) - 2026-02-04
 
 ### 新功能

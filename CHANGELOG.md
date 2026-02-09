@@ -4,6 +4,12 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.0](https://github.com/chriscurrycc/memos/releases/tag/v0.28.0) - 2026-02-09
+
+### Features
+- Added memo review feature with swipe-card UI and four modules: filtered review with tag selection, on this day in previous years, random time travel to a past period, and surprise mode for a single random memo
+- Added migration repair script (`scripts/migration-repair.sh`) for all database drivers
+
 ## [v0.27.2](https://github.com/chriscurrycc/memos/releases/tag/v0.27.2) - 2026-02-04
 
 ### Features
