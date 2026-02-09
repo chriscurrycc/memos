@@ -4,6 +4,17 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.1](https://github.com/chriscurrycc/memos/releases/tag/v0.28.1) - 2026-02-10
+
+### Features
+- Added toggle to preserve update time when editing memos
+- Added edit button to memo cards with silent refresh support
+
+### Fixes
+- Fixed card collapse conflicting with internal code block expansion
+- Added disabled state and loading spinners to review buttons
+- Used locale-aware date format and kept header visible during loading
+
 ## [v0.28.0](https://github.com/chriscurrycc/memos/releases/tag/v0.28.0) - 2026-02-09
 
 ### Features

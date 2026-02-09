@@ -4,6 +4,17 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.1](https://github.com/chriscurrycc/memos/releases/tag/v0.28.1) - 2026-02-10
+
+### 新功能
+- 编辑备忘录时新增保留更新时间的开关
+- 备忘录卡片新增编辑按钮，支持静默刷新
+
+### 修复
+- 修复卡片折叠与内部代码块展开冲突的问题
+- 回顾按钮添加禁用状态和加载动画
+- 使用本地化日期格式，加载时保持头部可见
+
 ## [v0.28.0](https://github.com/chriscurrycc/memos/releases/tag/v0.28.0) - 2026-02-09
 
 ### 新功能
