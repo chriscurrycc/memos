@@ -1,19 +1,19 @@
 import { create } from "zustand";
 import { combine } from "zustand/middleware";
-import { reviewServiceClient } from "@/grpcweb";
+import { reviewServiceClient, userServiceClient } from "@/grpcweb";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import {
   GetReviewStatsResponse,
-  ListReviewMemosRequest,
   ReviewSource,
 } from "@/types/proto/api/v1/review_service";
+import { UserSetting } from "@/types/proto/api/v1/user_service";
 
 export type ReviewTab = "review" | "on-this-day" | "time-travel" | "surprise";
 
 interface ReviewSettings {
   includeTags: string[];
   excludeTags: string[];
-  pageSize: number;
+  sessionSize: number;
 }
 
 interface OnThisDayData {
@@ -56,7 +56,7 @@ const getDefaultState = (): State => ({
   settings: {
     includeTags: [],
     excludeTags: [],
-    pageSize: 5,
+    sessionSize: 10,
   },
   onThisDayData: null,
   isOnThisDayLoadingMore: false,
@@ -71,23 +71,67 @@ export const useReviewStore = create(
   combine(getDefaultState(), (set, get) => ({
     setActiveTab: (tab: ReviewTab) => set({ activeTab: tab }),
 
-    setSettings: (settings: Partial<ReviewSettings>) =>
-      set((state) => ({ settings: { ...state.settings, ...settings } })),
-
-    fetchReviewMemos: async () => {
-      const { settings } = get();
-      set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
-
+    loadSettings: async () => {
       try {
-        const request: ListReviewMemosRequest = {
-          pageSize: settings.pageSize,
-          includeTags: settings.includeTags,
-          excludeTags: settings.excludeTags,
-        };
-        const response = await reviewServiceClient.listReviewMemos(request);
+        const userSetting = await userServiceClient.getUserSetting({});
+        if (userSetting.reviewSetting) {
+          const rs = userSetting.reviewSetting;
+          set({
+            settings: {
+              sessionSize: rs.sessionSize > 0 ? rs.sessionSize : 5,
+              includeTags: rs.includeTags ?? [],
+              excludeTags: rs.excludeTags ?? [],
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Failed to load review settings:", error);
+      }
+    },
+
+    applySettings: async (newSettings: ReviewSettings) => {
+      set({ settings: newSettings });
+      try {
+        await userServiceClient.updateUserSetting({
+          setting: UserSetting.fromPartial({
+            reviewSetting: {
+              sessionSize: newSettings.sessionSize,
+              includeTags: newSettings.includeTags,
+              excludeTags: newSettings.excludeTags,
+            },
+          }),
+          updateMask: ["review_setting"],
+        });
+      } catch (err) {
+        console.error("Failed to save review settings:", err);
+      }
+      // Force refresh after settings saved
+      set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
+      try {
+        const response = await reviewServiceClient.listReviewMemos({ force: true });
         set({
           memos: response.memos,
           totalCount: response.totalCount,
+          isCompleted: response.completed,
+          currentIndex: 0,
+          isReviewLoading: false,
+        });
+      } catch (error) {
+        console.error("Failed to fetch review memos:", error);
+        set({ isReviewLoading: false, memos: [] });
+      }
+    },
+
+    fetchReviewMemos: async (force = false) => {
+      set({ isReviewLoading: true, isCompleted: false, currentIndex: 0 });
+
+      try {
+        const response = await reviewServiceClient.listReviewMemos({ force });
+        set({
+          memos: response.memos,
+          totalCount: response.totalCount,
+          isCompleted: response.completed,
+          currentIndex: response.completed ? response.memos.length - 1 : 0,
           isReviewLoading: false,
         });
       } catch (error) {

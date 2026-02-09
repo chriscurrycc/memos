@@ -81,12 +81,8 @@ func (ReviewSource) EnumDescriptor() ([]byte, []int) {
 
 type ListReviewMemosRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Maximum number of memos to return.
-	PageSize int32 `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	// Filter by tags to include (optional).
-	IncludeTags []string `protobuf:"bytes,2,rep,name=include_tags,json=includeTags,proto3" json:"include_tags,omitempty"`
-	// Filter by tags to exclude (optional).
-	ExcludeTags   []string `protobuf:"bytes,3,rep,name=exclude_tags,json=excludeTags,proto3" json:"exclude_tags,omitempty"`
+	// Force refresh the daily review cache.
+	Force         bool `protobuf:"varint,1,opt,name=force,proto3" json:"force,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -121,25 +117,11 @@ func (*ListReviewMemosRequest) Descriptor() ([]byte, []int) {
 	return file_api_v1_review_service_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ListReviewMemosRequest) GetPageSize() int32 {
+func (x *ListReviewMemosRequest) GetForce() bool {
 	if x != nil {
-		return x.PageSize
+		return x.Force
 	}
-	return 0
-}
-
-func (x *ListReviewMemosRequest) GetIncludeTags() []string {
-	if x != nil {
-		return x.IncludeTags
-	}
-	return nil
-}
-
-func (x *ListReviewMemosRequest) GetExcludeTags() []string {
-	if x != nil {
-		return x.ExcludeTags
-	}
-	return nil
+	return false
 }
 
 type ListReviewMemosResponse struct {
@@ -147,7 +129,9 @@ type ListReviewMemosResponse struct {
 	// The memos available for review.
 	Memos []*Memo `protobuf:"bytes,1,rep,name=memos,proto3" json:"memos,omitempty"`
 	// Total count of memos available for review (before limit).
-	TotalCount    int32 `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	TotalCount int32 `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	// Whether this daily session has already been completed.
+	Completed     bool `protobuf:"varint,3,opt,name=completed,proto3" json:"completed,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -194,6 +178,13 @@ func (x *ListReviewMemosResponse) GetTotalCount() int32 {
 		return x.TotalCount
 	}
 	return 0
+}
+
+func (x *ListReviewMemosResponse) GetCompleted() bool {
+	if x != nil {
+		return x.Completed
+	}
+	return false
 }
 
 type ListOnThisDayMemosRequest struct {
@@ -777,15 +768,14 @@ var File_api_v1_review_service_proto protoreflect.FileDescriptor
 
 const file_api_v1_review_service_proto_rawDesc = "" +
 	"\n" +
-	"\x1bapi/v1/review_service.proto\x12\fmemos.api.v1\x1a\x19api/v1/memo_service.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\"{\n" +
-	"\x16ListReviewMemosRequest\x12\x1b\n" +
-	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12!\n" +
-	"\finclude_tags\x18\x02 \x03(\tR\vincludeTags\x12!\n" +
-	"\fexclude_tags\x18\x03 \x03(\tR\vexcludeTags\"d\n" +
+	"\x1bapi/v1/review_service.proto\x12\fmemos.api.v1\x1a\x19api/v1/memo_service.proto\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/api/field_behavior.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\x1fgoogle/protobuf/timestamp.proto\".\n" +
+	"\x16ListReviewMemosRequest\x12\x14\n" +
+	"\x05force\x18\x01 \x01(\bR\x05force\"\x82\x01\n" +
 	"\x17ListReviewMemosResponse\x12(\n" +
 	"\x05memos\x18\x01 \x03(\v2\x12.memos.api.v1.MemoR\x05memos\x12\x1f\n" +
 	"\vtotal_count\x18\x02 \x01(\x05R\n" +
-	"totalCount\"x\n" +
+	"totalCount\x12\x1c\n" +
+	"\tcompleted\x18\x03 \x01(\bR\tcompleted\"x\n" +
 	"\x19ListOnThisDayMemosRequest\x12\x14\n" +
 	"\x05month\x18\x01 \x01(\x05R\x05month\x12\x10\n" +
 	"\x03day\x18\x02 \x01(\x05R\x03day\x12\x16\n" +

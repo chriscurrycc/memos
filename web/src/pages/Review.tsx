@@ -19,11 +19,12 @@ const tabs: { key: ReviewTab; icon: typeof BookOpenIcon; labelKey: Translations;
 
 const Review = () => {
   const t = useTranslate();
-  const { activeTab, setActiveTab, stats, fetchStats } = useReviewStore();
+  const { activeTab, setActiveTab, stats, fetchStats, loadSettings } = useReviewStore();
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   useEffect(() => {
+    loadSettings();
     fetchStats();
   }, []);
 

@@ -475,28 +475,11 @@ paths:
           schema:
             $ref: '#/definitions/googleRpcStatus'
       parameters:
-        - name: pageSize
-          description: Maximum number of memos to return.
+        - name: force
+          description: Force refresh the daily review cache.
           in: query
           required: false
-          type: integer
-          format: int32
-        - name: includeTags
-          description: Filter by tags to include (optional).
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
-        - name: excludeTags
-          description: Filter by tags to exclude (optional).
-          in: query
-          required: false
-          type: array
-          items:
-            type: string
-          collectionFormat: multi
+          type: boolean
       tags:
         - ReviewService
   /api/v1/review/on-this-day:
@@ -1844,6 +1827,9 @@ paths:
               memoVisibility:
                 type: string
                 description: The default visibility of the memo.
+              reviewSetting:
+                $ref: '#/definitions/apiV1ReviewUserSetting'
+                description: The review settings of the user.
       tags:
         - UserService
   /api/v1/{user.name}:
@@ -2293,6 +2279,20 @@ definitions:
           type: string
       fieldMapping:
         $ref: '#/definitions/apiV1FieldMapping'
+  apiV1ReviewUserSetting:
+    type: object
+    properties:
+      sessionSize:
+        type: integer
+        format: int32
+      includeTags:
+        type: array
+        items:
+          type: string
+      excludeTags:
+        type: array
+        items:
+          type: string
   apiV1UserSetting:
     type: object
     properties:
@@ -2310,6 +2310,9 @@ definitions:
       memoVisibility:
         type: string
         description: The default visibility of the memo.
+      reviewSetting:
+        $ref: '#/definitions/apiV1ReviewUserSetting'
+        description: The review settings of the user.
   apiV1WorkspaceCustomProfile:
     type: object
     properties:
@@ -2934,6 +2937,9 @@ definitions:
         type: integer
         format: int32
         description: Total count of memos available for review (before limit).
+      completed:
+        type: boolean
+        description: Whether this daily session has already been completed.
   v1ListTagsWithEmojiResponse:
     type: object
     properties:

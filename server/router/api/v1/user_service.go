@@ -284,6 +284,11 @@ func getDefaultUserSetting(workspaceMemoRelatedSetting *storepb.WorkspaceMemoRel
 		Locale:         "en",
 		Appearance:     "system",
 		MemoVisibility: defaultVisibility,
+		ReviewSetting: &v1pb.ReviewUserSetting{
+			SessionSize:    10,
+			IncludeTags: []string{},
+			ExcludeTags: []string{},
+		},
 	}
 }
 
@@ -313,6 +318,15 @@ func (s *APIV1Service) GetUserSetting(ctx context.Context, _ *v1pb.GetUserSettin
 			userSettingMessage.Appearance = setting.GetAppearance()
 		} else if setting.Key == storepb.UserSettingKey_MEMO_VISIBILITY {
 			userSettingMessage.MemoVisibility = setting.GetMemoVisibility()
+		} else if setting.Key == storepb.UserSettingKey_REVIEW_SETTING {
+			storedReviewSetting := setting.GetReviewSetting()
+			if storedReviewSetting != nil {
+				userSettingMessage.ReviewSetting = &v1pb.ReviewUserSetting{
+					SessionSize:    storedReviewSetting.SessionSize,
+					IncludeTags: storedReviewSetting.IncludeTags,
+					ExcludeTags: storedReviewSetting.ExcludeTags,
+				}
+			}
 		}
 	}
 	return userSettingMessage, nil
@@ -355,6 +369,24 @@ func (s *APIV1Service) UpdateUserSetting(ctx context.Context, request *v1pb.Upda
 				Key:    storepb.UserSettingKey_MEMO_VISIBILITY,
 				Value: &storepb.UserSetting_MemoVisibility{
 					MemoVisibility: request.Setting.MemoVisibility,
+				},
+			}); err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to upsert user setting: %v", err)
+			}
+		} else if field == "review_setting" {
+			reviewSetting := request.Setting.ReviewSetting
+			if reviewSetting == nil {
+				reviewSetting = &v1pb.ReviewUserSetting{}
+			}
+			if _, err := s.Store.UpsertUserSetting(ctx, &storepb.UserSetting{
+				UserId: user.ID,
+				Key:    storepb.UserSettingKey_REVIEW_SETTING,
+				Value: &storepb.UserSetting_ReviewSetting{
+					ReviewSetting: &storepb.ReviewUserSetting{
+						SessionSize:    reviewSetting.SessionSize,
+						IncludeTags: reviewSetting.IncludeTags,
+						ExcludeTags: reviewSetting.ExcludeTags,
+					},
 				},
 			}); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to upsert user setting: %v", err)

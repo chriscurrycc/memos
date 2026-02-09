@@ -2,8 +2,10 @@ package v1
 
 import (
 	"context"
+	"fmt"
 	"math/rand"
 	"strings"
+	"sync"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -11,12 +13,35 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 
 	v1pb "github.com/usememos/memos/proto/gen/api/v1"
+	storepb "github.com/usememos/memos/proto/gen/store"
 	"github.com/usememos/memos/store"
 )
 
 const (
 	reviewDeduplicationDays = 30
 )
+
+// dailyReviewCache caches memo IDs per user per day so that repeated
+// calls within the same day return a consistent review set.
+type dailyReviewEntry struct {
+	date       string // "YYYY-MM-DD"
+	memoIDs    []int32
+	totalCount int32
+	completed  bool
+}
+
+var (
+	dailyReviewCache   = map[string]*dailyReviewEntry{} // key: "userID"
+	dailyReviewCacheMu sync.Mutex
+)
+
+func dailyReviewCacheKey(userID int32) string {
+	return fmt.Sprintf("%d", userID)
+}
+
+func todayDateString() string {
+	return time.Now().Format("2006-01-02")
+}
 
 func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListReviewMemosRequest) (*v1pb.ListReviewMemosResponse, error) {
 	user, err := s.GetCurrentUser(ctx)
@@ -27,53 +52,98 @@ func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListRe
 		return nil, status.Errorf(codes.Unauthenticated, "user not found")
 	}
 
-	// Get memos reviewed in the last 30 days
+	today := todayDateString()
+	cacheKey := dailyReviewCacheKey(user.ID)
+
+	// Check cache: return cached memos if same day and not forcing refresh.
+	if !request.Force {
+		dailyReviewCacheMu.Lock()
+		entry, ok := dailyReviewCache[cacheKey]
+		dailyReviewCacheMu.Unlock()
+
+		if ok && entry.date == today && len(entry.memoIDs) > 0 {
+			return s.loadMemosFromCache(ctx, entry)
+		}
+	}
+
+	// Generate new review set.
+	memoIDs, totalCount, err := s.generateReviewMemoIDs(ctx, user.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Store in cache.
+	dailyReviewCacheMu.Lock()
+	dailyReviewCache[cacheKey] = &dailyReviewEntry{
+		date:       today,
+		memoIDs:    memoIDs,
+		totalCount: totalCount,
+	}
+	entry := dailyReviewCache[cacheKey]
+	dailyReviewCacheMu.Unlock()
+
+	return s.loadMemosFromCache(ctx, entry)
+}
+
+// generateReviewMemoIDs picks memo IDs for a review session.
+// It reads the user's review settings from the database.
+func (s *APIV1Service) generateReviewMemoIDs(ctx context.Context, userID int32) ([]int32, int32, error) {
+	// Read user review settings.
+	sessionSize := 10
+	var includeTags, excludeTags []string
+	setting, err := s.Store.GetUserSetting(ctx, &store.FindUserSetting{
+		UserID: &userID,
+		Key:    storepb.UserSettingKey_REVIEW_SETTING,
+	})
+	if err == nil && setting != nil {
+		if rs := setting.GetReviewSetting(); rs != nil {
+			if rs.SessionSize > 0 {
+				sessionSize = int(rs.SessionSize)
+			}
+			includeTags = rs.IncludeTags
+			excludeTags = rs.ExcludeTags
+		}
+	}
+
 	thirtyDaysAgo := time.Now().Unix() - int64(reviewDeduplicationDays*24*60*60)
 	recentReviews, err := s.Store.ListMemoReviews(ctx, &store.FindMemoReview{
-		UserID:          &user.ID,
+		UserID:          &userID,
 		ReviewedAtAfter: &thirtyDaysAgo,
 	})
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to list recent reviews: %v", err)
+		return nil, 0, status.Errorf(codes.Internal, "failed to list recent reviews: %v", err)
 	}
 
-	// Build set of recently reviewed memo IDs
 	reviewedMemoIDs := make(map[int32]bool)
 	for _, review := range recentReviews {
 		reviewedMemoIDs[review.MemoID] = true
 	}
 
-	// List all normal memos for the user
 	normalStatus := store.Normal
 	memoFind := &store.FindMemo{
-		CreatorID:       &user.ID,
+		CreatorID:       &userID,
 		RowStatus:       &normalStatus,
 		ExcludeComments: true,
 	}
-
-	// Apply tag filters
-	if len(request.IncludeTags) > 0 {
+	if len(includeTags) > 0 {
 		memoFind.PayloadFind = &store.FindMemoPayload{
-			TagSearch: request.IncludeTags,
+			TagSearch: includeTags,
 		}
 	}
 
 	memos, err := s.Store.ListMemos(ctx, memoFind)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to list memos: %v", err)
+		return nil, 0, status.Errorf(codes.Internal, "failed to list memos: %v", err)
 	}
 
-	// Filter out recently reviewed memos and apply exclude tags
-	var filteredMemos []*store.Memo
+	var filteredIDs []int32
 	for _, memo := range memos {
 		if reviewedMemoIDs[memo.ID] {
 			continue
 		}
-
-		// Apply exclude tags filter
-		if len(request.ExcludeTags) > 0 && memo.Payload != nil {
+		if len(excludeTags) > 0 && memo.Payload != nil {
 			excluded := false
-			for _, excludeTag := range request.ExcludeTags {
+			for _, excludeTag := range excludeTags {
 				for _, memoTag := range memo.Payload.Tags {
 					if strings.HasPrefix(memoTag, excludeTag) || memoTag == excludeTag {
 						excluded = true
@@ -88,28 +158,34 @@ func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListRe
 				continue
 			}
 		}
-
-		filteredMemos = append(filteredMemos, memo)
+		filteredIDs = append(filteredIDs, memo.ID)
 	}
 
-	totalCount := int32(len(filteredMemos))
+	totalCount := int32(len(filteredIDs))
 
-	// Apply limit
-	pageSize := int(request.PageSize)
-	if pageSize <= 0 {
-		pageSize = 5
-	}
-	if len(filteredMemos) > pageSize {
-		filteredMemos = filteredMemos[:pageSize]
+	if len(filteredIDs) > sessionSize {
+		filteredIDs = filteredIDs[:sessionSize]
 	}
 
-	// Convert to response
+	return filteredIDs, totalCount, nil
+}
+
+// loadMemosFromCache loads full memo objects from cached IDs.
+func (s *APIV1Service) loadMemosFromCache(ctx context.Context, entry *dailyReviewEntry) (*v1pb.ListReviewMemosResponse, error) {
 	response := &v1pb.ListReviewMemosResponse{
 		Memos:      []*v1pb.Memo{},
-		TotalCount: totalCount,
+		TotalCount: entry.totalCount,
+		Completed:  entry.completed,
 	}
 
-	for _, memo := range filteredMemos {
+	for _, memoID := range entry.memoIDs {
+		memo, err := s.Store.GetMemo(ctx, &store.FindMemo{ID: &memoID})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to get memo: %v", err)
+		}
+		if memo == nil {
+			continue
+		}
 		memoMessage, err := s.convertMemoFromStore(ctx, memo, v1pb.MemoView_MEMO_VIEW_FULL)
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to convert memo: %v", err)
@@ -399,6 +475,15 @@ func (s *APIV1Service) RecordReview(ctx context.Context, request *v1pb.RecordRev
 
 	if err := s.Store.BatchCreateMemoReviews(ctx, reviews); err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to record reviews: %v", err)
+	}
+
+	// Mark daily cache as completed for review source.
+	if request.Source == v1pb.ReviewSource_REVIEW_SOURCE_REVIEW {
+		dailyReviewCacheMu.Lock()
+		if entry, ok := dailyReviewCache[dailyReviewCacheKey(user.ID)]; ok {
+			entry.completed = true
+		}
+		dailyReviewCacheMu.Unlock()
 	}
 
 	return &v1pb.RecordReviewResponse{

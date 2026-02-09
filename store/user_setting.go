@@ -151,6 +151,12 @@ func convertUserSettingFromRaw(raw *UserSetting) (*storepb.UserSetting, error) {
 		userSetting.Value = &storepb.UserSetting_Appearance{Appearance: raw.Value}
 	case storepb.UserSettingKey_MEMO_VISIBILITY:
 		userSetting.Value = &storepb.UserSetting_MemoVisibility{MemoVisibility: raw.Value}
+	case storepb.UserSettingKey_REVIEW_SETTING:
+		reviewSetting := &storepb.ReviewUserSetting{}
+		if err := protojsonUnmarshaler.Unmarshal([]byte(raw.Value), reviewSetting); err != nil {
+			return nil, err
+		}
+		userSetting.Value = &storepb.UserSetting_ReviewSetting{ReviewSetting: reviewSetting}
 	default:
 		return nil, nil
 	}
@@ -177,6 +183,13 @@ func convertUserSettingToRaw(userSetting *storepb.UserSetting) (*UserSetting, er
 		raw.Value = userSetting.GetAppearance()
 	case storepb.UserSettingKey_MEMO_VISIBILITY:
 		raw.Value = userSetting.GetMemoVisibility()
+	case storepb.UserSettingKey_REVIEW_SETTING:
+		reviewSetting := userSetting.GetReviewSetting()
+		value, err := protojson.Marshal(reviewSetting)
+		if err != nil {
+			return nil, err
+		}
+		raw.Value = string(value)
 	default:
 		return nil, errors.Errorf("unsupported user setting key: %v", userSetting.Key)
 	}

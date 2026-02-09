@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon, SlidersHorizontalIcon, RefreshCwIcon
 import { useEffect, useState, useCallback } from "react";
 import clsx from "clsx";
 import ConfettiAnimation from "./ConfettiAnimation";
-import ReviewSettingsDrawer from "./ReviewSettingsDrawer";
+import ReviewSettingsModal from "./ReviewSettingsModal";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import { useReviewStore } from "@/store/v1/review";
@@ -46,7 +46,7 @@ const ReviewModule = () => {
   }, [handleKeyDown]);
 
   const handleRefresh = () => {
-    fetchReviewMemos();
+    fetchReviewMemos(true);
   };
 
   if (isReviewLoading) {
@@ -118,7 +118,7 @@ const ReviewModule = () => {
       {showConfetti && <ConfettiAnimation />}
 
       {/* Settings button */}
-      <div className="flex justify-end items-center mb-4">
+      <div className="flex justify-end items-center mb-2">
         <button
           onClick={() => setShowSettings(!showSettings)}
           className={clsx(
@@ -133,7 +133,7 @@ const ReviewModule = () => {
         </button>
       </div>
 
-      <ReviewSettingsDrawer open={showSettings} onClose={() => setShowSettings(false)} />
+      <ReviewSettingsModal open={showSettings} onClose={() => setShowSettings(false)} />
 
       {isCompleted ? (
         <motion.div
@@ -167,25 +167,28 @@ const ReviewModule = () => {
           </button>
         </motion.div>
       ) : (
-        <>
-          <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
-              <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
-                {memo.displayTime
-                  ? new Date(memo.displayTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
-                  : ""}
-              </span>
-            </div>
-            <MemoContent memoName={memo.name} nodes={memo.nodes} />
-            {memo.resources.length > 0 && (
-              <div className="mt-2">
-                <MemoResourceListView resources={memo.resources} />
+        <div className="flex flex-col" style={{ height: "calc(100vh - 280px)" }}>
+          {/* Card area — scrollable */}
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 p-4 shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
+                <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
+                  {memo.displayTime
+                    ? new Date(memo.displayTime).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+                    : ""}
+                </span>
               </div>
-            )}
+              <MemoContent memoName={memo.name} nodes={memo.nodes} />
+              {memo.resources.length > 0 && (
+                <div className="mt-2">
+                  <MemoResourceListView resources={memo.resources} />
+                </div>
+              )}
+            </div>
           </div>
-          {/* Pagination */}
-          <div className="flex flex-col items-center gap-3 mt-4">
+          {/* Pagination — pinned at bottom */}
+          <div className="shrink-0 flex flex-col items-center gap-3 pt-4">
             <div className="flex items-center gap-2">
               <button
                 onClick={prevMemo}
@@ -224,7 +227,7 @@ const ReviewModule = () => {
               </button>
             )}
           </div>
-        </>
+        </div>
       )}
     </div>
   );

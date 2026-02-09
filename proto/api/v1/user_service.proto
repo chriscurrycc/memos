@@ -178,6 +178,14 @@ message UserSetting {
   string appearance = 3;
   // The default visibility of the memo.
   string memo_visibility = 4;
+  // The review settings of the user.
+  ReviewUserSetting review_setting = 5;
+}
+
+message ReviewUserSetting {
+  int32 session_size = 1;
+  repeated string include_tags = 2;
+  repeated string exclude_tags = 3;
 }
 
 message GetUserSettingRequest {

@@ -49,14 +49,8 @@ enum ReviewSource {
 }
 
 message ListReviewMemosRequest {
-  // Maximum number of memos to return.
-  int32 page_size = 1;
-
-  // Filter by tags to include (optional).
-  repeated string include_tags = 2;
-
-  // Filter by tags to exclude (optional).
-  repeated string exclude_tags = 3;
+  // Force refresh the daily review cache.
+  bool force = 1;
 }
 
 message ListReviewMemosResponse {
@@ -65,6 +59,9 @@ message ListReviewMemosResponse {
 
   // Total count of memos available for review (before limit).
   int32 total_count = 2;
+
+  // Whether this daily session has already been completed.
+  bool completed = 3;
 }
 
 message ListOnThisDayMemosRequest {
