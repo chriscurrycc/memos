@@ -151,13 +151,22 @@ docker run -d \
 
 > **重要：** 移行前にサービスを停止し、データディレクトリをバックアップしてください（デフォルト：`~/.memos/`）。
 
-**トラブルシューティング（SQLite のみ）：**
+**トラブルシューティング：**
 
-v0.24.0+ から移行後に `no such table: tag` エラーが発生した場合は、手動で tag テーブルを作成してください：
+移行後に `no such table` エラー（例：`tag`、`memo_review`、`memo_review_session`）が発生した場合は、[移行修復スクリプト](scripts/migration-repair.sh)を実行して不足しているテーブルをすべて作成してください：
 
 ```bash
-docker exec memos sh -c "apk add --no-cache sqlite && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 /var/opt/memos/memos_prod.db"
+# SQLite（デフォルト、Docker コンテナ内）
+docker exec memos sh -c "apk add --no-cache sqlite curl bash && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite"
+
+# MySQL
+bash scripts/migration-repair.sh --driver mysql --dsn "user:password@tcp(host:3306)/memos"
+
+# PostgreSQL
+bash scripts/migration-repair.sh --driver postgres --dsn "postgresql://user:password@host:5432/memos"
 ```
+
+このスクリプトは冪等性があり、複数回安全に実行できます。
 
 ## ドキュメント
 

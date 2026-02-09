@@ -151,13 +151,22 @@ If you are migrating from the original [usememos/memos](https://github.com/useme
 
 > **Important:** Stop the service and backup your data directory before migrating (default: `~/.memos/`).
 
-**Troubleshooting (SQLite only):**
+**Troubleshooting:**
 
-If you encounter `no such table: tag` error after migrating from v0.24.0+, manually create the tag table:
+If you encounter `no such table` errors (e.g. `tag`, `memo_review`, `memo_review_session`) after migration, run the [migration repair script](scripts/migration-repair.sh) to create all missing tables:
 
 ```bash
-docker exec memos sh -c "apk add --no-cache sqlite && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/sqlite/prod/0.24/01__tag.sql | sqlite3 /var/opt/memos/memos_prod.db"
+# SQLite (default, inside Docker)
+docker exec memos sh -c "apk add --no-cache sqlite curl bash && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite"
+
+# MySQL
+bash scripts/migration-repair.sh --driver mysql --dsn "user:password@tcp(host:3306)/memos"
+
+# PostgreSQL
+bash scripts/migration-repair.sh --driver postgres --dsn "postgresql://user:password@host:5432/memos"
 ```
+
+The script is idempotent and safe to run multiple times.
 
 ## Documentation
 

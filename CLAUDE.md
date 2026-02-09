@@ -108,3 +108,4 @@ const MyComponent: React.FC<Props> = ({ open, onClose }) => {
 2. All GitHub operations (issues, PRs, etc.) should target the repository chriscurrycc/memos, not the upstream fork
 3. When updating README.md, always update all language versions: README.md (English), README_zh.md (简体中文), README_zh-Hant.md (繁體中文), README_ja.md (日本語)
 4. When adding i18n translations, update these 4 locales: en.json, zh-Hans.json, zh-Hant.json, ja.json
+5. When adding or modifying database migration scripts in `store/migration/`, also update `scripts/migration-repair.sh` to include the new tables/indexes for all three drivers (SQLite, MySQL, PostgreSQL)
