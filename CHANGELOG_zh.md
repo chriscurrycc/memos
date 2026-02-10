@@ -4,6 +4,19 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.2](https://github.com/chriscurrycc/memos/releases/tag/v0.28.2) - 2026-02-10
+
+### 新功能
+- 移动端：用底部居中 FAB 按钮替代常驻内联编辑器，点击直接进入禅模式编辑器
+- 禅模式：优化 UI，增大字号、行高和图标尺寸
+
+### 优化
+- 编辑器：小屏幕下操作栏内边距和间距更紧凑
+- 编辑器：保留更新时间按钮统一使用 MUI Button 样式
+
+### 修复
+- 编辑器：修复 Safari 中点击操作栏意外聚焦编辑器的问题
+
 ## [v0.28.1](https://github.com/chriscurrycc/memos/releases/tag/v0.28.1) - 2026-02-10
 
 ### 新功能

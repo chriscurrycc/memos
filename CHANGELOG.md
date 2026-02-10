@@ -4,6 +4,19 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.2](https://github.com/chriscurrycc/memos/releases/tag/v0.28.2) - 2026-02-10
+
+### Features
+- Mobile: Replaced persistent inline editor with a centered FAB that opens zen mode editor
+- Zen mode: Enhanced UI with larger text, relaxed line-height, and scaled-up icons
+
+### Improvements
+- Editor: Compact action bar padding and gaps on small screens
+- Editor: Consistent MUI Button styling for preserve-update-time toggle
+
+### Fixes
+- Editor: Prevented Safari focus stealing when clicking action bar
+
 ## [v0.28.1](https://github.com/chriscurrycc/memos/releases/tag/v0.28.1) - 2026-02-10
 
 ### Features
