@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
-import { useCallback, useMemo, useRef } from "react";
+import { SquarePenIcon } from "lucide-react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { HomeSidebar, HomeSidebarDrawer } from "@/components/HomeSidebar";
 import MemoEditor from "@/components/MemoEditor";
+import ZenModeEditorDialog from "@/components/MemoEditor/ZenModeEditorDialog";
 import MemoFilters from "@/components/MemoFilters";
 import MemoView from "@/components/MemoView";
 import MobileHeader from "@/components/MobileHeader";
@@ -20,6 +22,7 @@ const Home = () => {
   const user = useCurrentUser();
   const memoFilterStore = useMemoFilterStore();
   const mobileScrollContainerRef = useRef<HTMLElement>(null);
+  const [mobileFabZenMode, setMobileFabZenMode] = useState(false);
 
   const memoRenderer = useCallback(
     (memo: Memo) => <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned showExport enableCollapse />,
@@ -91,7 +94,9 @@ const Home = () => {
             <PinnedMemosDrawer renderer={memoRenderer} />
             <HomeSidebarDrawer />
           </MobileHeader>
-          <div className="px-4 pt-2 pb-1">{editorSection}</div>
+          <div className="px-4 pb-1">
+            <MemoFilters />
+          </div>
         </div>
       )}
       <div className="w-full flex flex-row justify-start items-start md:flex-1 md:min-h-0">
@@ -117,6 +122,25 @@ const Home = () => {
       <div className="hidden md:block lg:hidden fixed right-0 top-1/2 -translate-y-1/2 z-20">
         <PinnedMemosDrawer anchor="right" renderer={memoRenderer} />
       </div>
+      {!md && (
+        <>
+          <ZenModeEditorDialog
+            open={mobileFabZenMode}
+            onOpenChange={setMobileFabZenMode}
+            editorProps={{
+              cacheKey: "home-memo-editor",
+              enableZenMode: true,
+            }}
+          />
+          <button
+            onClick={() => setMobileFabZenMode(true)}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 p-3 bg-primary rounded-full shadow-lg active:scale-95 transition-transform"
+            aria-label="New memo"
+          >
+            <SquarePenIcon className="w-5 h-5 text-white" />
+          </button>
+        </>
+      )}
     </section>
   );
 };

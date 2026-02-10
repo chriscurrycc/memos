@@ -436,7 +436,7 @@ const MemoEditor = (props: Props) => {
   const editorConfig = useMemo(
     () => ({
       className: isZenMode ? "zen-mode-editor-inner" : undefined,
-      textareaClassName: clsx(enableZenMode && "pr-8", showDisplayTime && "pt-0"),
+      textareaClassName: clsx(enableZenMode && !showDisplayTime && "pr-8", showDisplayTime && "pt-0"),
       initialContent: "",
       placeholder: props.placeholder ?? t("editor.any-thoughts"),
       onContentChange: handleContentChange,
@@ -507,8 +507,12 @@ const MemoEditor = (props: Props) => {
           <Editor ref={editorRef} {...editorConfig} />
           <ResourceListView resourceList={state.resourceList} setResourceList={handleSetResourceList} />
           <RelationListView relationList={referenceRelations} setRelationList={handleSetRelationList} />
-          <div className="w-full p-2 mt-2 flex flex-row justify-between items-center" onFocus={(e) => e.stopPropagation()}>
-            <div className="flex flex-row justify-start items-center gap-0.5 opacity-80 dark:opacity-60">
+          <div
+            className="w-full px-1 sm:px-2 py-2 mt-2 flex flex-row justify-between items-center"
+            onFocus={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            <div className="flex flex-row justify-start items-center gap-0 sm:gap-0.5 opacity-80 dark:opacity-60">
               <TagSelector editorRef={editorRef} />
               <MarkdownMenu editorRef={editorRef} />
               <UploadResourceButton />
@@ -526,19 +530,13 @@ const MemoEditor = (props: Props) => {
               )}
               {memoName && (
                 <Tooltip title={t("editor.preserve-update-time")} placement="top">
-                  <button
-                    className={clsx(
-                      "flex items-center justify-center p-1 rounded cursor-pointer",
-                      preserveUpdateTime ? "text-teal-600 dark:text-teal-400" : "text-gray-500 dark:text-gray-400",
-                    )}
-                    onClick={() => setPreserveUpdateTime(!preserveUpdateTime)}
-                  >
-                    <CalendarClockIcon className="w-4 h-4" />
-                  </button>
+                  <Button size="sm" variant="plain" onClick={() => setPreserveUpdateTime(!preserveUpdateTime)}>
+                    <CalendarClockIcon className={clsx("w-4 h-4 mx-auto", preserveUpdateTime && "text-primary")} />
+                  </Button>
                 </Tooltip>
               )}
             </div>
-            <div className="shrink-0 flex flex-row justify-end items-center gap-0.5">
+            <div className="shrink-0 flex flex-row justify-end items-center gap-0 sm:gap-0.5">
               <Select
                 className="!min-w-0"
                 variant="plain"

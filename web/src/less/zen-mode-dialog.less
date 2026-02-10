@@ -15,17 +15,30 @@
   .zen-mode-editor {
     @apply w-full h-full flex flex-col border-none rounded-none sm:rounded-xl shadow-2xl;
 
+    // Collapse/close button (top-right)
+    > div:first-child {
+      top: 0.5rem;
+      right: 0.5rem;
+
+      svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+
     .zen-mode-editor-inner {
       @apply flex-1 !max-h-none overflow-y-auto;
 
       textarea {
-        @apply flex-1;
+        @apply flex-1 text-base leading-relaxed;
+        padding-left: 1rem;
+        padding-bottom: 0;
         height: auto !important;
         min-height: 100% !important;
 
         // Mobile: add bottom padding for fixed action bar
         @media (max-width: 639px) {
-          @apply pb-16;
+          padding-bottom: 4rem;
         }
       }
     }
@@ -33,11 +46,27 @@
     // Bottom action bar
     > div:last-child {
       @apply shrink-0;
+      padding: 0.75rem;
+      margin-top: 0;
+
+      svg {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+
+      > div {
+        gap: 0.375rem;
+      }
 
       // Mobile: fixed at bottom
       @media (max-width: 639px) {
-        @apply fixed left-0 right-0 bg-white dark:bg-zinc-800 px-4 py-2 border-t border-zinc-200 dark:border-zinc-700;
+        @apply fixed left-0 right-0 bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700;
+        padding: 0.75rem 0.25rem;
         bottom: env(safe-area-inset-bottom, 0px);
+
+        > div {
+          gap: 0;
+        }
       }
     }
   }
