@@ -1,12 +1,9 @@
 import { Button } from "@usememos/mui";
 import { ArrowDownIcon, LoaderIcon } from "lucide-react";
-import { useEffect, useRef, useState, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
-import ScrollToTop from "@/components/ScrollToTop";
 import { DEFAULT_LIST_MEMOS_PAGE_SIZE } from "@/helpers/consts";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
-import { Routes } from "@/router";
 import { useMemoList, useMemoStore } from "@/store/v1";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import { useTranslate } from "@/utils/i18n";
@@ -17,7 +14,6 @@ interface Props {
   listSort?: (list: Memo[]) => Memo[];
   filter?: string;
   pageSize?: number;
-  scrollContainerRef?: React.RefObject<HTMLElement>;
 }
 
 interface State {
@@ -30,42 +26,11 @@ const PagedMemoList = (props: Props) => {
   const { md } = useResponsiveWidth();
   const memoStore = useMemoStore();
   const memoList = useMemoList();
-  const internalContainerRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = props.scrollContainerRef || internalContainerRef;
-  const [containerRightOffset, setContainerRightOffset] = useState(0);
   const [state, setState] = useState<State>({
     isRequesting: true, // Initial request
     nextPageToken: "",
   });
   const sortedMemoList = props.listSort ? props.listSort(memoList.value) : memoList.value;
-  const location = useLocation();
-
-  const shouldShowScrollToTop = useMemo(
-    () => [Routes.ROOT, Routes.EXPLORE, Routes.ARCHIVED].includes(location.pathname as Routes) || location.pathname.startsWith("/u/"),
-    [location.pathname],
-  );
-
-  useEffect(() => {
-    const updateOffset = () => {
-      if (internalContainerRef.current) {
-        const rect = internalContainerRef.current.getBoundingClientRect();
-        const offset = window.innerWidth - rect.right;
-        setContainerRightOffset(offset);
-      }
-    };
-
-    updateOffset();
-
-    const resizeObserver = new ResizeObserver(updateOffset);
-    if (internalContainerRef.current) {
-      resizeObserver.observe(internalContainerRef.current);
-    }
-    if (props.scrollContainerRef?.current) {
-      resizeObserver.observe(props.scrollContainerRef.current);
-    }
-
-    return () => resizeObserver.disconnect();
-  }, [props.scrollContainerRef]);
 
   const fetchMoreMemos = async (nextPageToken: string) => {
     setState((state) => ({ ...state, isRequesting: true }));
@@ -91,7 +56,7 @@ const PagedMemoList = (props: Props) => {
   }, [props.filter, props.pageSize]);
 
   const children = (
-    <div ref={internalContainerRef} className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll">
+    <div className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll">
       {sortedMemoList.map((memo) => props.renderer(memo))}
       {state.isRequesting && (
         <div className="w-full flex flex-row justify-center items-center my-4">
@@ -112,12 +77,6 @@ const PagedMemoList = (props: Props) => {
           <p className="mt-2 text-gray-600 dark:text-gray-400">{t("message.no-data")}</p>
         </div>
       )}
-      <ScrollToTop
-        enabled={shouldShowScrollToTop}
-        className="fixed bottom-6"
-        style={{ right: `calc(1rem + ${containerRightOffset}px)` }}
-        scrollContainerRef={scrollContainerRef}
-      />
     </div>
   );
 

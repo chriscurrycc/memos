@@ -106,12 +106,7 @@ const Home = () => {
         <div className="flex-1 flex px-4 md:px-6 pb-4 md:pb-0 md:pt-3 md:h-full lg:pt-6 overflow-x-hidden">
           <div id="timeline-panel" className="lg:w-1/2 flex-grow flex flex-col min-w-0 md:h-full md:overflow-y-auto">
             {md && <div className="shrink-0">{editorSection}</div>}
-            <PagedMemoList
-              renderer={memoRenderer}
-              listSort={listSort}
-              filter={memoListFilter}
-              scrollContainerRef={!md ? mobileScrollContainerRef : undefined}
-            />
+            <PagedMemoList renderer={memoRenderer} listSort={listSort} filter={memoListFilter} />
           </div>
           <ResizableSplitter />
           <div id="pinned-panel" className="hidden lg:flex lg:w-1/2 flex-col h-full overflow-y-auto">
