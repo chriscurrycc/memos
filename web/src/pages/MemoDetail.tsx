@@ -13,6 +13,7 @@ import useCurrentUser from "@/hooks/useCurrentUser";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoStore, useWorkspaceSettingStore } from "@/store/v1";
+import { useMemoMetadataStore } from "@/store/v1/memoMetadata";
 import { MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import { WorkspaceMemoRelatedSetting, WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
@@ -29,6 +30,7 @@ const MemoDetail = () => {
   const workspaceSettingStore = useWorkspaceSettingStore();
   const currentUser = useCurrentUser();
   const memoStore = useMemoStore();
+  const memoMetadataStore = useMemoMetadataStore();
   const uid = params.uid;
   const memo = memoStore.getMemoByUid(uid || "");
   const workspaceMemoRelatedSetting = WorkspaceMemoRelatedSetting.fromPartial(
@@ -52,6 +54,13 @@ const MemoDetail = () => {
       navigateTo("/404");
     }
   }, [uid]);
+
+  // Initialize memo metadata store for tag suggestions in editor.
+  useEffect(() => {
+    if (!memoMetadataStore.initialized) {
+      memoMetadataStore.fetchMemoMetadata({ user: currentUser });
+    }
+  }, [currentUser]);
 
   // Prepare memo comments.
   useEffect(() => {
