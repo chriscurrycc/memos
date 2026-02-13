@@ -22,18 +22,28 @@ const StableMasonry = ({ items }: StableMasonryProps) => {
           <div key={item.key}>{item.node}</div>
         ))}
       </div>
-      {/* Two columns on desktop */}
+      {/* Two columns on desktop, single column if only one item */}
       <div className="hidden lg:flex gap-3">
-        <div className="flex-1 flex flex-col gap-3">
-          {left.map((item) => (
-            <div key={item.key}>{item.node}</div>
-          ))}
-        </div>
-        <div className="flex-1 flex flex-col gap-3">
-          {right.map((item) => (
-            <div key={item.key}>{item.node}</div>
-          ))}
-        </div>
+        {items.length <= 1 ? (
+          <div className="flex-1 flex flex-col gap-3">
+            {items.map((item) => (
+              <div key={item.key}>{item.node}</div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <div className="flex-1 flex flex-col gap-3">
+              {left.map((item) => (
+                <div key={item.key}>{item.node}</div>
+              ))}
+            </div>
+            <div className="flex-1 flex flex-col gap-3">
+              {right.map((item) => (
+                <div key={item.key}>{item.node}</div>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </>
   );

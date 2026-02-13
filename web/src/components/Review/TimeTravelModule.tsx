@@ -59,7 +59,7 @@ const TimeTravelModule = () => {
         </div>
       ) : (
         <>
-          <div className="mb-3 flex items-center gap-2">
+          <div className="py-3 flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center shrink-0">
               <ClockIcon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
             </div>

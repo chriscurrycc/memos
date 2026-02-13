@@ -9,7 +9,7 @@ const toDateInputValue = (date: Date | null) => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 };
 
-const TimeTravelFilter = () => {
+const TimeTravelToolbar = () => {
   const t = useTranslate();
   const { timeTravelPeriod, isTimeTravelLoading, fetchTimeTravelMemos, setTimeTravelPeriod } = useReviewStore();
   const [startInput, setStartInput] = useState("");
@@ -45,7 +45,7 @@ const TimeTravelFilter = () => {
   };
 
   return (
-    <div className="mt-2 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/50">
+    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/50">
       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
           <div className="flex items-center gap-2 flex-1">
@@ -89,4 +89,4 @@ const TimeTravelFilter = () => {
   );
 };
 
-export default TimeTravelFilter;
+export default TimeTravelToolbar;

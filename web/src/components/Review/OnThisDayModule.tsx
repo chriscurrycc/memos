@@ -1,4 +1,4 @@
-import { LoaderCircleIcon, RefreshCwIcon, SquarePenIcon } from "lucide-react";
+import { LoaderCircleIcon, SquarePenIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
 import MemoContent from "@/components/MemoContent";
@@ -6,11 +6,10 @@ import MemoResourceListView from "@/components/MemoResourceListView";
 import StableMasonry from "@/components/Review/StableMasonry";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import { useReviewStore } from "@/store/v1/review";
-import { useLocale, useTranslate } from "@/utils/i18n";
+import { useTranslate } from "@/utils/i18n";
 
 const OnThisDayModule = () => {
   const t = useTranslate();
-  const locale = useLocale();
   const navigateTo = useNavigateTo();
   const { onThisDayData, isOnThisDayLoading, isOnThisDayLoadingMore, fetchOnThisDayMemos, loadMoreOnThisDayMemos } = useReviewStore();
 
@@ -18,27 +17,13 @@ const OnThisDayModule = () => {
     fetchOnThisDayMemos();
   }, []);
 
-  const now = new Date();
-  const dateStr = now.toLocaleDateString(locale, { month: "short", day: "numeric" });
-
   const sortedGroups = onThisDayData ? [...onThisDayData.groups].sort((a, b) => b.year - a.year) : [];
   const currentMemoCount = sortedGroups.reduce((sum, g) => sum + g.memos.length, 0);
   const hasMore = onThisDayData ? currentMemoCount < onThisDayData.totalCount : false;
   const isEmpty = !isOnThisDayLoading && (!onThisDayData || onThisDayData.groups.length === 0);
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-base font-semibold text-zinc-700 dark:text-zinc-200">{t("review.on-this-day-title", { date: dateStr })}</h3>
-        <button
-          onClick={() => fetchOnThisDayMemos(true)}
-          disabled={isOnThisDayLoading}
-          className="p-1.5 rounded-lg text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <RefreshCwIcon className="w-4 h-4" />
-        </button>
-      </div>
-
+    <>
       {isOnThisDayLoading ? (
         <div className="flex items-center justify-center py-12">
           <motion.div
@@ -69,7 +54,7 @@ const OnThisDayModule = () => {
           <p className="text-zinc-400 dark:text-zinc-500 max-w-xs text-sm">{t("review.no-memories-today-desc")}</p>
         </div>
       ) : (
-        <div className="max-h-[calc(100vh-280px)] overflow-y-auto">
+        <>
           <div className="space-y-4">
             {sortedGroups.map((group, groupIdx) => (
               <motion.div
@@ -121,9 +106,9 @@ const OnThisDayModule = () => {
               </button>
             </div>
           )}
-        </div>
+        </>
       )}
-    </div>
+    </>
   );
 };
 

@@ -4,10 +4,11 @@ import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import MobileHeader from "@/components/MobileHeader";
 import OnThisDayModule from "@/components/Review/OnThisDayModule";
+import OnThisDayToolbar from "@/components/Review/OnThisDayToolbar";
 import ReviewModule from "@/components/Review/ReviewModule";
 import SurpriseModule from "@/components/Review/SurpriseModule";
-import TimeTravelFilter from "@/components/Review/TimeTravelFilter";
 import TimeTravelModule from "@/components/Review/TimeTravelModule";
+import TimeTravelToolbar from "@/components/Review/TimeTravelToolbar";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useReviewStore, ReviewTab } from "@/store/v1/review";
 import { Translations, useTranslate } from "@/utils/i18n";
@@ -107,7 +108,7 @@ const Review = () => {
       {tabPanels
         .filter(({ key }) => activeTab === key)
         .map(({ key, component, className }) => (
-          <div key={key} className={clsx("overflow-y-auto h-full px-4 md:px-0", className)}>
+          <div key={key} className={clsx("overflow-y-auto h-full px-4 pb-3 md:px-0", className)}>
             {component}
           </div>
         ))}
@@ -125,7 +126,8 @@ const Review = () => {
           />
           <div className="px-4">
             {tabBar}
-            {activeTab === "time-travel" && <TimeTravelFilter />}
+            {activeTab === "on-this-day" && <OnThisDayToolbar />}
+            {activeTab === "time-travel" && <TimeTravelToolbar />}
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">{tabContent}</div>
@@ -135,17 +137,14 @@ const Review = () => {
 
   // Desktop: static layout, grid with sidebar
   return (
-    <section className="@container w-full h-screen flex flex-col justify-start items-center pt-4 pb-4">
+    <section className="@container w-full h-screen flex flex-col justify-start items-center pt-4">
       <div className="w-full h-full px-6 flex flex-col">
         {titleSection}
         <div className="flex-1 overflow-y-auto grid grid-cols-1 lg:grid-cols-[1fr_340px] xl:grid-cols-[1fr_400px] gap-4 lg:gap-6 items-start">
           <div className="h-full flex flex-col overflow-y-auto">
             {tabBar}
-            {activeTab === "time-travel" && (
-              <div className="mb-4">
-                <TimeTravelFilter />
-              </div>
-            )}
+            {activeTab === "on-this-day" && <OnThisDayToolbar />}
+            {activeTab === "time-travel" && <TimeTravelToolbar />}
             <div className="flex-1 overflow-y-scroll">{tabContent}</div>
           </div>
           <div className="hidden lg:block">
