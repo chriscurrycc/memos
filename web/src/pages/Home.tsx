@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import { SquarePenIcon } from "lucide-react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { HomeSidebar, HomeSidebarDrawer } from "@/components/HomeSidebar";
 import MemoEditor from "@/components/MemoEditor";
 import ZenModeEditorDialog from "@/components/MemoEditor/ZenModeEditorDialog";
@@ -21,7 +21,6 @@ const Home = () => {
   const { md } = useResponsiveWidth();
   const user = useCurrentUser();
   const memoFilterStore = useMemoFilterStore();
-  const mobileScrollContainerRef = useRef<HTMLElement>(null);
   const [mobileFabZenMode, setMobileFabZenMode] = useState(false);
 
   const memoRenderer = useCallback(
@@ -87,7 +86,7 @@ const Home = () => {
   }, [user, memoFilterStore.filters, memoFilterStore.orderByTimeAsc]);
 
   return (
-    <section ref={mobileScrollContainerRef} className="@container w-full h-screen overflow-y-auto md:overflow-visible md:flex md:flex-col">
+    <section className="@container w-full md:h-screen md:overflow-visible md:flex md:flex-col">
       {!md && (
         <div className="sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900">
           <MobileHeader>

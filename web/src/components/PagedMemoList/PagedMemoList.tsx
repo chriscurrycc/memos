@@ -56,7 +56,7 @@ const PagedMemoList = (props: Props) => {
   }, [props.filter, props.pageSize]);
 
   const children = (
-    <div className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll">
+    <div className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll pb-14 md:pb-0">
       {sortedMemoList.map((memo) => props.renderer(memo))}
       {state.isRequesting && (
         <div className="w-full flex flex-row justify-center items-center my-4">
