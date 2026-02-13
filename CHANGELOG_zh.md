@@ -4,6 +4,18 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.3](https://github.com/chriscurrycc/memos/releases/tag/v0.28.3) - 2026-02-13
+
+### 优化
+- 移动端：使用页面级滚动，支持 iOS 点击状态栏回到顶部
+- MobileHeader：重构支持子节点扩展粘性头部，共享滚动阴影效果
+- 回顾：提取标签页工具栏（OnThisDayToolbar、TimeTravelToolbar）统一布局
+- 回顾：瀑布流布局仅一条内容时自动切换为单列
+- 回顾：修复编辑按钮被备忘录内容遮挡的层级问题
+
+### 修复
+- 修复备忘录详情页标签建议不生效及下拉菜单被裁切的问题
+
 ## [v0.28.2](https://github.com/chriscurrycc/memos/releases/tag/v0.28.2) - 2026-02-10
 
 ### 新功能

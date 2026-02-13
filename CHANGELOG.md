@@ -4,6 +4,18 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.3](https://github.com/chriscurrycc/memos/releases/tag/v0.28.3) - 2026-02-13
+
+### Improvements
+- Mobile: Use page-level scroll for iOS tap-status-bar-to-scroll-top support
+- MobileHeader: Redesigned to support children as extended sticky header with shared scroll shadow
+- Review: Extracted tab toolbars (OnThisDayToolbar, TimeTravelToolbar) for consistent layout
+- Review: StableMasonry uses single column when only one item is present
+- Review: Fixed edit button z-index being blocked by memo content
+
+### Fixes
+- Fix tag suggestions not working on memo detail page and dropdown clipping
+
 ## [v0.28.2](https://github.com/chriscurrycc/memos/releases/tag/v0.28.2) - 2026-02-10
 
 ### Features
