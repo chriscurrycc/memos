@@ -88,15 +88,19 @@ const Home = () => {
   return (
     <section className="@container w-full md:h-screen md:overflow-visible md:flex md:flex-col">
       {!md && (
-        <div className="sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900">
-          <MobileHeader>
-            <PinnedMemosDrawer renderer={memoRenderer} />
-            <HomeSidebarDrawer />
-          </MobileHeader>
-          <div className="px-4 pb-1">
+        <MobileHeader
+          className="pb-1"
+          actions={
+            <>
+              <PinnedMemosDrawer renderer={memoRenderer} />
+              <HomeSidebarDrawer />
+            </>
+          }
+        >
+          <div className="px-4">
             <MemoFilters />
           </div>
-        </div>
+        </MobileHeader>
       )}
       <div className="w-full flex flex-row justify-start items-start md:flex-1 md:min-h-0">
         <div className="hidden md:flex flex-shrink-0 w-64 h-full px-4 border-r border-zinc-200 dark:border-zinc-800 overflow-y-auto">

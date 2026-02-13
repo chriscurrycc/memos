@@ -59,12 +59,12 @@ const PagedMemoList = (props: Props) => {
     <div className="flex flex-col justify-start items-start w-full max-w-full overflow-scroll pb-14 md:pb-0">
       {sortedMemoList.map((memo) => props.renderer(memo))}
       {state.isRequesting && (
-        <div className="w-full flex flex-row justify-center items-center my-4">
+        <div className="w-full flex flex-row justify-center items-center my-2">
           <LoaderIcon className="animate-spin text-zinc-500" />
         </div>
       )}
       {!state.isRequesting && state.nextPageToken && (
-        <div className="w-full flex flex-row justify-center items-center my-4">
+        <div className="w-full flex flex-row justify-center items-center my-2">
           <Button variant="plain" onClick={() => fetchMoreMemos(state.nextPageToken)}>
             {t("memo.load-more")}
             <ArrowDownIcon className="ml-2 w-4 h-auto" />
@@ -89,12 +89,12 @@ const PagedMemoList = (props: Props) => {
     <PullToRefresh
       onRefresh={() => refreshList()}
       pullingContent={
-        <div className="w-full flex flex-row justify-center items-center my-4">
+        <div className="w-full flex flex-row justify-center items-center my-2">
           <LoaderIcon className="opacity-60" />
         </div>
       }
       refreshingContent={
-        <div className="w-full flex flex-row justify-center items-center my-4">
+        <div className="w-full flex flex-row justify-center items-center my-2">
           <LoaderIcon className="animate-spin" />
         </div>
       }

@@ -11,7 +11,7 @@ const OnThisDayToolbar = () => {
   const dateStr = now.toLocaleDateString(locale, { month: "short", day: "numeric" });
 
   return (
-    <div className="flex items-center justify-between pb-3">
+    <div className="flex items-center justify-between md:pb-2">
       <h3 className="text-base font-semibold text-zinc-700 dark:text-zinc-200">{t("review.on-this-day-title", { date: dateStr })}</h3>
       <button
         onClick={() => fetchOnThisDayMemos(true)}

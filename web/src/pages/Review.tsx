@@ -108,7 +108,7 @@ const Review = () => {
       {tabPanels
         .filter(({ key }) => activeTab === key)
         .map(({ key, component, className }) => (
-          <div key={key} className={clsx("overflow-y-auto h-full px-4 pb-3 md:px-0", className)}>
+          <div key={key} className={clsx("px-4 pb-3 md:px-0 md:overflow-y-auto md:h-full", className)}>
             {component}
           </div>
         ))}
@@ -116,21 +116,21 @@ const Review = () => {
   );
 
   if (!md) {
-    // Mobile: sticky header + section scrolls
+    // Mobile: page-level scroll for iOS tap-status-bar-to-scroll-top
     return (
-      <section className="@container w-full h-screen overflow-y-auto pb-4">
-        <div className="sticky top-0 z-10 bg-zinc-100 dark:bg-zinc-900 pb-2">
-          <MobileHeader
-            title={t("review.title")}
-            subTitle={stats ? t("review.stats-available", { count: stats.availableForReview }) : undefined}
-          />
+      <section className="@container w-full pb-4">
+        <MobileHeader
+          className="pb-2"
+          title={t("review.title")}
+          subTitle={stats ? t("review.stats-available", { count: stats.availableForReview }) : undefined}
+        >
           <div className="px-4">
             {tabBar}
             {activeTab === "on-this-day" && <OnThisDayToolbar />}
             {activeTab === "time-travel" && <TimeTravelToolbar />}
           </div>
-        </div>
-        <div className="flex-1 overflow-y-auto">{tabContent}</div>
+        </MobileHeader>
+        {tabContent}
       </section>
     );
   }
