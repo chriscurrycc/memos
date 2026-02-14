@@ -59,7 +59,7 @@ const SurpriseModule = () => {
         <p className="text-sm text-zinc-400 dark:text-zinc-500">{t("review.surprise-desc")}</p>
       </motion.div>
 
-      <div className="flex-1 overflow-y-auto">
+      <div className="overflow-y-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={surpriseMemo.name}
