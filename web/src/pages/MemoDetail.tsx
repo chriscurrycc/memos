@@ -32,7 +32,7 @@ const MemoDetail = () => {
   const memoStore = useMemoStore();
   const memoMetadataStore = useMemoMetadataStore();
   const uid = params.uid;
-  const memo = memoStore.getMemoByUid(uid || "");
+  const [memo, setMemo] = useState<Memo | undefined>(() => memoStore.getMemoByUid(uid || ""));
   const workspaceMemoRelatedSetting = WorkspaceMemoRelatedSetting.fromPartial(
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED)?.memoRelatedSetting || {},
   );
@@ -46,10 +46,13 @@ const MemoDetail = () => {
   // Prepare memo.
   useEffect(() => {
     if (uid) {
-      memoStore.fetchMemoByUid(uid).catch((error: ClientError) => {
-        toast.error(error.details);
-        navigateTo("/403");
-      });
+      memoStore
+        .fetchMemoByUid(uid)
+        .then((m) => setMemo(m))
+        .catch((error: ClientError) => {
+          toast.error(error.details);
+          navigateTo("/403");
+        });
     } else {
       navigateTo("/404");
     }
@@ -90,7 +93,8 @@ const MemoDetail = () => {
 
   const handleCommentCreated = async (memoCommentName: string) => {
     await memoStore.getOrFetchMemoByName(memoCommentName);
-    await memoStore.getOrFetchMemoByName(memo.name, { skipCache: true });
+    const updatedMemo = await memoStore.getOrFetchMemoByName(memo.name, { skipCache: true });
+    setMemo(updatedMemo);
     setShowCommentEditor(false);
   };
 

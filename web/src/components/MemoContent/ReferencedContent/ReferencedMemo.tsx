@@ -1,7 +1,8 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import useLoading from "@/hooks/useLoading";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import { useMemoStore } from "@/store/v1";
+import { Memo } from "@/types/proto/api/v1/memo_service";
 import { RendererContext } from "../types";
 import Error from "./Error";
 
@@ -14,12 +15,15 @@ const ReferencedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
   const navigateTo = useNavigateTo();
   const loadingState = useLoading();
   const memoStore = useMemoStore();
-  const memo = memoStore.getMemoByUid(uid);
+  const [memo, setMemo] = useState<Memo | undefined>(() => memoStore.getMemoByUid(uid));
   const params = new URLSearchParams(paramsStr);
   const context = useContext(RendererContext);
 
   useEffect(() => {
-    memoStore.fetchMemoByUid(uid).finally(() => loadingState.setFinish());
+    memoStore
+      .fetchMemoByUid(uid)
+      .then((m) => setMemo(m))
+      .finally(() => loadingState.setFinish());
   }, [uid]);
 
   if (loadingState.isLoading) {

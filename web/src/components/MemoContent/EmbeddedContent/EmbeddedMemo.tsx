@@ -1,12 +1,13 @@
 import clsx from "clsx";
 import copy from "copy-to-clipboard";
 import { ArrowUpRightIcon } from "lucide-react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import useLoading from "@/hooks/useLoading";
 import { useMemoStore } from "@/store/v1";
+import { Memo } from "@/types/proto/api/v1/memo_service";
 import MemoContent from "..";
 import { RendererContext } from "../types";
 import Error from "./Error";
@@ -20,11 +21,14 @@ const EmbeddedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
   const context = useContext(RendererContext);
   const loadingState = useLoading();
   const memoStore = useMemoStore();
-  const memo = memoStore.getMemoByUid(uid);
+  const [memo, setMemo] = useState<Memo | undefined>(() => memoStore.getMemoByUid(uid));
   const resourceName = `memos/${uid}`;
 
   useEffect(() => {
-    memoStore.fetchMemoByUid(uid).finally(() => loadingState.setFinish());
+    memoStore
+      .fetchMemoByUid(uid)
+      .then((m) => setMemo(m))
+      .finally(() => loadingState.setFinish());
   }, [uid]);
 
   if (loadingState.isLoading) {
