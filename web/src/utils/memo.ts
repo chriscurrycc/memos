@@ -1,4 +1,4 @@
-import { Visibility } from "@/types/proto/api/v1/memo_service";
+import { Memo, Visibility } from "@/types/proto/api/v1/memo_service";
 
 const COLLAPSE_STORAGE_KEY = "memo-collapse-states";
 
@@ -34,6 +34,24 @@ export const removeMemoCollapseState = (memoUid: string): void => {
   } catch {
     // Ignore storage errors
   }
+};
+
+const ONE_DAY_MS = 86400 * 1000;
+
+export const hasMeaningfulUpdate = (memo: Memo): boolean => {
+  if (!memo.updateTime || !memo.createTime) return false;
+  return memo.updateTime.getTime() - memo.createTime.getTime() > ONE_DAY_MS;
+};
+
+export const formatMemoDate = (date: Date, locale: string): string => {
+  const d = new Date(date);
+  const isCurrentYear = d.getFullYear() === new Date().getFullYear();
+  return d.toLocaleDateString(locale, {
+    weekday: "short",
+    year: isCurrentYear ? undefined : "numeric",
+    month: "short",
+    day: "numeric",
+  });
 };
 
 export const convertVisibilityFromString = (visibility: string) => {

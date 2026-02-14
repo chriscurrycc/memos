@@ -131,7 +131,8 @@
     "to-do": "To-do",
     "code": "Code",
     "remove-completed-task-list-items": "Remove done",
-    "remove-completed-task-list-items-confirm": "Are you sure you want to remove all completed to-dos? THIS ACTION IS IRREVERSIBLE"
+    "remove-completed-task-list-items-confirm": "Are you sure you want to remove all completed to-dos? THIS ACTION IS IRREVERSIBLE",
+    "updated-at": "edited"
   },
   "message": {
     "archived-successfully": "Archived successfully",

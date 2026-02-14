@@ -126,7 +126,8 @@
       "public": "公開メモ"
     },
     "remove-completed-task-list-items": "完了を削除",
-    "remove-completed-task-list-items-confirm": "すべての完了したタスクを削除してもよろしいですか？（このアクションは取り消せません）"
+    "remove-completed-task-list-items-confirm": "すべての完了したタスクを削除してもよろしいですか？（このアクションは取り消せません）",
+    "updated-at": "編集済み"
   },
   "message": {
     "archived-successfully": "アーカイブが完了しました",

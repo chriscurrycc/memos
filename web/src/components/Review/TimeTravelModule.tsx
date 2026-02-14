@@ -1,12 +1,12 @@
-import { ClockIcon, LoaderCircleIcon, SquarePenIcon } from "lucide-react";
+import { ClockIcon, LoaderCircleIcon } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
-import MemoContent from "@/components/MemoContent";
-import MemoResourceListView from "@/components/MemoResourceListView";
 import StableMasonry from "@/components/Review/StableMasonry";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import { useReviewStore } from "@/store/v1/review";
 import { useLocale, useTranslate } from "@/utils/i18n";
+import { formatMemoDate } from "@/utils/memo";
+import ReviewMemoCard from "./ReviewMemoCard";
 
 const TimeTravelModule = () => {
   const t = useTranslate();
@@ -28,11 +28,6 @@ const TimeTravelModule = () => {
 
   const hasMore = timeTravelMemos.length < timeTravelTotalCount;
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return "";
-    return new Date(date).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" });
-  };
-
   return (
     <>
       {isTimeTravelLoading ? (
@@ -52,7 +47,7 @@ const TimeTravelModule = () => {
             <h3 className="text-lg font-semibold mb-1.5 text-zinc-700 dark:text-zinc-200">{t("review.no-time-travel")}</h3>
             <p className="text-zinc-400 dark:text-zinc-500 max-w-xs text-sm">
               {timeTravelPeriod.start && timeTravelPeriod.end
-                ? t("review.no-time-travel-range", { start: formatDate(timeTravelPeriod.start), end: formatDate(timeTravelPeriod.end) })
+                ? t("review.no-time-travel-range", { start: timeTravelPeriod.start ? formatMemoDate(timeTravelPeriod.start, locale) : "", end: timeTravelPeriod.end ? formatMemoDate(timeTravelPeriod.end, locale) : "" })
                 : t("review.no-time-travel-desc")}
             </p>
           </motion.div>
@@ -65,7 +60,7 @@ const TimeTravelModule = () => {
             </div>
             <div>
               <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 tabular-nums">
-                {formatDate(timeTravelPeriod.start)} — {formatDate(timeTravelPeriod.end)}
+                {timeTravelPeriod.start ? formatMemoDate(timeTravelPeriod.start, locale) : ""} — {timeTravelPeriod.end ? formatMemoDate(timeTravelPeriod.end, locale) : ""}
               </span>
               <p className="text-xs text-zinc-400 dark:text-zinc-500">
                 {timeTravelTotalCount} {timeTravelTotalCount === 1 ? "memo" : "memos"}
@@ -77,36 +72,10 @@ const TimeTravelModule = () => {
             items={timeTravelMemos.map((memo) => ({
               key: memo.name,
               node: (
-                <div className="group/card relative bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200/60 dark:border-zinc-700/50 overflow-hidden shadow-[0_1px_8px_-2px_rgba(0,0,0,0.05)] dark:shadow-none">
-                  <div className="p-4">
-                    <button
-                      onClick={() => navigateTo(`/m/${memo.uid}?edit=true`, { state: { from: "/review" } })}
-                      className="absolute top-2 right-2 p-1.5 rounded-lg text-zinc-400 dark:text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-700 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors opacity-0 group-hover/card:opacity-100"
-                    >
-                      <SquarePenIcon className="w-3.5 h-3.5" />
-                    </button>
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-teal-400 dark:bg-teal-500/60" />
-                      <span className="text-xs font-medium tracking-wide text-zinc-400 dark:text-zinc-500">
-                        {memo.displayTime
-                          ? new Date(memo.displayTime).toLocaleString(locale, {
-                              year: "numeric",
-                              month: "short",
-                              day: "numeric",
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                          : ""}
-                      </span>
-                    </div>
-                    <MemoContent memoName={memo.name} nodes={memo.nodes} />
-                    {memo.resources.length > 0 && (
-                      <div className="mt-2">
-                        <MemoResourceListView resources={memo.resources} />
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <ReviewMemoCard
+                  memo={memo}
+                  onEdit={(uid) => navigateTo(`/m/${uid}?edit=true`, { state: { from: "/review" } })}
+                />
               ),
             }))}
           />

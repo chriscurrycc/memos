@@ -4,6 +4,7 @@ import { PhotoProvider } from "react-photo-view";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoStore } from "@/store/v1";
 import { Node, NodeType } from "@/types/proto/api/v1/markdown_service";
+import { useTranslate } from "@/utils/i18n";
 import { isSuperUser } from "@/utils/user";
 import Renderer from "./Renderer";
 import { RendererContext } from "./types";
@@ -26,8 +27,10 @@ interface Props {
   parentPage?: string;
   // Collapse control
   enableCollapse?: boolean;
+  collapsible?: boolean;
   isCollapsed?: boolean;
   onCollapsibleChange?: (collapsible: boolean) => void;
+  onToggleCollapse?: () => void;
 }
 
 const MemoContent: React.FC<Props> = (props: Props) => {
@@ -40,9 +43,12 @@ const MemoContent: React.FC<Props> = (props: Props) => {
     onClick,
     onDoubleClick,
     enableCollapse,
+    collapsible,
     isCollapsed,
     onCollapsibleChange,
+    onToggleCollapse,
   } = props;
+  const t = useTranslate();
   const currentUser = useCurrentUser();
   const memoStore = useMemoStore();
   const memoContentContainerRef = useRef<HTMLDivElement>(null);
@@ -142,6 +148,14 @@ const MemoContent: React.FC<Props> = (props: Props) => {
               <div className="absolute bottom-0 left-0 w-full h-12 bg-gradient-to-b from-transparent dark:to-zinc-800 to-white pointer-events-none"></div>
             )}
           </div>
+          {collapsible && onToggleCollapse && (
+            <span
+              className="text-xs cursor-pointer select-none text-primary dark:text-primary hover:text-primary-dark dark:hover:text-primary-dark"
+              onClick={onToggleCollapse}
+            >
+              {isCollapsed ? t("memo.show-more") : t("memo.show-less")}
+            </span>
+          )}
         </div>
       </PhotoProvider>
     </RendererContext.Provider>

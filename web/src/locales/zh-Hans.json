@@ -128,7 +128,8 @@
     "to-do": "待办",
     "code": "代码",
     "remove-completed-task-list-items": "移除已办",
-    "remove-completed-task-list-items-confirm": "您确定要移除所有完成的待办吗？（此操作不可逆）"
+    "remove-completed-task-list-items-confirm": "您确定要移除所有完成的待办吗？（此操作不可逆）",
+    "updated-at": "已编辑"
   },
   "message": {
     "archived-successfully": "归档成功",

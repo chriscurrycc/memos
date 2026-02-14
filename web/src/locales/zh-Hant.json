@@ -126,7 +126,8 @@
       "public": "公開給所有人"
     },
     "remove-completed-task-list-items": "移除已完成",
-    "remove-completed-task-list-items-confirm": "您確定要移除所有完成的待辦嗎？（此操作不可逆）"
+    "remove-completed-task-list-items-confirm": "您確定要移除所有完成的待辦嗎？（此操作不可逆）",
+    "updated-at": "已編輯"
   },
   "message": {
     "archived-successfully": "封存成功",

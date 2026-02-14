@@ -147,7 +147,7 @@ const Review = () => {
             {activeTab === "time-travel" && <TimeTravelToolbar />}
             <div className="flex-1 overflow-y-scroll">{tabContent}</div>
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden lg:flex lg:flex-col lg:h-full lg:overflow-hidden">
             <SurpriseModule />
           </div>
         </div>

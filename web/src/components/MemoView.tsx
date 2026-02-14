@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon, ChevronDownIcon } from "lucide-react";
+import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon } from "lucide-react";
 import { memo, useCallback, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Tooltip from "@/components/kit/Tooltip";
@@ -13,7 +13,7 @@ import { Memo, Visibility } from "@/types/proto/api/v1/memo_service";
 import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
-import { convertVisibilityToString, getMemoCollapseState, setMemoCollapseState } from "@/utils/memo";
+import { convertVisibilityToString, getMemoCollapseState, hasMeaningfulUpdate, setMemoCollapseState } from "@/utils/memo";
 import { isSuperUser } from "@/utils/user";
 import ExportModal from "./ExportModal";
 import MemoActionMenu from "./MemoActionMenu";
@@ -65,7 +65,8 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const commentAmount = memo.relations.filter(
     (relation) => relation.type === MemoRelation_Type.COMMENT && relation.relatedMemo?.name === memo.name,
   ).length;
-  const relativeTimeFormat = Date.now() - memo.displayTime!.getTime() > 1000 * 60 * 60 * 24 ? "datetime" : "auto";
+  const relativeTimeFormat = Date.now() - memo.createTime!.getTime() > 1000 * 60 * 60 * 24 ? "datetime" : "auto";
+  const showEdited = hasMeaningfulUpdate(memo);
   const isInMemoDetailPage = location.pathname.startsWith(`/m/${memo.uid}`);
   const parentPage = props.parentPage || location.pathname;
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
@@ -124,9 +125,31 @@ const MemoView: React.FC<Props> = (props: Props) => {
 
   const displayTime =
     props.displayTimeFormat === "time" ? (
-      memo.displayTime?.toLocaleTimeString()
+      <span className="inline-flex flex-wrap items-baseline gap-x-1">
+        <Tooltip title={t("memo.view-detail")} placement="top">
+          <span className="select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" onClick={handleGotoMemoDetailPage}>
+            {memo.createTime?.toLocaleTimeString()}
+          </span>
+        </Tooltip>
+        {showEdited && (
+          <span className="text-xs text-gray-300 dark:text-gray-600 whitespace-nowrap">
+            {t("memo.updated-at")} {memo.updateTime?.toLocaleTimeString()}
+          </span>
+        )}
+      </span>
     ) : (
-      <relative-time datetime={memo.displayTime?.toISOString()} format={relativeTimeFormat}></relative-time>
+      <span className="inline-flex flex-wrap items-baseline gap-x-1">
+        <Tooltip title={t("memo.view-detail")} placement="top">
+          <span className="select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300" onClick={handleGotoMemoDetailPage}>
+            <relative-time datetime={memo.createTime?.toISOString()} format={relativeTimeFormat}></relative-time>
+          </span>
+        </Tooltip>
+        {showEdited && (
+          <span className="text-xs text-gray-300 dark:text-gray-600 whitespace-nowrap">
+            {t("memo.updated-at")} <relative-time datetime={memo.updateTime?.toISOString()} format={relativeTimeFormat}></relative-time>
+          </span>
+        )}
+      </span>
     );
 
   const handleHiddenActions = () => {
@@ -214,7 +237,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
       ) : (
         <>
           <div className="w-full flex flex-row justify-between items-center gap-2">
-            <div className="w-auto max-w-[calc(100%-8rem)] grow flex flex-row justify-start items-center">
+            <div className="w-auto grow flex flex-row justify-start items-center">
               {props.showCreator && creator ? (
                 <div className="w-full flex flex-row justify-start items-center">
                   <Link className="w-auto hover:opacity-80" to={`/u/${encodeURIComponent(creator.username)}`} viewTransition>
@@ -228,48 +251,12 @@ const MemoView: React.FC<Props> = (props: Props) => {
                     >
                       {creator.nickname || creator.username}
                     </Link>
-                    <div className="w-auto -mt-0.5 flex flex-row items-center gap-2">
-                      <Tooltip title={t("memo.view-detail")} placement="top">
-                        <span
-                          className="text-xs leading-tight text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
-                          onClick={handleGotoMemoDetailPage}
-                        >
-                          {displayTime}
-                        </span>
-                      </Tooltip>
-                      {collapsible && (
-                        <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
-                          <span
-                            className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                            onClick={handleToggleCollapse}
-                          >
-                            <ChevronDownIcon className={clsx("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-180")} />
-                          </span>
-                        </Tooltip>
-                      )}
-                    </div>
+                    <div className="w-auto -mt-0.5 text-xs leading-tight text-gray-400 dark:text-gray-500">{displayTime}</div>
                   </div>
                 </div>
               ) : (
-                <div className="w-full flex flex-row items-center gap-2">
-                  <Tooltip title={t("memo.view-detail")} placement="top">
-                    <span
-                      className="text-sm leading-tight text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
-                      onClick={handleGotoMemoDetailPage}
-                    >
-                      {displayTime}
-                    </span>
-                  </Tooltip>
-                  {collapsible && (
-                    <Tooltip title={isCollapsed ? t("memo.show-more") : t("memo.show-less")} placement="top">
-                      <span
-                        className="flex items-center cursor-pointer text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
-                        onClick={handleToggleCollapse}
-                      >
-                        <ChevronDownIcon className={clsx("w-4 h-4 transition-transform duration-200", !isCollapsed && "rotate-180")} />
-                      </span>
-                    </Tooltip>
-                  )}
+                <div className="w-full flex flex-row items-center gap-1 text-sm leading-tight text-gray-400 dark:text-gray-500">
+                  {displayTime}
                 </div>
               )}
             </div>
@@ -327,8 +314,10 @@ const MemoView: React.FC<Props> = (props: Props) => {
             onClick={handleMemoContentClick}
             onDoubleClick={handleMemoContentDoubleClick}
             enableCollapse={enableCollapse}
+            collapsible={collapsible}
             isCollapsed={isCollapsed}
             onCollapsibleChange={handleCollapsibleChange}
+            onToggleCollapse={handleToggleCollapse}
             parentPage={parentPage}
           />
           {memo.location && <MemoLocationView location={memo.location} />}
