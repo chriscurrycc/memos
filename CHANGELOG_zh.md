@@ -4,6 +4,17 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.4](https://github.com/chriscurrycc/memos/releases/tag/v0.28.4) - 2026-02-15
+
+### 优化
+- 备忘录详情页、嵌入和引用视图使用独立的 store map（`memoMapByUid`），避免列表刷新覆盖详情状态
+- 重构 EmbeddedMemo 和 MemoRelationListView 组件
+- 备忘录卡片同时显示创建时间和更新时间；提取 ReviewMemoCard 组件
+
+### 修复
+- 修复备忘录关联编辑器误删、嵌入插入和显示问题
+- 修复通过 UID 获取的备忘录被列表刷新覆盖的竞态问题
+
 ## [v0.28.3](https://github.com/chriscurrycc/memos/releases/tag/v0.28.3) - 2026-02-13
 
 ### 优化

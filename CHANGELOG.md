@@ -4,6 +4,17 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.4](https://github.com/chriscurrycc/memos/releases/tag/v0.28.4) - 2026-02-15
+
+### Improvements
+- Memo detail/embedded/referenced views now use an independent store map (`memoMapByUid`) to prevent list fetches from wiping detail state
+- Redesigned EmbeddedMemo and MemoRelationListView components
+- Show both createTime and updateTime on memo cards; extracted ReviewMemoCard component
+
+### Fixes
+- Fix memo relation editor issues including accidental deletion, embed insert, and display
+- Fix store wipe race condition for memos fetched by UID
+
 ## [v0.28.3](https://github.com/chriscurrycc/memos/releases/tag/v0.28.3) - 2026-02-13
 
 ### Improvements
