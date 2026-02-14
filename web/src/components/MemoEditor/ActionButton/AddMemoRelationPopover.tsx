@@ -96,6 +96,7 @@ const AddMemoRelationPopover = (props: Props) => {
         return;
       }
 
+      editorRef.current.focus();
       const cursorPosition = editorRef.current.getCursorPosition();
       const prevValue = editorRef.current.getContent().slice(0, cursorPosition);
       if (prevValue !== "" && !prevValue.endsWith("\n")) {
@@ -106,14 +107,15 @@ const AddMemoRelationPopover = (props: Props) => {
       }
       setTimeout(() => {
         editorRef.current?.scrollToCursor();
-        editorRef.current?.focus();
       });
     } else {
       context.setRelationList(
         uniqBy(
           [
             ...selectedMemos.map((memo) => ({
-              memo: MemoRelation_Memo.fromPartial({ name: memo.name }),
+              memo: context.memoName
+                ? MemoRelation_Memo.fromPartial({ name: context.memoName })
+                : MemoRelation_Memo.fromPartial({ name: memo.name }),
               relatedMemo: MemoRelation_Memo.fromPartial({ name: memo.name }),
               type: MemoRelation_Type.REFERENCE,
             })),
@@ -162,8 +164,8 @@ const AddMemoRelationPopover = (props: Props) => {
             )}
             renderTags={(memos) =>
               memos.map((memo) => (
-                <Chip key={memo.name} className="max-w-full rounded" size="sm" variant="outlined" color="neutral">
-                  <div className="w-full flex flex-col justify-start items-start">
+                <Chip key={memo.name} className="max-w-full overflow-hidden rounded" size="sm" variant="outlined" color="neutral">
+                  <div className="w-full overflow-hidden flex flex-col justify-start items-start">
                     <p className="text-xs text-gray-400 select-none">{memo.displayTime?.toLocaleString()}</p>
                     <span className="w-full text-xs leading-4 truncate">{memo.content}</span>
                   </div>

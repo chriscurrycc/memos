@@ -33,17 +33,19 @@ const RelationListView = (props: Props) => {
   return (
     <>
       {referencingMemoList.length > 0 && (
-        <div className="w-full flex flex-row gap-2 mt-2 flex-wrap">
+        <div className="w-full flex flex-row gap-2 flex-wrap px-2 pt-2">
           {referencingMemoList.map((memo) => {
             return (
               <div
                 key={memo.name}
-                className="w-auto max-w-xs overflow-hidden flex flex-row justify-start items-center bg-zinc-100 dark:bg-zinc-900 hover:opacity-80 rounded-md text-sm p-1 px-2 text-gray-500 dark:text-gray-400 cursor-pointer hover:line-through"
-                onClick={() => handleDeleteRelation(memo)}
+                className="w-auto max-w-xs overflow-hidden flex flex-row justify-start items-center bg-zinc-100 dark:bg-zinc-900 rounded-md text-sm p-1 px-2 text-gray-500 dark:text-gray-400"
               >
                 <LinkIcon className="w-4 h-auto shrink-0 opacity-80" />
                 <span className="mx-1 max-w-full text-ellipsis whitespace-nowrap overflow-hidden">{memo.snippet}</span>
-                <XIcon className="w-4 h-auto cursor-pointer shrink-0 opacity-60 hover:opacity-100" />
+                <XIcon
+                  className="w-4 h-auto cursor-pointer shrink-0 opacity-60 hover:opacity-100"
+                  onClick={() => handleDeleteRelation(memo)}
+                />
               </div>
             );
           })}

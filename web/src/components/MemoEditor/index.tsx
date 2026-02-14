@@ -508,7 +508,7 @@ const MemoEditor = (props: Props) => {
           <ResourceListView resourceList={state.resourceList} setResourceList={handleSetResourceList} />
           <RelationListView relationList={referenceRelations} setRelationList={handleSetRelationList} />
           <div
-            className="w-full px-1 sm:px-2 py-2 mt-2 flex flex-row justify-between items-center"
+            className="w-full px-1 sm:px-2 py-2 flex flex-row justify-between items-center"
             onFocus={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.preventDefault()}
           >
