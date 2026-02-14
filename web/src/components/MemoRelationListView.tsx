@@ -29,50 +29,48 @@ const MemoRelationListView = (props: Props) => {
 
   return (
     <div className="relative flex flex-col justify-start items-start w-full px-2 pt-2 pb-1.5 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-700">
-      <div className="w-full flex flex-row justify-start items-center mb-1 gap-3 opacity-60">
+      <div className="w-full flex flex-row justify-start items-center mb-1 gap-3">
         {referencingMemoList.length > 0 && (
           <button
             className={clsx(
-              "w-auto flex flex-row justify-start items-center text-xs gap-0.5 text-gray-500",
-              selectedTab === "referencing" && "text-gray-800 dark:text-gray-400",
+              "w-auto flex flex-row justify-start items-center text-xs gap-0.5",
+              selectedTab === "referencing" ? "text-gray-900 dark:text-gray-200" : "text-gray-400 dark:text-gray-600",
             )}
             onClick={() => setSelectedTab("referencing")}
           >
-            <LinkIcon className="w-3 h-auto shrink-0 opacity-70" />
+            <LinkIcon className="w-3 h-auto shrink-0" />
             <span>Referencing</span>
-            <span className="opacity-80">({referencingMemoList.length})</span>
+            <span>({referencingMemoList.length})</span>
           </button>
         )}
         {referencedMemoList.length > 0 && (
           <button
             className={clsx(
-              "w-auto flex flex-row justify-start items-center text-xs gap-0.5 text-gray-500",
-              selectedTab === "referenced" && "text-gray-800 dark:text-gray-400",
+              "w-auto flex flex-row justify-start items-center text-xs gap-0.5",
+              selectedTab === "referenced" ? "text-gray-900 dark:text-gray-200" : "text-gray-400 dark:text-gray-600",
             )}
             onClick={() => setSelectedTab("referenced")}
           >
-            <MilestoneIcon className="w-3 h-auto shrink-0 opacity-70" />
+            <MilestoneIcon className="w-3 h-auto shrink-0" />
             <span>Referenced by</span>
-            <span className="opacity-80">({referencedMemoList.length})</span>
+            <span>({referencedMemoList.length})</span>
           </button>
         )}
       </div>
       {selectedTab === "referencing" && referencingMemoList.length > 0 && (
         <div className="w-full flex flex-col justify-start items-start">
-          {referencingMemoList.map((memo) => {
+          {referencingMemoList.map((memo, index) => {
             return (
               <Link
                 key={memo.name}
-                className="w-auto max-w-full flex flex-row justify-start items-center text-sm leading-5 text-gray-600 dark:text-gray-400 dark:border-zinc-700 dark:bg-zinc-900 hover:underline"
+                className="w-auto max-w-full flex flex-row justify-start items-center text-xs leading-5 text-gray-600 dark:text-gray-400 dark:border-zinc-700 dark:bg-zinc-900 hover:text-gray-900 dark:hover:text-gray-200"
                 to={`/m/${memo.uid}`}
                 viewTransition
                 state={{
                   from: parentPage,
                 }}
               >
-                <span className="text-xs opacity-60 leading-4 border font-mono px-1 rounded-full mr-1 dark:border-zinc-700">
-                  {memo.uid.slice(0, 6)}
-                </span>
+                {referencingMemoList.length > 1 && <span className="opacity-60 mr-1 shrink-0">{index + 1}.</span>}
                 <span className="truncate">{memo.snippet}</span>
               </Link>
             );
@@ -81,20 +79,18 @@ const MemoRelationListView = (props: Props) => {
       )}
       {selectedTab === "referenced" && referencedMemoList.length > 0 && (
         <div className="w-full flex flex-col justify-start items-start">
-          {referencedMemoList.map((memo) => {
+          {referencedMemoList.map((memo, index) => {
             return (
               <Link
                 key={memo.name}
-                className="w-auto max-w-full flex flex-row justify-start items-center text-sm leading-5 text-gray-600 dark:text-gray-400 dark:border-zinc-700 dark:bg-zinc-900 hover:underline"
+                className="w-auto max-w-full flex flex-row justify-start items-center text-xs leading-5 text-gray-600 dark:text-gray-400 dark:border-zinc-700 dark:bg-zinc-900 hover:text-gray-900 dark:hover:text-gray-200"
                 to={`/m/${memo.uid}`}
                 viewTransition
                 state={{
                   from: parentPage,
                 }}
               >
-                <span className="text-xs opacity-60 leading-4 border font-mono px-1 rounded-full mr-1 dark:border-zinc-700">
-                  {memo.uid.slice(0, 6)}
-                </span>
+                {referencedMemoList.length > 1 && <span className="opacity-60 mr-1 shrink-0">{index + 1}.</span>}
                 <span className="truncate">{memo.snippet}</span>
               </Link>
             );

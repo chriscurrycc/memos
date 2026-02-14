@@ -43,6 +43,8 @@ const MemoDetail = () => {
   const comments = commentRelations.map((relation) => memoStore.getMemoByName(relation.memo!.name)).filter((memo) => memo) as any as Memo[];
   const showCreateCommentButton = workspaceMemoRelatedSetting.enableComment && currentUser && !showCommentEditor;
 
+  const mutationVersion = useMemoStore((state) => state.mutationVersion);
+
   // Prepare memo.
   useEffect(() => {
     if (uid) {
@@ -57,6 +59,16 @@ const MemoDetail = () => {
       navigateTo("/404");
     }
   }, [uid]);
+
+  // Sync memo from store after mutations (e.g. edit).
+  useEffect(() => {
+    if (uid && mutationVersion > 0) {
+      const updated = memoStore.getMemoByUid(uid);
+      if (updated) {
+        setMemo(updated);
+      }
+    }
+  }, [mutationVersion]);
 
   // Initialize memo metadata store for tag suggestions in editor.
   useEffect(() => {

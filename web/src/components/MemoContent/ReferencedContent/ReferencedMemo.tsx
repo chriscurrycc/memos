@@ -27,7 +27,7 @@ const ReferencedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
   }, [uid]);
 
   if (loadingState.isLoading) {
-    return null;
+    return <span className="inline-block h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse align-middle" />;
   }
   if (!memo) {
     return <Error message={`Memo not found: ${uid}`} />;

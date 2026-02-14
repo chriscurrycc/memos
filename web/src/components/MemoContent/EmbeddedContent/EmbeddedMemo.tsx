@@ -1,13 +1,13 @@
 import clsx from "clsx";
-import copy from "copy-to-clipboard";
-import { ArrowUpRightIcon } from "lucide-react";
+import { QuoteIcon } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 import MemoResourceListView from "@/components/MemoResourceListView";
+import Tooltip from "@/components/kit/Tooltip";
 import useLoading from "@/hooks/useLoading";
+import useNavigateTo from "@/hooks/useNavigateTo";
 import { useMemoStore } from "@/store/v1";
 import { Memo } from "@/types/proto/api/v1/memo_service";
+import { useTranslate } from "@/utils/i18n";
 import MemoContent from "..";
 import { RendererContext } from "../types";
 import Error from "./Error";
@@ -18,7 +18,9 @@ interface Props {
 }
 
 const EmbeddedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
+  const t = useTranslate();
   const context = useContext(RendererContext);
+  const navigateTo = useNavigateTo();
   const loadingState = useLoading();
   const memoStore = useMemoStore();
   const [memo, setMemo] = useState<Memo | undefined>(() => memoStore.getMemoByUid(uid));
@@ -32,8 +34,15 @@ const EmbeddedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
   }, [uid]);
 
   if (loadingState.isLoading) {
-    return null;
+    return (
+      <div className="w-full px-2 py-1.5 rounded-md bg-zinc-50 dark:bg-zinc-900 text-xs border border-gray-200 dark:border-zinc-700 animate-pulse">
+        <div className="h-2.5 w-20 bg-gray-200 dark:bg-gray-700 rounded mb-1.5" />
+        <div className="h-2.5 w-40 bg-gray-200 dark:bg-gray-700 rounded mb-1.5" />
+        <div className="h-2.5 w-40 bg-gray-200 dark:bg-gray-700 rounded" />
+      </div>
+    );
   }
+
   if (!memo) {
     return <Error message={`Memo not found: ${uid}`} />;
   }
@@ -64,26 +73,17 @@ const EmbeddedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
     return <div className="w-full">{contentNode}</div>;
   }
 
-  const copyMemoUid = (uid: string) => {
-    copy(uid);
-    toast.success("Copied memo UID to clipboard");
-  };
-
   return (
-    <div className="relative flex flex-col justify-start items-start w-full px-3 py-2 bg-zinc-50 dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-zinc-700 hover:shadow">
-      <div className="w-full mb-1 flex flex-row justify-between items-center text-gray-400 dark:text-gray-500">
-        <div className="text-sm leading-5 select-none">
+    <div className="w-full px-2 py-1.5 rounded-md bg-zinc-50 dark:bg-zinc-900 text-xs border border-gray-200 dark:border-zinc-700">
+      <Tooltip title={t("memo.view-detail")} placement="top">
+        <span
+          className="w-fit mb-0.5 flex items-center gap-1 text-xs leading-4 text-gray-400 dark:text-gray-500 select-none cursor-pointer hover:text-gray-600 dark:hover:text-gray-300"
+          onClick={() => navigateTo(`/m/${memo.uid}`, { state: { from: context.parentPage } })}
+        >
+          <QuoteIcon className="w-3 h-3" />
           <relative-time datetime={memo.displayTime?.toISOString()} format="datetime"></relative-time>
-        </div>
-        <div className="flex justify-end items-center gap-1">
-          <span className="text-xs opacity-60 leading-5 cursor-pointer hover:opacity-80" onClick={() => copyMemoUid(memo.uid)}>
-            {memo.uid.slice(0, 6)}
-          </span>
-          <Link className="opacity-60 hover:opacity-80" to={`/m/${memo.uid}`} state={{ from: context.parentPage }} viewTransition>
-            <ArrowUpRightIcon className="w-5 h-auto" />
-          </Link>
-        </div>
-      </div>
+        </span>
+      </Tooltip>
       {contentNode}
     </div>
   );
