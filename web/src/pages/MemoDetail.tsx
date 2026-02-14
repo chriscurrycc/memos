@@ -32,7 +32,7 @@ const MemoDetail = () => {
   const memoStore = useMemoStore();
   const memoMetadataStore = useMemoMetadataStore();
   const uid = params.uid;
-  const [memo, setMemo] = useState<Memo | undefined>(() => memoStore.getMemoByUid(uid || ""));
+  const memo = useMemoStore((state) => state.memoMapByUid[uid || ""]);
   const workspaceMemoRelatedSetting = WorkspaceMemoRelatedSetting.fromPartial(
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED)?.memoRelatedSetting || {},
   );
@@ -43,32 +43,17 @@ const MemoDetail = () => {
   const comments = commentRelations.map((relation) => memoStore.getMemoByName(relation.memo!.name)).filter((memo) => memo) as any as Memo[];
   const showCreateCommentButton = workspaceMemoRelatedSetting.enableComment && currentUser && !showCommentEditor;
 
-  const mutationVersion = useMemoStore((state) => state.mutationVersion);
-
   // Prepare memo.
   useEffect(() => {
     if (uid) {
-      memoStore
-        .fetchMemoByUid(uid)
-        .then((m) => setMemo(m))
-        .catch((error: ClientError) => {
-          toast.error(error.details);
-          navigateTo("/403");
-        });
+      memoStore.fetchMemoByUid(uid).catch((error: ClientError) => {
+        toast.error(error.details);
+        navigateTo("/403");
+      });
     } else {
       navigateTo("/404");
     }
   }, [uid]);
-
-  // Sync memo from store after mutations (e.g. edit).
-  useEffect(() => {
-    if (uid && mutationVersion > 0) {
-      const updated = memoStore.getMemoByUid(uid);
-      if (updated) {
-        setMemo(updated);
-      }
-    }
-  }, [mutationVersion]);
 
   // Initialize memo metadata store for tag suggestions in editor.
   useEffect(() => {
@@ -105,8 +90,7 @@ const MemoDetail = () => {
 
   const handleCommentCreated = async (memoCommentName: string) => {
     await memoStore.getOrFetchMemoByName(memoCommentName);
-    const updatedMemo = await memoStore.getOrFetchMemoByName(memo.name, { skipCache: true });
-    setMemo(updatedMemo);
+    await memoStore.fetchMemoByUid(uid!, { skipCache: true });
     setShowCommentEditor(false);
   };
 

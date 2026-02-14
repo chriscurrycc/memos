@@ -1,12 +1,11 @@
 import clsx from "clsx";
 import { QuoteIcon } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import Tooltip from "@/components/kit/Tooltip";
 import useLoading from "@/hooks/useLoading";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import { useMemoStore } from "@/store/v1";
-import { Memo } from "@/types/proto/api/v1/memo_service";
 import { useTranslate } from "@/utils/i18n";
 import MemoContent from "..";
 import { RendererContext } from "../types";
@@ -23,14 +22,11 @@ const EmbeddedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
   const navigateTo = useNavigateTo();
   const loadingState = useLoading();
   const memoStore = useMemoStore();
-  const [memo, setMemo] = useState<Memo | undefined>(() => memoStore.getMemoByUid(uid));
+  const memo = useMemoStore((state) => state.memoMapByUid[uid]);
   const resourceName = `memos/${uid}`;
 
   useEffect(() => {
-    memoStore
-      .fetchMemoByUid(uid)
-      .then((m) => setMemo(m))
-      .finally(() => loadingState.setFinish());
+    memoStore.fetchMemoByUid(uid).finally(() => loadingState.setFinish());
   }, [uid]);
 
   if (loadingState.isLoading) {

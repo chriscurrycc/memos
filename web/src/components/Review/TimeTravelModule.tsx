@@ -47,7 +47,10 @@ const TimeTravelModule = () => {
             <h3 className="text-lg font-semibold mb-1.5 text-zinc-700 dark:text-zinc-200">{t("review.no-time-travel")}</h3>
             <p className="text-zinc-400 dark:text-zinc-500 max-w-xs text-sm">
               {timeTravelPeriod.start && timeTravelPeriod.end
-                ? t("review.no-time-travel-range", { start: timeTravelPeriod.start ? formatMemoDate(timeTravelPeriod.start, locale) : "", end: timeTravelPeriod.end ? formatMemoDate(timeTravelPeriod.end, locale) : "" })
+                ? t("review.no-time-travel-range", {
+                    start: timeTravelPeriod.start ? formatMemoDate(timeTravelPeriod.start, locale) : "",
+                    end: timeTravelPeriod.end ? formatMemoDate(timeTravelPeriod.end, locale) : "",
+                  })
                 : t("review.no-time-travel-desc")}
             </p>
           </motion.div>
@@ -60,7 +63,8 @@ const TimeTravelModule = () => {
             </div>
             <div>
               <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 tabular-nums">
-                {timeTravelPeriod.start ? formatMemoDate(timeTravelPeriod.start, locale) : ""} — {timeTravelPeriod.end ? formatMemoDate(timeTravelPeriod.end, locale) : ""}
+                {timeTravelPeriod.start ? formatMemoDate(timeTravelPeriod.start, locale) : ""} —{" "}
+                {timeTravelPeriod.end ? formatMemoDate(timeTravelPeriod.end, locale) : ""}
               </span>
               <p className="text-xs text-zinc-400 dark:text-zinc-500">
                 {timeTravelTotalCount} {timeTravelTotalCount === 1 ? "memo" : "memos"}
@@ -71,12 +75,7 @@ const TimeTravelModule = () => {
           <StableMasonry
             items={timeTravelMemos.map((memo) => ({
               key: memo.name,
-              node: (
-                <ReviewMemoCard
-                  memo={memo}
-                  onEdit={(uid) => navigateTo(`/m/${uid}?edit=true`, { state: { from: "/review" } })}
-                />
-              ),
+              node: <ReviewMemoCard memo={memo} onEdit={(uid) => navigateTo(`/m/${uid}?edit=true`, { state: { from: "/review" } })} />,
             }))}
           />
           {hasMore && (

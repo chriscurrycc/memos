@@ -13,6 +13,9 @@ interface State {
   mutationVersion: number;
   memoMapByName: Record<string, Memo>;
   pinnedMemoMapByName: Record<string, Memo>;
+  // Separate map for memos fetched by UID, used by detail page and embedded/referenced views.
+  // Independent from memoMapByName to avoid conflicts with list fetches.
+  memoMapByUid: Record<string, Memo>;
   currentRequest: AbortController | null;
 }
 
@@ -21,6 +24,7 @@ const getDefaultState = (): State => ({
   mutationVersion: 0,
   memoMapByName: {},
   pinnedMemoMapByName: {},
+  memoMapByUid: {},
   currentRequest: null,
 });
 
@@ -91,12 +95,23 @@ export const useMemoStore = create(
     getMemoByName: (name: string) => {
       return get().memoMapByName[name];
     },
-    fetchMemoByUid: async (uid: string) => {
-      return await memoServiceClient.getMemoByUid({ uid });
-    },
-    getMemoByUid: (uid: string) => {
-      const memoMap = get().memoMapByName;
-      return Object.values(memoMap).find((memo) => memo.uid === uid);
+    fetchMemoByUid: async (uid: string, options?: { skipCache?: boolean }) => {
+      if (!options?.skipCache) {
+        const cached = get().memoMapByUid[uid];
+        if (cached) return cached;
+        // Check list stores to avoid redundant fetch.
+        const fromList =
+          Object.values(get().memoMapByName).find((m) => m.uid === uid) ||
+          Object.values(get().pinnedMemoMapByName).find((m) => m.uid === uid);
+        if (fromList) {
+          set({ stateId: uniqueId(), memoMapByUid: { ...get().memoMapByUid, [uid]: fromList } });
+          return fromList;
+        }
+      }
+      const memo = await memoServiceClient.getMemoByUid({ uid });
+      const memoByUidMap = { ...get().memoMapByUid, [uid]: memo };
+      set({ stateId: uniqueId(), memoMapByUid: memoByUidMap });
+      return memo;
     },
     createMemo: async (request: CreateMemoRequest) => {
       const memo = await memoServiceClient.createMemo(request);
@@ -122,26 +137,33 @@ export const useMemoStore = create(
       const updatedMemo = existingMemo ? { ...memo, displayTime: existingMemo.displayTime } : memo;
       memoMap[memo.name] = updatedMemo;
 
+      // Also update memoMapByUid if this memo is tracked there.
+      const memoByUidMap = get().memoMapByUid;
+      if (memoByUidMap[memo.uid]) {
+        memoByUidMap[memo.uid] = memo;
+      }
+
       // Update pinnedMemoMapByName based on the memo's pinned status.
       const newMutationVersion = get().mutationVersion + 1;
+      const baseUpdate = { stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, memoMapByUid: memoByUidMap };
       if (memo.pinned) {
         if (hasPinnedMemo) {
           // Replace value without reordering for existing pinned memos.
           const newPinnedMemoMap = { ...pinnedMemoMap };
           newPinnedMemoMap[memo.name] = updatedMemo;
-          set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
+          set({ ...baseUpdate, pinnedMemoMapByName: newPinnedMemoMap });
         } else {
           // New pinned memos go to the front to preserve pin order.
           const newPinnedMemoMap = { [memo.name]: updatedMemo, ...pinnedMemoMap };
-          set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
+          set({ ...baseUpdate, pinnedMemoMapByName: newPinnedMemoMap });
         }
       } else if (hasPinnedMemo) {
         // Remove from pinned list when unpinned.
         const newPinnedMemoMap = { ...pinnedMemoMap };
         delete newPinnedMemoMap[memo.name];
-        set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: newPinnedMemoMap });
+        set({ ...baseUpdate, pinnedMemoMapByName: newPinnedMemoMap });
       } else {
-        set({ stateId: uniqueId(), mutationVersion: newMutationVersion, memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
+        set({ ...baseUpdate, pinnedMemoMapByName: pinnedMemoMap });
       }
       return updatedMemo;
     },
@@ -158,9 +180,20 @@ export const useMemoStore = create(
         removeMemoCollapseState(memo.uid);
       }
 
+      const memoByUidMap = get().memoMapByUid;
+      if (memo?.uid) {
+        delete memoByUidMap[memo.uid];
+      }
+
       delete memoMap[name];
       delete pinnedMemoMap[name];
-      set({ stateId: uniqueId(), mutationVersion: get().mutationVersion + 1, memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
+      set({
+        stateId: uniqueId(),
+        mutationVersion: get().mutationVersion + 1,
+        memoMapByName: memoMap,
+        pinnedMemoMapByName: pinnedMemoMap,
+        memoMapByUid: memoByUidMap,
+      });
     },
     fetchPinnedMemos: async (creatorName: string) => {
       const { memos, nextPageToken } = await memoServiceClient.listMemos({
