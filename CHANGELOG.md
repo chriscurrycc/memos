@@ -4,6 +4,14 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.5](https://github.com/chriscurrycc/memos/releases/tag/v0.28.5) - 2026-02-15
+
+### Features
+- Persist review session cache to database so incomplete sessions survive server restarts
+
+### Fixes
+- Fix SurpriseModule scroll container layout issue
+
 ## [v0.28.4](https://github.com/chriscurrycc/memos/releases/tag/v0.28.4) - 2026-02-15
 
 ### Improvements

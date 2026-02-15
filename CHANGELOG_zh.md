@@ -4,6 +4,14 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.5](https://github.com/chriscurrycc/memos/releases/tag/v0.28.5) - 2026-02-15
+
+### 新功能
+- 将回顾会话缓存持久化到数据库，未完成的会话在服务器重启后保留
+
+### 修复
+- 修复惊喜模块滚动容器布局问题
+
 ## [v0.28.4](https://github.com/chriscurrycc/memos/releases/tag/v0.28.4) - 2026-02-15
 
 ### 优化
