@@ -59,6 +59,27 @@ type FindReviewSession struct {
 	Limit            *int
 }
 
+type MemoReviewSessionCache struct {
+	ID          int32
+	UserID      int32
+	CreatedAt   int64
+	CompletedAt *int64
+	MemoIDs     []int32
+	TotalCount  int32
+}
+
+func (s *Store) UpsertMemoReviewSessionCache(ctx context.Context, cache *MemoReviewSessionCache) (*MemoReviewSessionCache, error) {
+	return s.driver.UpsertMemoReviewSessionCache(ctx, cache)
+}
+
+func (s *Store) GetMemoReviewSessionCache(ctx context.Context, userID int32) (*MemoReviewSessionCache, error) {
+	return s.driver.GetMemoReviewSessionCache(ctx, userID)
+}
+
+func (s *Store) CompleteMemoReviewSessionCache(ctx context.Context, userID int32) error {
+	return s.driver.CompleteMemoReviewSessionCache(ctx, userID)
+}
+
 func (s *Store) CreateReviewSession(ctx context.Context, create *ReviewSession) (*ReviewSession, error) {
 	return s.driver.CreateReviewSession(ctx, create)
 }

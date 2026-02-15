@@ -83,6 +83,11 @@ type Driver interface {
 	UpdateTag(ctx context.Context, update *UpdateTag) (*Tag, error)
 	ListTags(ctx context.Context, find *FindTag) ([]*Tag, error)
 
+	// MemoReviewSessionCache model related methods.
+	UpsertMemoReviewSessionCache(ctx context.Context, cache *MemoReviewSessionCache) (*MemoReviewSessionCache, error)
+	GetMemoReviewSessionCache(ctx context.Context, userID int32) (*MemoReviewSessionCache, error)
+	CompleteMemoReviewSessionCache(ctx context.Context, userID int32) error
+
 	// Review model related methods.
 	CreateReviewSession(ctx context.Context, create *ReviewSession) (*ReviewSession, error)
 	ListReviewSessions(ctx context.Context, find *FindReviewSession) ([]*ReviewSession, error)

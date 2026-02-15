@@ -93,6 +93,16 @@ CREATE TABLE IF NOT EXISTS memo_review (
 CREATE INDEX IF NOT EXISTS idx_memo_review_user ON memo_review(user_id);
 CREATE INDEX IF NOT EXISTS idx_memo_review_user_time ON memo_review(user_id, reviewed_at);
 CREATE INDEX IF NOT EXISTS idx_memo_review_user_memo ON memo_review(user_id, memo_id);
+
+-- memo_review_session_cache (v0.25)
+CREATE TABLE IF NOT EXISTS memo_review_session_cache (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL UNIQUE,
+  created_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
+  completed_at BIGINT,
+  memo_ids TEXT NOT NULL DEFAULT '[]',
+  total_count INTEGER NOT NULL DEFAULT 0
+);
 SQL
 
   echo "SQLite migration repair complete."
@@ -151,6 +161,16 @@ CREATE TABLE IF NOT EXISTS `memo_review` (
   `source` VARCHAR(256) NOT NULL DEFAULT 'review',
   `session_id` INT,
   FOREIGN KEY (`session_id`) REFERENCES `memo_review_session`(`id`)
+);
+
+-- memo_review_session_cache (v0.25)
+CREATE TABLE IF NOT EXISTS `memo_review_session_cache` (
+  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `user_id` INT NOT NULL UNIQUE,
+  `created_at` BIGINT NOT NULL DEFAULT (UNIX_TIMESTAMP()),
+  `completed_at` BIGINT,
+  `memo_ids` JSON NOT NULL,
+  `total_count` INT NOT NULL DEFAULT 0
 );
 SQL
 
@@ -215,6 +235,16 @@ CREATE TABLE IF NOT EXISTS memo_review (
 CREATE INDEX IF NOT EXISTS idx_memo_review_user ON memo_review(user_id);
 CREATE INDEX IF NOT EXISTS idx_memo_review_user_time ON memo_review(user_id, reviewed_at);
 CREATE INDEX IF NOT EXISTS idx_memo_review_user_memo ON memo_review(user_id, memo_id);
+
+-- memo_review_session_cache (v0.25)
+CREATE TABLE IF NOT EXISTS memo_review_session_cache (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE,
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW()),
+  completed_at BIGINT,
+  memo_ids TEXT NOT NULL DEFAULT '[]',
+  total_count INTEGER NOT NULL DEFAULT 0
+);
 SQL
 
   echo "PostgreSQL migration repair complete."

@@ -2,13 +2,78 @@ package mysql
 
 import (
 	"context"
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 
 	"github.com/usememos/memos/store"
 )
+
+func (d *DB) UpsertMemoReviewSessionCache(ctx context.Context, cache *store.MemoReviewSessionCache) (*store.MemoReviewSessionCache, error) {
+	memoIDsJSON, err := json.Marshal(cache.MemoIDs)
+	if err != nil {
+		return nil, err
+	}
+	now := time.Now().Unix()
+
+	stmt := `
+		INSERT INTO memo_review_session_cache (user_id, created_at, completed_at, memo_ids, total_count)
+		VALUES (?, ?, ?, ?, ?)
+		ON DUPLICATE KEY UPDATE
+			created_at = VALUES(created_at),
+			completed_at = VALUES(completed_at),
+			memo_ids = VALUES(memo_ids),
+			total_count = VALUES(total_count)`
+	result, err := d.db.ExecContext(ctx, stmt, cache.UserID, now, cache.CompletedAt, string(memoIDsJSON), cache.TotalCount)
+	if err != nil {
+		return nil, err
+	}
+
+	rawID, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+	if rawID > 0 {
+		cache.ID = int32(rawID)
+	}
+	cache.CreatedAt = now
+
+	return cache, nil
+}
+
+func (d *DB) GetMemoReviewSessionCache(ctx context.Context, userID int32) (*store.MemoReviewSessionCache, error) {
+	row := d.db.QueryRowContext(ctx, `
+		SELECT id, user_id, created_at, completed_at, memo_ids, total_count
+		FROM memo_review_session_cache
+		WHERE user_id = ?`, userID)
+
+	cache := &store.MemoReviewSessionCache{}
+	var completedAt sql.NullInt64
+	var memoIDsJSON string
+	if err := row.Scan(&cache.ID, &cache.UserID, &cache.CreatedAt, &completedAt, &memoIDsJSON, &cache.TotalCount); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	if completedAt.Valid {
+		cache.CompletedAt = &completedAt.Int64
+	}
+	if err := json.Unmarshal([]byte(memoIDsJSON), &cache.MemoIDs); err != nil {
+		return nil, err
+	}
+	return cache, nil
+}
+
+func (d *DB) CompleteMemoReviewSessionCache(ctx context.Context, userID int32) error {
+	now := time.Now().Unix()
+	_, err := d.db.ExecContext(ctx, "UPDATE `memo_review_session_cache` SET `completed_at` = ? WHERE `user_id` = ?", now, userID)
+	return err
+}
 
 func (d *DB) CreateReviewSession(ctx context.Context, create *store.ReviewSession) (*store.ReviewSession, error) {
 	fields := []string{"`user_id`", "`memo_count`", "`source`"}

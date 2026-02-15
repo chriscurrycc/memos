@@ -2,12 +2,10 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"math/rand"
 	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -47,26 +45,8 @@ type scoredMemo struct {
 	score  float64
 }
 
-// dailyReviewCache caches memo IDs per user per day so that repeated
-// calls within the same day return a consistent review set.
-type dailyReviewEntry struct {
-	date       string // "YYYY-MM-DD"
-	memoIDs    []int32
-	totalCount int32
-	completed  bool
-}
-
-var (
-	dailyReviewCache   = map[string]*dailyReviewEntry{} // key: "userID"
-	dailyReviewCacheMu sync.Mutex
-)
-
-func dailyReviewCacheKey(userID int32) string {
-	return fmt.Sprintf("%d", userID)
-}
-
-func todayDateString() string {
-	return time.Now().Format("2006-01-02")
+func completedToday(completedAt int64) bool {
+	return time.Unix(completedAt, 0).Format("2006-01-02") == time.Now().Format("2006-01-02")
 }
 
 func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListReviewMemosRequest) (*v1pb.ListReviewMemosResponse, error) {
@@ -78,17 +58,21 @@ func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListRe
 		return nil, status.Errorf(codes.Unauthenticated, "user not found")
 	}
 
-	today := todayDateString()
-	cacheKey := dailyReviewCacheKey(user.ID)
-
-	// Check cache: return cached memos if same day and not forcing refresh.
 	if !request.Force {
-		dailyReviewCacheMu.Lock()
-		entry, ok := dailyReviewCache[cacheKey]
-		dailyReviewCacheMu.Unlock()
-
-		if ok && entry.date == today && len(entry.memoIDs) > 0 {
-			return s.loadMemosFromCache(ctx, entry)
+		cache, err := s.Store.GetMemoReviewSessionCache(ctx, user.ID)
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to get review session cache: %v", err)
+		}
+		if cache != nil && len(cache.MemoIDs) > 0 {
+			if cache.CompletedAt == nil {
+				// Pending session: always return it.
+				return s.loadMemosFromSession(ctx, cache)
+			}
+			if completedToday(*cache.CompletedAt) {
+				// Completed today: return with completed=true.
+				return s.loadMemosFromSession(ctx, cache)
+			}
+			// Stale completed session: fall through to generate new.
 		}
 	}
 
@@ -98,17 +82,18 @@ func (s *APIV1Service) ListReviewMemos(ctx context.Context, request *v1pb.ListRe
 		return nil, err
 	}
 
-	// Store in cache.
-	dailyReviewCacheMu.Lock()
-	dailyReviewCache[cacheKey] = &dailyReviewEntry{
-		date:       today,
-		memoIDs:    memoIDs,
-		totalCount: totalCount,
+	// Store in DB cache.
+	cache := &store.MemoReviewSessionCache{
+		UserID:     user.ID,
+		MemoIDs:    memoIDs,
+		TotalCount: totalCount,
 	}
-	entry := dailyReviewCache[cacheKey]
-	dailyReviewCacheMu.Unlock()
+	cache, err = s.Store.UpsertMemoReviewSessionCache(ctx, cache)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to upsert review session cache: %v", err)
+	}
 
-	return s.loadMemosFromCache(ctx, entry)
+	return s.loadMemosFromSession(ctx, cache)
 }
 
 // generateReviewMemoIDs picks memo IDs for a review session using spaced
@@ -244,15 +229,15 @@ func (s *APIV1Service) generateReviewMemoIDs(ctx context.Context, userID int32) 
 	return ids, totalCount, nil
 }
 
-// loadMemosFromCache loads full memo objects from cached IDs.
-func (s *APIV1Service) loadMemosFromCache(ctx context.Context, entry *dailyReviewEntry) (*v1pb.ListReviewMemosResponse, error) {
+// loadMemosFromSession loads full memo objects from a session cache.
+func (s *APIV1Service) loadMemosFromSession(ctx context.Context, cache *store.MemoReviewSessionCache) (*v1pb.ListReviewMemosResponse, error) {
 	response := &v1pb.ListReviewMemosResponse{
 		Memos:      []*v1pb.Memo{},
-		TotalCount: entry.totalCount,
-		Completed:  entry.completed,
+		TotalCount: cache.TotalCount,
+		Completed:  cache.CompletedAt != nil,
 	}
 
-	for _, memoID := range entry.memoIDs {
+	for _, memoID := range cache.MemoIDs {
 		memo, err := s.Store.GetMemo(ctx, &store.FindMemo{ID: &memoID})
 		if err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to get memo: %v", err)
@@ -551,13 +536,11 @@ func (s *APIV1Service) RecordReview(ctx context.Context, request *v1pb.RecordRev
 		return nil, status.Errorf(codes.Internal, "failed to record reviews: %v", err)
 	}
 
-	// Mark daily cache as completed for review source.
+	// Mark session cache as completed for review source.
 	if request.Source == v1pb.ReviewSource_REVIEW_SOURCE_REVIEW {
-		dailyReviewCacheMu.Lock()
-		if entry, ok := dailyReviewCache[dailyReviewCacheKey(user.ID)]; ok {
-			entry.completed = true
+		if err := s.Store.CompleteMemoReviewSessionCache(ctx, user.ID); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to complete review session cache: %v", err)
 		}
-		dailyReviewCacheMu.Unlock()
 	}
 
 	return &v1pb.RecordReviewResponse{

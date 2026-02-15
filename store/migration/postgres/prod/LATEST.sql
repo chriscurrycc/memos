@@ -168,3 +168,13 @@ CREATE TABLE memo_review (
 CREATE INDEX idx_memo_review_user ON memo_review(user_id);
 CREATE INDEX idx_memo_review_user_time ON memo_review(user_id, reviewed_at);
 CREATE INDEX idx_memo_review_user_memo ON memo_review(user_id, memo_id);
+
+-- memo_review_session_cache
+CREATE TABLE memo_review_session_cache (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE,
+  created_at BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW()),
+  completed_at BIGINT,
+  memo_ids TEXT NOT NULL DEFAULT '[]',
+  total_count INTEGER NOT NULL DEFAULT 0
+);
