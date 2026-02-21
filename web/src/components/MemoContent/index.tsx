@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { memo, useEffect, useRef } from "react";
+import { memo, useLayoutEffect, useRef } from "react";
 import { PhotoProvider } from "react-photo-view";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoStore } from "@/store/v1";
@@ -55,8 +55,11 @@ const MemoContent: React.FC<Props> = (props: Props) => {
   const memoObj = memoName ? memoStore.getMemoByName(memoName) : null;
   const allowEdit = !props.readonly && memoObj && (currentUser?.name === memoObj.creator || isSuperUser(currentUser));
 
-  // Detect if content needs collapse based on height
-  useEffect(() => {
+  // Detect if content needs collapse based on height.
+  // useLayoutEffect ensures cleanup (observer disconnect) runs synchronously after DOM commit
+  // but before ResizeObserver callbacks are delivered, preventing a race condition where the
+  // observer fires after line-clamp is applied and incorrectly reports a short height.
+  useLayoutEffect(() => {
     if (!enableCollapse || !onCollapsibleChange || !memoContentContainerRef.current) {
       return;
     }
