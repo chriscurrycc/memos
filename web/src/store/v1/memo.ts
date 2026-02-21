@@ -83,12 +83,17 @@ export const useMemoStore = create(
       if (!options?.skipStore) {
         memoMap[name] = memo;
         const pinnedMemoMap = get().pinnedMemoMapByName;
+        const memoByUidMap = get().memoMapByUid;
+        const updates: Partial<State> = { stateId: uniqueId(), memoMapByName: memoMap };
         if (pinnedMemoMap[name]) {
           pinnedMemoMap[name] = memo;
-          set({ stateId: uniqueId(), memoMapByName: memoMap, pinnedMemoMapByName: pinnedMemoMap });
-        } else {
-          set({ stateId: uniqueId(), memoMapByName: memoMap });
+          updates.pinnedMemoMapByName = pinnedMemoMap;
         }
+        if (memoByUidMap[memo.uid]) {
+          memoByUidMap[memo.uid] = memo;
+          updates.memoMapByUid = memoByUidMap;
+        }
+        set(updates);
       }
       return memo;
     },
