@@ -2,7 +2,7 @@ import { Button } from "@usememos/mui";
 import clsx from "clsx";
 import { ArrowUpLeftFromCircleIcon, MessageCircleIcon } from "lucide-react";
 import { ClientError } from "nice-grpc-web";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useParams, useSearchParams } from "react-router-dom";
 import { MemoDetailSidebar, MemoDetailSidebarDrawer } from "@/components/MemoDetailSidebar";
@@ -23,10 +23,10 @@ const MemoDetail = () => {
   const t = useTranslate();
   const { md } = useResponsiveWidth();
   const params = useParams();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigateTo = useNavigateTo();
   const { state: locationState } = useLocation();
-  const editMode = searchParams.get("edit") === "true";
+  const initialEditRef = useRef(searchParams.get("edit") === "true");
   const workspaceSettingStore = useWorkspaceSettingStore();
   const currentUser = useCurrentUser();
   const memoStore = useMemoStore();
@@ -42,6 +42,14 @@ const MemoDetail = () => {
     memo?.relations.filter((relation) => relation.relatedMemo?.name === memo.name && relation.type === MemoRelation_Type.COMMENT) || [];
   const comments = commentRelations.map((relation) => memoStore.getMemoByName(relation.memo!.name)).filter((memo) => memo) as any as Memo[];
   const showCreateCommentButton = workspaceMemoRelatedSetting.enableComment && currentUser && !showCommentEditor;
+
+  // Clear edit param from URL after reading it.
+  useEffect(() => {
+    if (searchParams.has("edit")) {
+      searchParams.delete("edit");
+      setSearchParams(searchParams, { replace: true });
+    }
+  }, []);
 
   // Prepare memo.
   useEffect(() => {
@@ -113,11 +121,11 @@ const MemoDetail = () => {
             </div>
           )}
           <MemoView
-            key={`${memo.name}-${memo.displayTime}`}
+            key={memo.name}
             className="shadow hover:shadow-md transition-all"
             memo={memo}
             parentPage={locationState?.from}
-            initialEdit={editMode}
+            initialEdit={initialEditRef.current}
             showCreator
             showVisibility
             showPinned
