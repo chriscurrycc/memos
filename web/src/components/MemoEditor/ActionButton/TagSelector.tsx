@@ -37,6 +37,8 @@ const TagSelector = (props: Props) => {
       current.insertText("\n");
     }
     current.insertText(`#${tag} `);
+    setOpen(false);
+    requestAnimationFrame(() => current.focus());
   };
 
   return (

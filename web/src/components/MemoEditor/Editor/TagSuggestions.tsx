@@ -49,7 +49,7 @@ const TagSuggestions = ({ editorRef, editorActions }: Props) => {
     if (!editorActions || !("current" in editorActions) || !editorActions.current) return;
     const [word, index] = getCurrentWord();
     editorActions.current.removeText(index, word.length);
-    editorActions.current.insertText(`#${tag}`);
+    editorActions.current.insertText(`#${tag} `);
     hide();
   };
 
