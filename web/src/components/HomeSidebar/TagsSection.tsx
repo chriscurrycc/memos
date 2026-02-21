@@ -58,7 +58,7 @@ const TagsSection = (props: Props) => {
   const memoFilterStore = useMemoFilterStore();
   const memoMetadataStore = useMemoMetadataStore();
   const initialized = useMemoMetadataInitialized();
-  const [treeMode, setTreeMode] = useLocalStorage<boolean>("tag-view-as-tree", false);
+  const [treeMode, setTreeMode] = useLocalStorage<boolean>("tag-view-as-tree", true);
   const tags = useSortedTags();
   const [renameDialogState, setRenameDialogState] = useState<{ open: boolean; tag: string }>({ open: false, tag: "" });
 
