@@ -103,8 +103,11 @@ const UserStatisticsView = ({ onCloseHomeSidebarDrawer }: Props) => {
       <div className="w-full mb-1 flex flex-row justify-between items-center gap-1">
         <div className="flex items-center gap-1">
           <div
-            className="relative text-sm font-medium inline-flex flex-row items-center w-auto dark:text-gray-400 truncate cursor-pointer hover:opacity-80"
-            onClick={() => setDrawerOpen(true)}
+            className={clsx(
+              "relative text-sm font-medium inline-flex flex-row items-center w-auto dark:text-gray-400 truncate",
+              memoAmount > 0 ? "cursor-pointer hover:opacity-80" : "cursor-default",
+            )}
+            onClick={() => memoAmount > 0 && setDrawerOpen(true)}
           >
             <CalendarDaysIcon className="w-4 h-auto mr-1 opacity-60 shrink-0" strokeWidth={1.5} />
             <span className="truncate">
