@@ -4,6 +4,20 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.28.6](https://github.com/chriscurrycc/memos/releases/tag/v0.28.6) - 2026-02-22
+
+### Features
+- Default TagsSection to tree mode
+
+### Fixes
+- Update memoMapByUid in getOrFetchMemoByName for instant reaction updates
+- Improve tag selector UX with auto-close and editor focus
+- Support list auto-continuation at all nesting levels
+- Preserve code block collapse state across task list toggles
+- Disable calendar drawer when memo count is zero
+- Prevent edit mode from persisting after save on MemoDetail page
+- Use useLayoutEffect for collapse height detection to fix race condition
+
 ## [v0.28.5](https://github.com/chriscurrycc/memos/releases/tag/v0.28.5) - 2026-02-15
 
 ### Features

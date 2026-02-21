@@ -4,6 +4,20 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.28.6](https://github.com/chriscurrycc/memos/releases/tag/v0.28.6) - 2026-02-22
+
+### 新功能
+- 标签区域默认使用树形模式展示
+
+### 修复
+- 修复通过名称获取备忘录时 memoMapByUid 未更新导致表态不即时生效的问题
+- 优化标签选择器交互，选择后自动关闭并聚焦编辑器
+- 支持所有嵌套层级的列表自动续行
+- 修复切换任务列表时代码块折叠状态丢失的问题
+- 备忘录数量为零时禁用日历抽屉
+- 修复备忘录详情页保存后编辑模式未退出的问题
+- 使用 useLayoutEffect 修复折叠高度检测的竞态问题
+
 ## [v0.28.5](https://github.com/chriscurrycc/memos/releases/tag/v0.28.5) - 2026-02-15
 
 ### 新功能
