@@ -107,7 +107,7 @@ const Archived = () => {
                     </Tooltip>
                   </div>
                 </div>
-                <MemoContent key={`${memo.name}-${memo.displayTime}`} memoName={memo.name} nodes={memo.nodes} readonly={true} />
+                <MemoContent key={memo.name} memoName={memo.name} nodes={memo.nodes} readonly={true} />
               </div>
             )}
             listSort={(memos: Memo[]) =>

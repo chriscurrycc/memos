@@ -307,7 +307,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
             </div>
           </div>
           <MemoContent
-            key={`${memo.name}-${memo.updateTime}`}
+            key={memo.name}
             memoName={memo.name}
             nodes={memo.nodes}
             readonly={readonly}
