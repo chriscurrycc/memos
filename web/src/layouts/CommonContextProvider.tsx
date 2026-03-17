@@ -38,7 +38,7 @@ const CommonContextProvider = ({ children }: { children: React.ReactNode }) => {
       const workspaceProfile = await workspaceServiceClient.getWorkspaceProfile({});
       // Initial fetch for workspace settings.
       (async () => {
-        [WorkspaceSettingKey.GENERAL, WorkspaceSettingKey.MEMO_RELATED].forEach(async (key) => {
+        [WorkspaceSettingKey.GENERAL, WorkspaceSettingKey.MEMO_RELATED, WorkspaceSettingKey.PUBLIC_COMMENT].forEach(async (key) => {
           await workspaceSettingStore.fetchWorkspaceSetting(key);
         });
       })();

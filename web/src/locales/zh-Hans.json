@@ -107,7 +107,8 @@
     "archived-at": "归档于",
     "comment": {
       "self": "评论",
-      "write-a-comment": "写评论"
+      "write-a-comment": "写评论",
+      "public-comments": "公开评论"
     },
     "copy-link": "复制链接",
     "count-memos-in-date": "{{date}} 有 {{count}} 条备忘录",
@@ -312,7 +313,19 @@
       "server-name": "服务器名称",
       "removed-completed-task-list-items": "启用移除已办"
     },
-    "memo-related": "备忘录"
+    "memo-related": "备忘录",
+    "public-comment": "Giscus",
+    "public-comment-settings": {
+      "title": "公开评论 (Giscus)",
+      "guide": "前往 giscus.app 生成配置，然后将仓库、仓库 ID、分类和分类 ID 复制到下方。",
+      "enable": "启用公开评论",
+      "giscus-repo": "GitHub 仓库",
+      "giscus-repo-id": "仓库 ID",
+      "giscus-category": "讨论分类",
+      "giscus-category-id": "分类 ID",
+      "giscus-theme": "主题",
+      "giscus-lang": "语言"
+    }
   },
   "tag": {
     "all-tags": "全部标签",

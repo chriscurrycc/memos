@@ -103,7 +103,8 @@
     "code": "代碼",
     "comment": {
       "self": "評論",
-      "write-a-comment": "寫下留言"
+      "write-a-comment": "寫下留言",
+      "public-comments": "公開評論"
     },
     "copy-link": "複製連結",
     "count-memos-in-date": "{{date}}的{{count}}個備忘錄",
@@ -218,6 +219,18 @@
       "delete-warning": "您確定要刪除 {{username}}?\n\n此操作無法逆轉"
     },
     "memo-related": "Memo",
+    "public-comment": "Giscus",
+    "public-comment-settings": {
+      "title": "公開評論 (Giscus)",
+      "guide": "前往 giscus.app 產生設定，然後將倉庫、倉庫 ID、分類和分類 ID 複製到下方。",
+      "enable": "啟用公開評論",
+      "giscus-repo": "GitHub 倉庫",
+      "giscus-repo-id": "倉庫 ID",
+      "giscus-category": "討論分類",
+      "giscus-category-id": "分類 ID",
+      "giscus-theme": "主題",
+      "giscus-lang": "語言"
+    },
     "my-account": "我的帳號",
     "preference": "偏好設定",
     "preference-section": {

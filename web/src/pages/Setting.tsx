@@ -1,5 +1,15 @@
 import { Option, Select } from "@mui/joy";
-import { CogIcon, DatabaseIcon, KeyIcon, LibraryIcon, LucideIcon, Settings2Icon, UserIcon, UsersIcon } from "lucide-react";
+import {
+  CogIcon,
+  DatabaseIcon,
+  KeyIcon,
+  LibraryIcon,
+  LucideIcon,
+  MessageSquareIcon,
+  Settings2Icon,
+  UserIcon,
+  UsersIcon,
+} from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -7,6 +17,7 @@ import MemberSection from "@/components/Settings/MemberSection";
 import MemoRelatedSettings from "@/components/Settings/MemoRelatedSettings";
 import MyAccountSection from "@/components/Settings/MyAccountSection";
 import PreferencesSection from "@/components/Settings/PreferencesSection";
+import PublicCommentSettings from "@/components/Settings/PublicCommentSettings";
 import SSOSection from "@/components/Settings/SSOSection";
 import SectionMenuItem from "@/components/Settings/SectionMenuItem";
 import StorageSection from "@/components/Settings/StorageSection";
@@ -18,20 +29,21 @@ import { User_Role } from "@/types/proto/api/v1/user_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
 
-type SettingSection = "my-account" | "preference" | "member" | "system" | "memo-related" | "storage" | "sso";
+type SettingSection = "my-account" | "preference" | "member" | "system" | "memo-related" | "public-comment" | "storage" | "sso";
 
 interface State {
   selectedSection: SettingSection;
 }
 
 const BASIC_SECTIONS: SettingSection[] = ["my-account", "preference"];
-const ADMIN_SECTIONS: SettingSection[] = ["member", "system", "memo-related", "storage", "sso"];
+const ADMIN_SECTIONS: SettingSection[] = ["member", "system", "memo-related", "public-comment", "storage", "sso"];
 const SECTION_ICON_MAP: Record<SettingSection, LucideIcon> = {
   "my-account": UserIcon,
   preference: CogIcon,
   member: UsersIcon,
   system: Settings2Icon,
   "memo-related": LibraryIcon,
+  "public-comment": MessageSquareIcon,
   storage: DatabaseIcon,
   sso: KeyIcon,
 };
@@ -73,7 +85,7 @@ const Setting = () => {
 
     // Initial fetch for workspace settings.
     (async () => {
-      [WorkspaceSettingKey.MEMO_RELATED, WorkspaceSettingKey.STORAGE].forEach(async (key) => {
+      [WorkspaceSettingKey.MEMO_RELATED, WorkspaceSettingKey.STORAGE, WorkspaceSettingKey.PUBLIC_COMMENT].forEach(async (key) => {
         await workspaceSettingStore.fetchWorkspaceSetting(key);
       });
     })();
@@ -141,6 +153,8 @@ const Setting = () => {
               <WorkspaceSection />
             ) : state.selectedSection === "memo-related" ? (
               <MemoRelatedSettings />
+            ) : state.selectedSection === "public-comment" ? (
+              <PublicCommentSettings />
             ) : state.selectedSection === "storage" ? (
               <StorageSection />
             ) : state.selectedSection === "sso" ? (
