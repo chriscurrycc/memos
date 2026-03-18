@@ -47,6 +47,7 @@ const MemoDetail = () => {
   const publicCommentSetting = WorkspacePublicCommentSetting.fromPartial(
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.PUBLIC_COMMENT)?.publicCommentSetting || {},
   );
+  const hasInternalCommentSection = workspaceMemoRelatedSetting.enableComment || comments.length > 0;
   const showPublicComments =
     publicCommentSetting.enabled && memo?.visibility === Visibility.PUBLIC && publicCommentSetting.repo && publicCommentSetting.repoId;
 
@@ -137,67 +138,71 @@ const MemoDetail = () => {
             showVisibility
             showPinned
           />
-          <div className="pt-8 pb-16 w-full">
-            <h2 id="comments" className="sr-only">
-              {t("memo.comment.self")}
-            </h2>
-            <div className="relative mx-auto flex-grow w-full min-h-full flex flex-col justify-start items-start gap-y-1">
-              {comments.length === 0 ? (
-                showCreateCommentButton && (
-                  <div className="w-full flex flex-row justify-center items-center py-6">
-                    <Button variant="plain" color="primary" onClick={handleShowCommentEditor}>
-                      <span className="text-gray-500">{t("memo.comment.write-a-comment")}</span>
-                      <MessageCircleIcon className="ml-2 w-5 h-auto text-gray-500" />
-                    </Button>
-                  </div>
-                )
-              ) : (
-                <>
-                  <div className="w-full flex flex-row justify-between items-center h-8 pl-3 mb-2">
-                    <div className="flex flex-row justify-start items-center">
-                      <MessageCircleIcon className="w-5 h-auto text-gray-400 mr-1" />
-                      <span className="text-gray-400 text-sm">{t("memo.comment.self")}</span>
-                      <span className="text-gray-400 text-sm ml-1">({comments.length})</span>
-                    </div>
-                    {showCreateCommentButton && (
-                      <Button variant="plain" color="primary" className="text-gray-500" onClick={handleShowCommentEditor}>
-                        {t("memo.comment.write-a-comment")}
+          {hasInternalCommentSection && (
+            <div className="pt-8 pb-16 w-full">
+              <h2 id="comments" className="sr-only">
+                {t("memo.comment.self")}
+              </h2>
+              <div className="relative mx-auto flex-grow w-full min-h-full flex flex-col justify-start items-start gap-y-1">
+                {comments.length === 0 ? (
+                  showCreateCommentButton && (
+                    <div className="w-full flex flex-row justify-center items-center py-6">
+                      <Button variant="plain" color="primary" onClick={handleShowCommentEditor}>
+                        <span className="text-gray-500">{t("memo.comment.write-a-comment")}</span>
+                        <MessageCircleIcon className="ml-2 w-5 h-auto text-gray-500" />
                       </Button>
-                    )}
-                  </div>
-                  {comments.map((comment) => (
-                    <MemoView
-                      key={`${comment.name}-${comment.displayTime}`}
-                      memo={comment}
-                      parentPage={locationState?.from}
-                      showCreator
-                      enableCollapse
-                    />
-                  ))}
-                </>
+                    </div>
+                  )
+                ) : (
+                  <>
+                    <div className="w-full flex flex-row justify-between items-center h-8 pl-3 mb-2">
+                      <div className="flex flex-row justify-start items-center">
+                        <MessageCircleIcon className="w-5 h-auto text-gray-400 mr-1" />
+                        <span className="text-gray-400 text-sm">{t("memo.comment.self")}</span>
+                        <span className="text-gray-400 text-sm ml-1">({comments.length})</span>
+                      </div>
+                      {showCreateCommentButton && (
+                        <Button variant="plain" color="primary" className="text-gray-500" onClick={handleShowCommentEditor}>
+                          {t("memo.comment.write-a-comment")}
+                        </Button>
+                      )}
+                    </div>
+                    {comments.map((comment) => (
+                      <MemoView
+                        key={`${comment.name}-${comment.displayTime}`}
+                        memo={comment}
+                        parentPage={locationState?.from}
+                        showCreator
+                        enableCollapse
+                      />
+                    ))}
+                  </>
+                )}
+              </div>
+              {showCommentEditor && (
+                <div className="w-full">
+                  <MemoEditor
+                    cacheKey={`${memo.name}-${memo.updateTime}-comment`}
+                    placeholder={t("editor.add-your-comment-here")}
+                    parentMemoName={memo.name}
+                    autoFocus
+                    enableZenMode
+                    onConfirm={handleCommentCreated}
+                    onCancel={() => setShowCommentEditor(false)}
+                  />
+                </div>
               )}
             </div>
-            {showCommentEditor && (
-              <div className="w-full">
-                <MemoEditor
-                  cacheKey={`${memo.name}-${memo.updateTime}-comment`}
-                  placeholder={t("editor.add-your-comment-here")}
-                  parentMemoName={memo.name}
-                  autoFocus
-                  enableZenMode
-                  onConfirm={handleCommentCreated}
-                  onCancel={() => setShowCommentEditor(false)}
-                />
-              </div>
-            )}
-          </div>
+          )}
           {showPublicComments && (
             <div className="w-full pt-4 pb-8">
-              <div className="w-full flex flex-row items-center mb-4">
-                <div className="flex-grow border-t border-gray-200 dark:border-gray-600" />
-                <span className="px-4 text-sm text-gray-400">{t("memo.comment.public-comments")}</span>
-                <div className="flex-grow border-t border-gray-200 dark:border-gray-600" />
-              </div>
+              {hasInternalCommentSection && (
+                <div className="w-full flex flex-row items-center mb-4">
+                  <div className="flex-grow border-t border-gray-200 dark:border-gray-600" />
+                  <span className="px-4 text-sm text-gray-400">{t("memo.comment.public-comments")}</span>
+                  <div className="flex-grow border-t border-gray-200 dark:border-gray-600" />
+                </div>
+              )}
               <Giscus
                 id="public-comments"
                 repo={publicCommentSetting.repo as `${string}/${string}`}
