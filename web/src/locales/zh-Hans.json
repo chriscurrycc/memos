@@ -116,7 +116,7 @@
       "public-comments": "公开评论"
     },
     "copy-link": "复制链接",
-    "share-to-x": "分享到 X",
+    "share-to-x": "分享",
     "copy-content": "复制内容",
     "count-memos-in-date": "{{date}} 有 {{count}} 条 memos",
     "delete-confirm": "您确定要删除此条 Memo 吗？（此操作不可逆）",

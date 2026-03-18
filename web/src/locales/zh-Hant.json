@@ -112,7 +112,7 @@
       "public-comments": "公開評論"
     },
     "copy-link": "複製連結",
-    "share-to-x": "分享到 X",
+    "share-to-x": "分享",
     "copy-content": "複製內容",
     "count-memos-in-date": "{{date}} 的 {{count}} 條 Memos",
     "delete-confirm": "您確定要刪除此 Memo？\n\n此操作無法逆轉",
