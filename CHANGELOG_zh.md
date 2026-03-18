@@ -4,6 +4,14 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.29.0](https://github.com/chriscurrycc/memos/releases/tag/v0.29.0) - 2026-03-18
+
+### 新功能
+- 新增基于 Giscus 的公开评论功能，支持公开备忘录的访客评论
+- 新增 "Giscus" 管理设置页，附配置引导
+- 公开备忘录详情页内部评论下方展示 Giscus 评论组件
+- 支持 en、zh-Hans、zh-Hant、ja 四种语言
+
 ## [v0.28.6](https://github.com/chriscurrycc/memos/releases/tag/v0.28.6) - 2026-02-22
 
 ### 新功能

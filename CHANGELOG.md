@@ -4,6 +4,14 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.29.0](https://github.com/chriscurrycc/memos/releases/tag/v0.29.0) - 2026-03-18
+
+### Features
+- Add public comments via Giscus integration for public memos
+- New "Giscus" admin settings tab with setup guide
+- Giscus widget renders below internal comments on public memo detail pages
+- i18n support for en, zh-Hans, zh-Hant, ja
+
 ## [v0.28.6](https://github.com/chriscurrycc/memos/releases/tag/v0.28.6) - 2026-02-22
 
 ### Features
