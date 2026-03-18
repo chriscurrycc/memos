@@ -43,7 +43,7 @@
     "learn-more": "了解",
     "link": "連結",
     "mark": "Mark",
-    "memos": "備忘錄",
+    "memos": "Memos",
     "name": "名稱",
     "never": "永不",
     "new": "新增",
@@ -114,7 +114,7 @@
     "copy-link": "複製連結",
     "share-to-x": "分享到 X",
     "copy-content": "複製內容",
-    "count-memos-in-date": "{{date}}的{{count}}個備忘錄",
+    "count-memos-in-date": "{{date}} 的 {{count}} 條 Memos",
     "delete-confirm": "您確定要刪除此 Memo？\n\n此操作無法逆轉",
     "delete-memo": "刪除 Memo",
     "embed": "內嵌",
@@ -161,7 +161,7 @@
   "reference": {
     "add-references": "添加參考資料",
     "embedded-usage": "作為嵌入式內容使用",
-    "no-memos-found": "未找到任何備忘錄",
+    "no-memos-found": "未找到任何 Memos",
     "referencing": "引用",
     "referenced-by": "被引用",
     "search-placeholder": "搜尋內容"
