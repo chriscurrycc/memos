@@ -249,6 +249,8 @@ func convertWorkspaceMemoRelatedSettingFromStore(setting *storepb.WorkspaceMemoR
 		Reactions:                setting.Reactions,
 		DisableMarkdownShortcuts: setting.DisableMarkdownShortcuts,
 		EnableShareToX:           setting.EnableShareToX,
+		DisableReactions:         setting.DisableReactions,
+		DisableSaveAsImage:       setting.DisableSaveAsImage,
 	}
 }
 
@@ -269,6 +271,8 @@ func convertWorkspaceMemoRelatedSettingToStore(setting *v1pb.WorkspaceMemoRelate
 		Reactions:                setting.Reactions,
 		DisableMarkdownShortcuts: setting.DisableMarkdownShortcuts,
 		EnableShareToX:           setting.EnableShareToX,
+		DisableReactions:         setting.DisableReactions,
+		DisableSaveAsImage:       setting.DisableSaveAsImage,
 	}
 }
 

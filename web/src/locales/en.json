@@ -363,6 +363,8 @@
       "enable-memo-location": "Enable memo location",
       "content-lenght-limit": "Content length limit(Byte)",
       "reactions": "Reactions",
+      "enable-reactions": "Enable reactions",
+      "enable-save-as-image": "Enable save as image",
       "enable-share-to-x": "Enable share to X"
     },
     "version": "Version"

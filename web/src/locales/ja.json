@@ -226,6 +226,14 @@
     },
     "memo-related": "Memo",
     "memo-related-settings": {
+      "title": "メモ関連設定",
+      "enable-link-preview": "リンクプレビューを有効にする",
+      "enable-memo-comments": "メモコメントを有効にする",
+      "enable-memo-location": "メモの位置情報を有効にする",
+      "content-lenght-limit": "コンテンツ長さ制限（バイト）",
+      "reactions": "リアクション",
+      "enable-reactions": "リアクションを有効にする",
+      "enable-save-as-image": "画像として保存を有効にする",
       "enable-share-to-x": "Xへの共有を有効にする"
     },
     "public-comment": "Giscus",

@@ -486,8 +486,12 @@ type WorkspaceMemoRelatedSetting struct {
 	DisableMarkdownShortcuts bool `protobuf:"varint,11,opt,name=disable_markdown_shortcuts,json=disableMarkdownShortcuts,proto3" json:"disable_markdown_shortcuts,omitempty"`
 	// enable_share_to_x enables sharing memos to X (formerly Twitter).
 	EnableShareToX bool `protobuf:"varint,12,opt,name=enable_share_to_x,json=enableShareToX,proto3" json:"enable_share_to_x,omitempty"`
-	unknownFields  protoimpl.UnknownFields
-	sizeCache      protoimpl.SizeCache
+	// disable_reactions disables the reactions feature.
+	DisableReactions bool `protobuf:"varint,13,opt,name=disable_reactions,json=disableReactions,proto3" json:"disable_reactions,omitempty"`
+	// disable_save_as_image disables the save as image feature.
+	DisableSaveAsImage bool `protobuf:"varint,14,opt,name=disable_save_as_image,json=disableSaveAsImage,proto3" json:"disable_save_as_image,omitempty"`
+	unknownFields      protoimpl.UnknownFields
+	sizeCache          protoimpl.SizeCache
 }
 
 func (x *WorkspaceMemoRelatedSetting) Reset() {
@@ -600,6 +604,20 @@ func (x *WorkspaceMemoRelatedSetting) GetDisableMarkdownShortcuts() bool {
 func (x *WorkspaceMemoRelatedSetting) GetEnableShareToX() bool {
 	if x != nil {
 		return x.EnableShareToX
+	}
+	return false
+}
+
+func (x *WorkspaceMemoRelatedSetting) GetDisableReactions() bool {
+	if x != nil {
+		return x.DisableReactions
+	}
+	return false
+}
+
+func (x *WorkspaceMemoRelatedSetting) GetDisableSaveAsImage() bool {
+	if x != nil {
+		return x.DisableSaveAsImage
 	}
 	return false
 }
@@ -908,7 +926,7 @@ const file_api_v1_workspace_setting_service_proto_rawDesc = "" +
 	"\x18STORAGE_TYPE_UNSPECIFIED\x10\x00\x12\f\n" +
 	"\bDATABASE\x10\x01\x12\t\n" +
 	"\x05LOCAL\x10\x02\x12\x06\n" +
-	"\x02S3\x10\x03\"\xe5\x04\n" +
+	"\x02S3\x10\x03\"\xc5\x05\n" +
 	"\x1bWorkspaceMemoRelatedSetting\x12<\n" +
 	"\x1adisallow_public_visibility\x18\x01 \x01(\bR\x18disallowPublicVisibility\x127\n" +
 	"\x18display_with_update_time\x18\x02 \x01(\bR\x15displayWithUpdateTime\x120\n" +
@@ -922,7 +940,9 @@ const file_api_v1_workspace_setting_service_proto_rawDesc = "" +
 	"\treactions\x18\n" +
 	" \x03(\tR\treactions\x12<\n" +
 	"\x1adisable_markdown_shortcuts\x18\v \x01(\bR\x18disableMarkdownShortcuts\x12)\n" +
-	"\x11enable_share_to_x\x18\f \x01(\bR\x0eenableShareToX\"\xcd\x01\n" +
+	"\x11enable_share_to_x\x18\f \x01(\bR\x0eenableShareToX\x12+\n" +
+	"\x11disable_reactions\x18\r \x01(\bR\x10disableReactions\x121\n" +
+	"\x15disable_save_as_image\x18\x0e \x01(\bR\x12disableSaveAsImage\"\xcd\x01\n" +
 	"\x1dWorkspacePublicCommentSetting\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04repo\x18\x02 \x01(\tR\x04repo\x12\x17\n" +

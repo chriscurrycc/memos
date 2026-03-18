@@ -2400,6 +2400,12 @@ definitions:
       enableShareToX:
         type: boolean
         description: enable_share_to_x enables sharing memos to X (formerly Twitter).
+      disableReactions:
+        type: boolean
+        description: disable_reactions disables the reactions feature.
+      disableSaveAsImage:
+        type: boolean
+        description: disable_save_as_image disables the save as image feature.
   apiV1WorkspacePublicCommentSetting:
     type: object
     properties:

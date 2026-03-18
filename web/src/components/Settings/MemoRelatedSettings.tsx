@@ -117,6 +117,13 @@ const MemoRelatedSettings = () => {
         />
       </div>
       <div className="w-full flex flex-row justify-between items-center">
+        <span>{t("setting.memo-related-settings.enable-save-as-image")}</span>
+        <Switch
+          checked={!memoRelatedSetting.disableSaveAsImage}
+          onChange={(event) => updatePartialSetting({ disableSaveAsImage: !event.target.checked })}
+        />
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
         <span>{t("setting.memo-related-settings.enable-share-to-x")}</span>
         <Switch
           checked={memoRelatedSetting.enableShareToX}
@@ -150,6 +157,13 @@ const MemoRelatedSettings = () => {
               </Option>
             ))}
         </Select>
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
+        <span>{t("setting.memo-related-settings.enable-reactions")}</span>
+        <Switch
+          checked={!memoRelatedSetting.disableReactions}
+          onChange={(event) => updatePartialSetting({ disableReactions: !event.target.checked })}
+        />
       </div>
       <div className="w-full">
         <span className="truncate">{t("setting.memo-related-settings.reactions")}</span>

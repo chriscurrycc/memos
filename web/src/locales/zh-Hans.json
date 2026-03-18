@@ -321,6 +321,14 @@
     },
     "memo-related": "备忘录",
     "memo-related-settings": {
+      "title": "备忘录相关设置",
+      "enable-link-preview": "启用链接预览",
+      "enable-memo-comments": "启用备忘录评论",
+      "enable-memo-location": "启用备忘录位置",
+      "content-lenght-limit": "内容长度限制（字节）",
+      "reactions": "表情回应",
+      "enable-reactions": "启用表情回应",
+      "enable-save-as-image": "启用保存为图片",
       "enable-share-to-x": "启用分享到 X"
     },
     "public-comment": "Giscus",

@@ -226,6 +226,14 @@
     },
     "memo-related": "Memo",
     "memo-related-settings": {
+      "title": "Memo 相關設定",
+      "enable-link-preview": "啟用連結預覽",
+      "enable-memo-comments": "啟用 Memo 評論",
+      "enable-memo-location": "啟用 Memo 位置",
+      "content-lenght-limit": "內容長度限制（位元組）",
+      "reactions": "表情回應",
+      "enable-reactions": "啟用表情回應",
+      "enable-save-as-image": "啟用儲存為圖片",
       "enable-share-to-x": "啟用分享到 X"
     },
     "public-comment": "Giscus",
