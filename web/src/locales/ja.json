@@ -107,6 +107,7 @@
       "public-comments": "パブリックコメント"
     },
     "copy-link": "リンクをコピー",
+    "share-to-x": "Xに共有",
     "count-memos-in-date": "{{date}} 日に {{count}} 件のメモ",
     "delete-confirm": "本当に削除しますか？\n\n削除後の復元は不可能です。",
     "delete-memo": "メモを削除する",
@@ -219,6 +220,9 @@
       "delete-warning": "本当に{{username}}を消去していいですか?\n\n消去後、元に戻せません！"
     },
     "memo-related": "Memo",
+    "memo-related-settings": {
+      "enable-share-to-x": "Xへの共有を有効にする"
+    },
     "public-comment": "Giscus",
     "public-comment-settings": {
       "title": "パブリックコメント (Giscus)",

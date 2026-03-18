@@ -117,6 +117,13 @@ const MemoRelatedSettings = () => {
         />
       </div>
       <div className="w-full flex flex-row justify-between items-center">
+        <span>{t("setting.memo-related-settings.enable-share-to-x")}</span>
+        <Switch
+          checked={memoRelatedSetting.enableShareToX}
+          onChange={(event) => updatePartialSetting({ enableShareToX: event.target.checked })}
+        />
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
         <span>{t("setting.memo-related-settings.content-lenght-limit")}</span>
         <Input
           className="w-24"

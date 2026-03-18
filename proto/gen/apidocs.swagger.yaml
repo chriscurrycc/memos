@@ -2397,6 +2397,9 @@ definitions:
       disableMarkdownShortcuts:
         type: boolean
         description: disable_markdown_shortcuts disallow the registration of markdown shortcuts.
+      enableShareToX:
+        type: boolean
+        description: enable_share_to_x enables sharing memos to X (formerly Twitter).
   apiV1WorkspacePublicCommentSetting:
     type: object
     properties:

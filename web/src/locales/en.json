@@ -114,6 +114,7 @@
       "public-comments": "Public Comments"
     },
     "copy-link": "Copy Link",
+    "share-to-x": "Share to X",
     "count-memos-in-date": "{{count}} memos in {{date}}",
     "delete-confirm": "Are you sure you want to delete this memo? THIS ACTION IS IRREVERSIBLE",
     "load-more": "Load more",
@@ -359,7 +360,8 @@
       "enable-memo-comments": "Enable memo comments",
       "enable-memo-location": "Enable memo location",
       "content-lenght-limit": "Content length limit(Byte)",
-      "reactions": "Reactions"
+      "reactions": "Reactions",
+      "enable-share-to-x": "Enable share to X"
     },
     "version": "Version"
   },

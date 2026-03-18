@@ -13,13 +13,17 @@ import {
   SquareCheckIcon,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { RiTwitterXFill } from "react-icons/ri";
 import { useLocation } from "react-router-dom";
 import { markdownServiceClient } from "@/grpcweb";
 import useNavigateTo from "@/hooks/useNavigateTo";
-import { useMemoStore } from "@/store/v1";
+import useShareToX from "@/hooks/useShareToX";
+import { useMemoStore, useWorkspaceSettingStore } from "@/store/v1";
 import { RowStatus } from "@/types/proto/api/v1/common";
 import { NodeType } from "@/types/proto/api/v1/markdown_service";
 import { Memo } from "@/types/proto/api/v1/memo_service";
+import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
+import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
 
 interface Props {
@@ -35,6 +39,11 @@ const MemoActionMenu = (props: Props) => {
   const location = useLocation();
   const navigateTo = useNavigateTo();
   const memoStore = useMemoStore();
+  const workspaceSettingStore = useWorkspaceSettingStore();
+  const workspaceMemoRelatedSetting =
+    workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED)?.memoRelatedSetting ||
+    WorkspaceMemoRelatedSetting.fromPartial({});
+  const shareToX = useShareToX();
   const isInMemoDetailPage = location.pathname.startsWith(`/m/${memo.uid}`);
 
   const handleTogglePinMemoBtnClick = async () => {
@@ -171,6 +180,12 @@ const MemoActionMenu = (props: Props) => {
           <MenuItem onClick={handleCopyLink}>
             <CopyIcon className="w-4 h-auto" />
             {t("memo.copy-link")}
+          </MenuItem>
+        )}
+        {!hiddenActions?.includes("share") && workspaceMemoRelatedSetting.enableShareToX && (
+          <MenuItem onClick={() => shareToX(memo)}>
+            <RiTwitterXFill className="w-4 h-auto" />
+            {t("memo.share-to-x")}
           </MenuItem>
         )}
         <MenuItem color="warning" onClick={handleToggleMemoStatusClick}>

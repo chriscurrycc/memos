@@ -111,6 +111,7 @@
       "public-comments": "公开评论"
     },
     "copy-link": "复制链接",
+    "share-to-x": "分享到 X",
     "count-memos-in-date": "{{date}} 有 {{count}} 条备忘录",
     "delete-confirm": "您确定要删除此条备忘录吗？（此操作不可逆）",
     "load-more": "加载更多",
@@ -314,6 +315,9 @@
       "removed-completed-task-list-items": "启用移除已办"
     },
     "memo-related": "备忘录",
+    "memo-related-settings": {
+      "enable-share-to-x": "启用分享到 X"
+    },
     "public-comment": "Giscus",
     "public-comment-settings": {
       "title": "公开评论 (Giscus)",

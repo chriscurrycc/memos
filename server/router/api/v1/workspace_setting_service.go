@@ -248,6 +248,7 @@ func convertWorkspaceMemoRelatedSettingFromStore(setting *storepb.WorkspaceMemoR
 		DefaultVisibility:        setting.DefaultVisibility,
 		Reactions:                setting.Reactions,
 		DisableMarkdownShortcuts: setting.DisableMarkdownShortcuts,
+		EnableShareToX:           setting.EnableShareToX,
 	}
 }
 
@@ -267,6 +268,7 @@ func convertWorkspaceMemoRelatedSettingToStore(setting *v1pb.WorkspaceMemoRelate
 		DefaultVisibility:        setting.DefaultVisibility,
 		Reactions:                setting.Reactions,
 		DisableMarkdownShortcuts: setting.DisableMarkdownShortcuts,
+		EnableShareToX:           setting.EnableShareToX,
 	}
 }
 

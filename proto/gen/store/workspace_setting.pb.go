@@ -691,8 +691,10 @@ type WorkspaceMemoRelatedSetting struct {
 	Reactions []string `protobuf:"bytes,10,rep,name=reactions,proto3" json:"reactions,omitempty"`
 	// disable markdown shortcuts
 	DisableMarkdownShortcuts bool `protobuf:"varint,11,opt,name=disable_markdown_shortcuts,json=disableMarkdownShortcuts,proto3" json:"disable_markdown_shortcuts,omitempty"`
-	unknownFields            protoimpl.UnknownFields
-	sizeCache                protoimpl.SizeCache
+	// enable_share_to_x enables sharing memos to X (formerly Twitter).
+	EnableShareToX bool `protobuf:"varint,12,opt,name=enable_share_to_x,json=enableShareToX,proto3" json:"enable_share_to_x,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *WorkspaceMemoRelatedSetting) Reset() {
@@ -798,6 +800,13 @@ func (x *WorkspaceMemoRelatedSetting) GetReactions() []string {
 func (x *WorkspaceMemoRelatedSetting) GetDisableMarkdownShortcuts() bool {
 	if x != nil {
 		return x.DisableMarkdownShortcuts
+	}
+	return false
+}
+
+func (x *WorkspaceMemoRelatedSetting) GetEnableShareToX() bool {
+	if x != nil {
+		return x.EnableShareToX
 	}
 	return false
 }
@@ -943,7 +952,7 @@ const file_store_workspace_setting_proto_rawDesc = "" +
 	"\x11access_key_secret\x18\x02 \x01(\tR\x0faccessKeySecret\x12\x1a\n" +
 	"\bendpoint\x18\x03 \x01(\tR\bendpoint\x12\x16\n" +
 	"\x06region\x18\x04 \x01(\tR\x06region\x12\x16\n" +
-	"\x06bucket\x18\x05 \x01(\tR\x06bucket\"\xba\x04\n" +
+	"\x06bucket\x18\x05 \x01(\tR\x06bucket\"\xe5\x04\n" +
 	"\x1bWorkspaceMemoRelatedSetting\x12<\n" +
 	"\x1adisallow_public_visibility\x18\x01 \x01(\bR\x18disallowPublicVisibility\x127\n" +
 	"\x18display_with_update_time\x18\x02 \x01(\bR\x15displayWithUpdateTime\x120\n" +
@@ -956,7 +965,8 @@ const file_store_workspace_setting_proto_rawDesc = "" +
 	"\x12default_visibility\x18\t \x01(\tR\x11defaultVisibility\x12\x1c\n" +
 	"\treactions\x18\n" +
 	" \x03(\tR\treactions\x12<\n" +
-	"\x1adisable_markdown_shortcuts\x18\v \x01(\bR\x18disableMarkdownShortcuts\"\xcd\x01\n" +
+	"\x1adisable_markdown_shortcuts\x18\v \x01(\bR\x18disableMarkdownShortcuts\x12)\n" +
+	"\x11enable_share_to_x\x18\f \x01(\bR\x0eenableShareToX\"\xcd\x01\n" +
 	"\x1dWorkspacePublicCommentSetting\x12\x18\n" +
 	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x12\n" +
 	"\x04repo\x18\x02 \x01(\tR\x04repo\x12\x17\n" +
