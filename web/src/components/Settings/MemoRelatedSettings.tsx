@@ -40,7 +40,7 @@ const MemoRelatedSettings = () => {
 
   const updateSetting = async () => {
     if (memoRelatedSetting.reactions.length === 0) {
-      toast.error("Reactions must not be empty.");
+      toast.error(t("setting.memo-related-settings.reactions-not-empty"));
       return;
     }
 
@@ -117,6 +117,20 @@ const MemoRelatedSettings = () => {
         />
       </div>
       <div className="w-full flex flex-row justify-between items-center">
+        <span>{t("setting.memo-related-settings.enable-save-as-image")}</span>
+        <Switch
+          checked={!memoRelatedSetting.disableSaveAsImage}
+          onChange={(event) => updatePartialSetting({ disableSaveAsImage: !event.target.checked })}
+        />
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
+        <span>{t("setting.memo-related-settings.enable-share-to-x")}</span>
+        <Switch
+          checked={memoRelatedSetting.enableShareToX}
+          onChange={(event) => updatePartialSetting({ enableShareToX: event.target.checked })}
+        />
+      </div>
+      <div className="w-full flex flex-row justify-between items-center">
         <span>{t("setting.memo-related-settings.content-lenght-limit")}</span>
         <Input
           className="w-24"
@@ -144,6 +158,13 @@ const MemoRelatedSettings = () => {
             ))}
         </Select>
       </div>
+      <div className="w-full flex flex-row justify-between items-center">
+        <span>{t("setting.memo-related-settings.enable-reactions")}</span>
+        <Switch
+          checked={!memoRelatedSetting.disableReactions}
+          onChange={(event) => updatePartialSetting({ disableReactions: !event.target.checked })}
+        />
+      </div>
       <div className="w-full">
         <span className="truncate">{t("setting.memo-related-settings.reactions")}</span>
         <div className="mt-2 w-full flex flex-row flex-wrap gap-1">
@@ -166,7 +187,7 @@ const MemoRelatedSettings = () => {
           })}
           <Input
             className="w-32 !rounded-full !pl-3"
-            placeholder="Input"
+            placeholder={t("common.input")}
             size="sm"
             value={editingReaction}
             onChange={(event) => setEditingReaction(event.target.value.trim())}

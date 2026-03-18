@@ -118,6 +118,12 @@ message WorkspaceMemoRelatedSetting {
   repeated string reactions = 10;
   // disable_markdown_shortcuts disallow the registration of markdown shortcuts.
   bool disable_markdown_shortcuts = 11;
+  // enable_share_to_x enables sharing memos to X (formerly Twitter).
+  bool enable_share_to_x = 12;
+  // disable_reactions disables the reactions feature.
+  bool disable_reactions = 13;
+  // disable_save_as_image disables the save as image feature.
+  bool disable_save_as_image = 14;
 }
 
 message WorkspacePublicCommentSetting {

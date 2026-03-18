@@ -269,14 +269,16 @@ const MemoView: React.FC<Props> = (props: Props) => {
                     </span>
                   </Tooltip>
                 )}
-                {props.showExport && (
+                {props.showExport && !workspaceMemoRelatedSetting.disableSaveAsImage && (
                   <Tooltip title={t("common.export")} placement="top">
                     <span className="flex justify-center items-center hover:opacity-70 cursor-pointer" onClick={handleExportClick}>
                       <ImageIcon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
                     </span>
                   </Tooltip>
                 )}
-                {currentUser && <ReactionSelector className="border-none w-auto h-auto" memo={memo} />}
+                {currentUser && !workspaceMemoRelatedSetting.disableReactions && (
+                  <ReactionSelector className="border-none w-auto h-auto" memo={memo} />
+                )}
               </div>
               {!isInMemoDetailPage && (workspaceMemoRelatedSetting.enableComment || commentAmount > 0) && (
                 <Link
@@ -323,7 +325,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
           {memo.location && <MemoLocationView location={memo.location} />}
           <MemoResourceListView resources={memo.resources} />
           <MemoRelationListView memo={memo} relations={referencedMemos} parentPage={parentPage} />
-          <MemoReactionistView memo={memo} reactions={memo.reactions} />
+          <MemoReactionistView memo={memo} reactions={memo.reactions} disabled={workspaceMemoRelatedSetting.disableReactions} />
           {showExportModal && <ExportModal memo={memo} onClose={() => setShowExportModal(false)} />}
         </>
       )}

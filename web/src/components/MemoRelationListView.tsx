@@ -4,6 +4,7 @@ import { memo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MemoRelation } from "@/types/proto/api/v1/memo_relation_service";
 import { Memo } from "@/types/proto/api/v1/memo_service";
+import { useTranslate } from "@/utils/i18n";
 
 interface Props {
   memo: Memo;
@@ -12,6 +13,7 @@ interface Props {
 }
 
 const MemoRelationListView = (props: Props) => {
+  const t = useTranslate();
   const { memo, relations: relationList, parentPage } = props;
   const referencingMemoList = relationList
     .filter((relation) => relation.memo?.name === memo.name && relation.relatedMemo?.name !== memo.name)
@@ -39,7 +41,7 @@ const MemoRelationListView = (props: Props) => {
             onClick={() => setSelectedTab("referencing")}
           >
             <LinkIcon className="w-3 h-auto shrink-0" />
-            <span>Referencing</span>
+            <span>{t("reference.referencing")}</span>
             <span>({referencingMemoList.length})</span>
           </button>
         )}
@@ -52,7 +54,7 @@ const MemoRelationListView = (props: Props) => {
             onClick={() => setSelectedTab("referenced")}
           >
             <MilestoneIcon className="w-3 h-auto shrink-0" />
-            <span>Referenced by</span>
+            <span>{t("reference.referenced-by")}</span>
             <span>({referencedMemoList.length})</span>
           </button>
         )}

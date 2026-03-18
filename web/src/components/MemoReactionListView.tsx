@@ -11,6 +11,7 @@ import ReactionView from "./ReactionView";
 interface Props {
   memo: Memo;
   reactions: Reaction[];
+  disabled?: boolean;
 }
 
 const MemoReactionListView = (props: Props) => {
@@ -36,9 +37,17 @@ const MemoReactionListView = (props: Props) => {
     reactions.length > 0 && (
       <div className="w-full flex flex-row justify-start items-start flex-wrap gap-1 select-none">
         {Array.from(reactionGroup).map(([reactionType, users]) => {
-          return <ReactionView key={`${reactionType.toString()} ${users.length}`} memo={memo} reactionType={reactionType} users={users} />;
+          return (
+            <ReactionView
+              key={`${reactionType.toString()} ${users.length}`}
+              memo={memo}
+              reactionType={reactionType}
+              users={users}
+              disabled={props.disabled}
+            />
+          );
         })}
-        {currentUser && <ReactionSelector memo={memo} />}
+        {currentUser && !props.disabled && <ReactionSelector memo={memo} />}
       </div>
     )
   );

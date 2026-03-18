@@ -32,6 +32,7 @@
     "delete": "删除",
     "description": "说明",
     "edit": "编辑",
+    "export": "保存为图片",
     "email": "邮箱",
     "expand": "展开",
     "explore": "发现",
@@ -40,12 +41,14 @@
     "home": "主页",
     "image": "图片",
     "inbox": "通知",
+    "input": "输入",
     "language": "语言",
     "learn-more": "了解更多",
     "link": "链接",
     "mark": "引用",
-    "memos": "备忘录",
+    "memos": "Memos",
     "name": "名称",
+    "never": "永不",
     "new": "新建",
     "nickname": "昵称",
     "null": "空",
@@ -80,7 +83,9 @@
     "username": "用户名",
     "version": "版本",
     "visibility": "可见性",
-    "yourself": "您自己"
+    "yourself": "您自己",
+    "background": "背景",
+    "template": "模板"
   },
   "days": {
     "fri": "五",
@@ -111,16 +116,20 @@
       "public-comments": "公开评论"
     },
     "copy-link": "复制链接",
-    "count-memos-in-date": "{{date}} 有 {{count}} 条备忘录",
-    "delete-confirm": "您确定要删除此条备忘录吗？（此操作不可逆）",
+    "share-to-x": "分享",
+    "copy-content": "复制内容",
+    "count-memos-in-date": "{{date}} 有 {{count}} 条 memos",
+    "delete-confirm": "您确定要删除此条 Memo 吗？（此操作不可逆）",
     "load-more": "加载更多",
-    "no-archived-memos": "没有已归档备忘录。",
-    "search-placeholder": "搜索备忘录",
+    "no-memos": "暂无 memos",
+    "memo-count-in-days": "{{count}} 条 memos，共 {{days}} 天",
+    "no-archived-memos": "没有已归档 Memos。",
+    "search-placeholder": "搜索 Memos",
     "show-more": "查看更多",
     "show-less": "显示较少",
     "view-detail": "查看详情",
     "visibility": {
-      "disabled": "已禁用公开备忘录",
+      "disabled": "已禁用公开 Memos",
       "private": "私有",
       "protected": "工作区",
       "public": "公开"
@@ -134,17 +143,18 @@
   },
   "message": {
     "archived-successfully": "归档成功",
-    "change-memo-created-time": "更改备忘录创建时间",
+    "change-memo-created-time": "更改 Memo 创建时间",
     "copied": "已复制",
     "deleted-successfully": "成功删除！",
     "fill-all": "请填写所有栏目。",
     "maximum-upload-size-is": "允许的最大上传大小为 {{size}} MiB",
-    "memo-not-found": "找不到备忘录",
+    "memo-not-found": "找不到 Memo",
     "new-password-not-match": "新密码不一致。",
     "no-data": "未找到任何数据。",
     "password-changed": "密码已修改",
     "password-not-match": "密码不一致。",
     "restored-successfully": "恢复成功",
+    "succeed-copy-content": "复制内容到剪贴板成功。",
     "succeed-copy-link": "复制链接到剪贴板成功。",
     "update-succeed": "更新成功",
     "user-not-found": "未找到该用户",
@@ -153,7 +163,9 @@
   "reference": {
     "add-references": "添加引用",
     "embedded-usage": "作为嵌入内容使用",
-    "no-memos-found": "没有发现备忘录",
+    "no-memos-found": "没有发现 Memos",
+    "referencing": "引用",
+    "referenced-by": "被引用",
     "search-placeholder": "搜索内容"
   },
   "resource": {
@@ -180,7 +192,7 @@
     "delete-selected-resources": "删除选中资源",
     "fetching-data": "正在获取数据…",
     "file-drag-drop-prompt": "将您的文件拖放到此处以上传文件",
-    "linked-amount": "链接的备忘录数量",
+    "linked-amount": "链接的 Memos 数量",
     "no-files-selected": "没有文件被选中",
     "no-resources": "没有资源。",
     "no-unused-resources": "没有可删除的资源",
@@ -193,10 +205,14 @@
     "go-to-home": "回到首页"
   },
   "setting": {
+    "access-token-section": {
+      "copied": "Access Token 已复制到剪贴板",
+      "delete-confirm": "确定要删除 Access Token `{{token}}`？此操作不可撤销。"
+    },
     "account-section": {
       "change-password": "修改密码",
       "email-note": "可选",
-      "export-memos": "导出备忘录",
+      "export-memos": "导出 Memos",
       "nickname-note": "显示在横幅中",
       "openapi-reset": "重置 OpenAPI 密钥（Key）",
       "openapi-sample-post": "您好 #memos 来自 {{url}}",
@@ -223,8 +239,8 @@
     "my-account": "我的账号",
     "preference": "偏好设置",
     "preference-section": {
-      "default-memo-sort-option": "备忘录显示时间",
-      "default-memo-visibility": "默认备忘录可见性",
+      "default-memo-sort-option": "Memos 显示时间",
+      "default-memo-visibility": "默认 Memo 可见性",
       "theme": "主题"
     },
     "sso": "单点登录",
@@ -248,7 +264,8 @@
       "template": "模板",
       "token-endpoint": "令牌端点（Token Endpoint）",
       "update-sso": "更新单点登录",
-      "user-endpoint": "用户端点（User Endpoint）"
+      "user-endpoint": "用户端点（User Endpoint）",
+      "no-sso-found": "未找到 SSO 配置。"
     },
     "storage": "存储",
     "storage-section": {
@@ -301,7 +318,7 @@
       "disable-password-login": "禁用密码登录",
       "disable-password-login-final-warning": "如果您知道自己在做什么，请输入 \"CONFIRM\"。",
       "disable-password-login-warning": "所有用户将无法使用密码登录。如果配置的身份提供程序失效，不在数据库中恢复此设置将无法登录。删除身份提供程序时也要格外小心",
-      "disable-public-memos": "禁用公开备忘录",
+      "disable-public-memos": "禁用公开 Memos",
       "disable-markdown-shortcuts-in-editor": "禁用编辑器中的 Markdown 快捷键",
       "display-with-updated-time": "根据最后修改时间顺序显示",
       "enable-auto-compact": "启用自动超长折叠显示",
@@ -313,7 +330,34 @@
       "server-name": "服务器名称",
       "removed-completed-task-list-items": "启用移除已办"
     },
-    "memo-related": "备忘录",
+    "webhook-section": {
+      "title": "Webhooks",
+      "url": "Url",
+      "no-webhooks-found": "未找到 Webhooks。"
+    },
+    "workspace-section": {
+      "disallow-user-registration": "禁止用户注册",
+      "disallow-password-auth": "禁止密码登录",
+      "disallow-change-username": "禁止修改用户名",
+      "disallow-change-nickname": "禁止修改昵称",
+      "week-start-day": "每周起始日",
+      "saturday": "星期六",
+      "sunday": "星期日",
+      "monday": "星期一"
+    },
+    "memo-related": "Memos",
+    "memo-related-settings": {
+      "title": "Memos 相关设置",
+      "enable-link-preview": "启用链接预览",
+      "enable-memo-comments": "启用 Memo 评论",
+      "enable-memo-location": "启用地理位置设置",
+      "content-lenght-limit": "内容长度限制（字节）",
+      "reactions": "表情回应",
+      "reactions-not-empty": "表情回应不能为空。",
+      "enable-reactions": "启用表情回应",
+      "enable-save-as-image": "启用保存为图片",
+      "enable-share-to-x": "启用分享到 X"
+    },
     "public-comment": "Giscus",
     "public-comment-settings": {
       "title": "公开评论 (Giscus)",
@@ -325,13 +369,14 @@
       "giscus-category-id": "分类 ID",
       "giscus-theme": "主题",
       "giscus-lang": "语言"
-    }
+    },
+    "version": "版本"
   },
   "tag": {
     "all-tags": "全部标签",
     "create-tag": "创建标签",
     "create-tags-guide": "您可以通过输入 \"#标签\" 创建标签。",
-    "delete-confirm": "您确定要删除此标签吗?所有相关的备忘录将会被归档。",
+    "delete-confirm": "您确定要删除此标签吗？所有相关的 Memos 将会被归档。",
     "delete-tag": "删除标签",
     "no-tag-found": "没找到此标签"
   },
@@ -350,7 +395,6 @@
     "session-complete": "回顾完成！",
     "session-complete-desc": "您回顾了 {{count}} 条 memos。",
     "start-new-session": "开始新的回顾",
-    "settings": "设置",
     "previous": "上一条",
     "next": "下一条",
     "settings": "回顾设置",
@@ -376,5 +420,20 @@
     "surprise-title": "惊喜！",
     "surprise-desc": "从您的 memos 中随机抽取的一条。",
     "another-surprise": "再来一条"
+  },
+  "exportImage": {
+    "template": {
+      "default": "默认",
+      "twitter": "X",
+      "modern": "现代",
+      "note": "便签"
+    },
+    "background": {
+      "none": "无",
+      "sunset": "日落",
+      "ocean": "海洋",
+      "purple": "紫色",
+      "mint": "薄荷"
+    }
   }
 }

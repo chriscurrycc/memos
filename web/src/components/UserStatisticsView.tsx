@@ -245,15 +245,9 @@ const UserStatisticsView = ({ onCloseHomeSidebarDrawer }: Props) => {
           onClick={onCalendarClick}
         />
         {memoAmount === 0 ? (
-          <p className="mt-1 w-full text-xs italic opacity-80">No memos</p>
-        ) : memoAmount === 1 ? (
-          <p className="mt-1 w-full text-xs italic opacity-80">
-            <span>{memoAmount}</span> memo in <span>{days}</span> {days > 1 ? "days" : "day"}
-          </p>
+          <p className="mt-1 w-full text-xs italic opacity-80">{t("memo.no-memos")}</p>
         ) : (
-          <p className="mt-1 w-full text-xs italic opacity-80">
-            <span>{memoAmount}</span> memos in <span>{days}</span> {days > 1 ? "days" : "day"}
-          </p>
+          <p className="mt-1 w-full text-xs italic opacity-80">{t("memo.memo-count-in-days", { count: memoAmount, days })}</p>
         )}
       </div>
       <Divider className="!my-2 opacity-50" />

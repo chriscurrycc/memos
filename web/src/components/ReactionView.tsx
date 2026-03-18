@@ -10,6 +10,7 @@ interface Props {
   memo: Memo;
   reactionType: string;
   users: User[];
+  disabled?: boolean;
 }
 
 const stringifyUsers = (users: User[], reactionType: string): string => {
@@ -34,7 +35,7 @@ const ReactionView = (props: Props) => {
   const hasReaction = users.some((user) => currentUser && user.username === currentUser.username);
 
   const handleReactionClick = async () => {
-    if (!currentUser) {
+    if (!currentUser || props.disabled) {
       return;
     }
 
@@ -68,7 +69,7 @@ const ReactionView = (props: Props) => {
         className={clsx(
           "h-7 border px-2 py-0.5 rounded-full flex flex-row justify-center items-center gap-1 dark:border-zinc-700",
           "text-sm text-gray-600 dark:text-gray-400",
-          currentUser && "cursor-pointer",
+          currentUser && !props.disabled && "cursor-pointer",
           hasReaction && "bg-blue-100 border-blue-200 dark:bg-zinc-900",
         )}
         onClick={handleReactionClick}

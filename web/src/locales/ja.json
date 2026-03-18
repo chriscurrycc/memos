@@ -30,6 +30,7 @@
     "delete": "削除する",
     "description": "説明",
     "edit": "編集する",
+    "export": "画像として保存",
     "email": "Eメール",
     "explore": "共有メモ",
     "file": "ファイル",
@@ -37,12 +38,14 @@
     "home": "ホーム",
     "image": "画像",
     "inbox": "受信トレイ",
+    "input": "入力",
     "language": "言語",
     "learn-more": "さらに詳しく",
     "link": "リンク",
     "mark": "マーク",
     "memos": "Memos",
     "name": "名前",
+    "never": "なし",
     "new": "新しく追加",
     "nickname": "ニックネーム",
     "null": "null",
@@ -77,7 +80,9 @@
     "username": "ユーザーネーム",
     "version": "バージョン",
     "visibility": "公開範囲",
-    "yourself": "あなた自身の"
+    "yourself": "あなた自身の",
+    "background": "背景",
+    "template": "テンプレート"
   },
   "days": {
     "fri": "金",
@@ -107,6 +112,8 @@
       "public-comments": "パブリックコメント"
     },
     "copy-link": "リンクをコピー",
+    "share-to-x": "共有",
+    "copy-content": "内容をコピー",
     "count-memos-in-date": "{{date}} 日に {{count}} 件のメモ",
     "delete-confirm": "本当に削除しますか？\n\n削除後の復元は不可能です。",
     "delete-memo": "メモを削除する",
@@ -114,6 +121,8 @@
     "fetch-more": "クリックしてさらに取得する",
     "fetching-data": "取得中…",
     "links": "リンク",
+    "no-memos": "メモなし",
+    "memo-count-in-days": "{{count}} 件の memos、{{days}} 日間",
     "no-archived-memos": "アーカイブされたメモはありません。",
     "search-placeholder": "メモを検索",
     "show-more": "続きを見る",
@@ -143,6 +152,7 @@
     "password-changed": "パスワードを変更しました",
     "password-not-match": "パスワードが一致しません。",
     "restored-successfully": "リストア成功",
+    "succeed-copy-content": "内容のコピーに成功しました。",
     "succeed-copy-link": "リンクのコピーに成功しました。",
     "update-succeed": "変更は保存されました",
     "user-not-found": "ユーザーが見つかりませんでした",
@@ -152,6 +162,8 @@
     "add-references": "変更は保存されました",
     "embedded-usage": "埋め込みとして使用する",
     "no-memos-found": "メモが見つかりません",
+    "referencing": "参照中",
+    "referenced-by": "参照元",
     "search-placeholder": "内容を検索"
   },
   "resource": {
@@ -191,6 +203,10 @@
     "go-to-home": "ホームへ戻る"
   },
   "setting": {
+    "access-token-section": {
+      "copied": "Access Token をクリップボードにコピーしました",
+      "delete-confirm": "Access Token `{{token}}` を削除しますか？この操作は元に戻せません。"
+    },
     "account-section": {
       "change-password": "パスワードを変更",
       "email-note": "オプション",
@@ -218,7 +234,34 @@
       "delete-member": "メンバーを消去する",
       "delete-warning": "本当に{{username}}を消去していいですか?\n\n消去後、元に戻せません！"
     },
+    "webhook-section": {
+      "title": "Webhooks",
+      "url": "Url",
+      "no-webhooks-found": "Webhooks が見つかりません。"
+    },
+    "workspace-section": {
+      "disallow-user-registration": "ユーザー登録を禁止",
+      "disallow-password-auth": "パスワード認証を禁止",
+      "disallow-change-username": "ユーザー名の変更を禁止",
+      "disallow-change-nickname": "ニックネームの変更を禁止",
+      "week-start-day": "週の開始日",
+      "saturday": "土曜日",
+      "sunday": "日曜日",
+      "monday": "月曜日"
+    },
     "memo-related": "Memo",
+    "memo-related-settings": {
+      "title": "メモ関連設定",
+      "enable-link-preview": "リンクプレビューを有効にする",
+      "enable-memo-comments": "メモコメントを有効にする",
+      "enable-memo-location": "位置情報設定を有効にする",
+      "content-lenght-limit": "コンテンツ長さ制限（バイト）",
+      "reactions": "リアクション",
+      "reactions-not-empty": "リアクションは空にできません。",
+      "enable-reactions": "リアクションを有効にする",
+      "enable-save-as-image": "画像として保存を有効にする",
+      "enable-share-to-x": "Xへの共有を有効にする"
+    },
     "public-comment": "Giscus",
     "public-comment-settings": {
       "title": "パブリックコメント (Giscus)",
@@ -259,7 +302,8 @@
       "template": "テンプレート",
       "token-endpoint": "Token endpoint",
       "update-sso": "SSOを更新する",
-      "user-endpoint": "User endpoint"
+      "user-endpoint": "User endpoint",
+      "no-sso-found": "SSO が見つかりません。"
     },
     "storage": "ストレージ",
     "storage-section": {
@@ -322,7 +366,8 @@
       "max-upload-size-hint": "推奨サイズは32 MiBです。",
       "server-name": "サーバーの名前",
       "removed-completed-task-list-items": "完了削除を有効にする"
-    }
+    },
+    "version": "バージョン"
   },
   "tag": {
     "all-tags": "すべてのタグ",
@@ -350,7 +395,6 @@
     "session-complete": "振り返り完了！",
     "session-complete-desc": "{{count}} 件のメモを振り返りました。",
     "start-new-session": "新しい振り返りを開始",
-    "settings": "設定",
     "previous": "前へ",
     "next": "次へ",
     "settings": "振り返り設定",
@@ -376,5 +420,20 @@
     "surprise-title": "サプライズ！",
     "surprise-desc": "コレクションからランダムに選ばれたメモです。",
     "another-surprise": "もう一つ"
+  },
+  "exportImage": {
+    "template": {
+      "default": "デフォルト",
+      "twitter": "X",
+      "modern": "モダン",
+      "note": "ノート"
+    },
+    "background": {
+      "none": "なし",
+      "sunset": "サンセット",
+      "ocean": "オーシャン",
+      "purple": "パープル",
+      "mint": "ミント"
+    }
   }
 }
