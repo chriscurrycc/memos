@@ -4,6 +4,26 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.30.0](https://github.com/chriscurrycc/memos/releases/tag/v0.30.0) - 2026-03-18
+
+### Features
+- Add share to X with popup window, controlled by workspace setting (disabled by default)
+- Add "Copy Content" action to memo action menu
+- Add workspace settings to toggle reactions and save-as-image (enabled by default)
+
+### Improvements
+- Hide internal comment section and public comments divider when comments are disabled and empty
+- Reactions become read-only (no add/remove) when disabled, existing reactions still visible
+- Simplify share menu label to "Share" since X icon already conveys the platform
+
+### Fixes
+- Complete missing i18n translations across settings, sidebar, display settings, and tag sections
+- Keep Memos/Memo untranslated in zh-Hans and zh-Hant as product name
+- Translate sidebar labels (Created at, Last updated at, Properties, Relations)
+- Translate display settings (Order by, Direction, DESC/ASC) and Tree mode
+- Add missing translations for workspace-section, webhook-section, sso-section
+- Fix duplicate "settings" keys in locale files
+
 ## [v0.29.0](https://github.com/chriscurrycc/memos/releases/tag/v0.29.0) - 2026-03-18
 
 ### Features

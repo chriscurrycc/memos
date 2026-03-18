@@ -4,6 +4,26 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.30.0](https://github.com/chriscurrycc/memos/releases/tag/v0.30.0) - 2026-03-18
+
+### 新功能
+- 新增分享到 X 功能，通过弹窗分享，可在工作区设置中开启（默认关闭）
+- 新增"复制内容"操作到 Memo 操作菜单
+- 新增工作区设置控制表情回应和保存为图片功能的开关（默认开启）
+
+### 优化
+- 内部评论关闭且无已有评论时，隐藏评论区域和公开评论分界线
+- 表情回应关闭后已有回应变为只读，不可添加或取消
+- 分享菜单文案简化为"分享"，因 X 图标已表达平台含义
+
+### 修复
+- 补全设置页、侧边栏、显示设置、标签区域的多语言翻译
+- zh-Hans 和 zh-Hant 中保留 Memos/Memo 不翻译为产品名称
+- 翻译侧边栏标签（创建于、最后更新于、属性、关联）
+- 翻译显示设置（排序方式、排序方向、降序/升序）和树形模式
+- 补充 workspace-section、webhook-section、sso-section 缺失翻译
+- 修复 locale 文件中重复的 "settings" 键
+
 ## [v0.29.0](https://github.com/chriscurrycc/memos/releases/tag/v0.29.0) - 2026-03-18
 
 ### 新功能
