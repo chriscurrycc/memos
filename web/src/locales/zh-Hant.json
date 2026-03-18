@@ -129,6 +129,15 @@
     "show-less": "顯示較少",
     "to-do": "待辦",
     "view-detail": "查看詳情",
+    "created-at": "建立於",
+    "last-updated-at": "最後更新於",
+    "properties": "屬性",
+    "relations": "關聯",
+    "order-by": "排序方式",
+    "display-time": "顯示時間",
+    "direction": "排序方向",
+    "desc": "降序",
+    "asc": "升序",
     "visibility": {
       "disabled": "公共 Memo 已停用",
       "private": "私人",
@@ -374,6 +383,7 @@
     "all-tags": "所有標籤",
     "create-tag": "建立標籤",
     "create-tags-guide": "您可以通過輸入`#標籤`來創建標籤。",
+    "tree-mode": "樹形模式",
     "delete-confirm": "您確定要刪除此標籤嗎？所有關聯的memos將會被封存",
     "delete-tag": "刪除標籤",
     "no-tag-found": "找不到標籤"

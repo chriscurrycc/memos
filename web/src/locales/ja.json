@@ -129,6 +129,15 @@
     "show-less": "表示を少なくする",
     "to-do": "To-do",
     "view-detail": "詳細を見る",
+    "created-at": "作成日時",
+    "last-updated-at": "最終更新日時",
+    "properties": "プロパティ",
+    "relations": "リレーション",
+    "order-by": "並び順",
+    "display-time": "表示時間",
+    "direction": "方向",
+    "desc": "降順",
+    "asc": "昇順",
     "visibility": {
       "disabled": "公開メモは無効化されています。",
       "private": "非公開",
@@ -373,6 +382,7 @@
     "all-tags": "すべてのタグ",
     "create-tag": "タグを作成する",
     "create-tags-guide": "`#タグ名`と入力することでタグを作成できます。",
+    "tree-mode": "ツリーモード",
     "delete-confirm": "このタグを削除しますか?",
     "delete-tag": "タグを削除",
     "no-tag-found": "タグが見つかりませんでした"

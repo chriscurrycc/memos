@@ -128,6 +128,15 @@
     "show-more": "查看更多",
     "show-less": "显示较少",
     "view-detail": "查看详情",
+    "created-at": "创建于",
+    "last-updated-at": "最后更新于",
+    "properties": "属性",
+    "relations": "关联",
+    "order-by": "排序方式",
+    "display-time": "显示时间",
+    "direction": "排序方向",
+    "desc": "降序",
+    "asc": "升序",
     "visibility": {
       "disabled": "已禁用公开 Memos",
       "private": "私有",
@@ -376,6 +385,7 @@
     "all-tags": "全部标签",
     "create-tag": "创建标签",
     "create-tags-guide": "您可以通过输入 \"#标签\" 创建标签。",
+    "tree-mode": "树形模式",
     "delete-confirm": "您确定要删除此标签吗？所有相关的 Memos 将会被归档。",
     "delete-tag": "删除标签",
     "no-tag-found": "没找到此标签"

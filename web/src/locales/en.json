@@ -128,6 +128,15 @@
     "show-more": "Show more",
     "show-less": "Show less",
     "view-detail": "View Detail",
+    "created-at": "Created at",
+    "last-updated-at": "Last updated at",
+    "properties": "Properties",
+    "relations": "Relations",
+    "order-by": "Order by",
+    "display-time": "Display Time",
+    "direction": "Direction",
+    "desc": "DESC",
+    "asc": "ASC",
     "visibility": {
       "disabled": "Public memos are disabled",
       "private": "Private",
@@ -382,6 +391,7 @@
     "all-tags": "All Tags",
     "create-tag": "Create Tag",
     "create-tags-guide": "You can create tags by inputting `#tag`.",
+    "tree-mode": "Tree mode",
     "delete-confirm": "Are you sure to delete this tag? All related memos will be archived.",
     "delete-tag": "Delete Tag",
     "no-tag-found": "No tag found"
