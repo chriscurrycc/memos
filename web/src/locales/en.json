@@ -81,7 +81,7 @@
     "version": "Version",
     "visibility": "Visibility",
     "yourself": "Yourself",
-    "export": "Export",
+    "export": "Save as Image",
     "background": "Background",
     "template": "Template"
   },
@@ -115,6 +115,7 @@
     },
     "copy-link": "Copy Link",
     "share-to-x": "Share to X",
+    "copy-content": "Copy Content",
     "count-memos-in-date": "{{count}} memos in {{date}}",
     "delete-confirm": "Are you sure you want to delete this memo? THIS ACTION IS IRREVERSIBLE",
     "load-more": "Load more",
@@ -149,6 +150,7 @@
     "password-changed": "Password Changed",
     "password-not-match": "Passwords do not match.",
     "restored-successfully": "Restored successfully",
+    "succeed-copy-content": "Content copied successfully.",
     "succeed-copy-link": "Link copied successfully.",
     "update-succeed": "Update succeeded",
     "user-not-found": "User not found",
@@ -423,7 +425,7 @@
   "exportImage": {
     "template": {
       "default": "Default",
-      "twitter": "Twitter",
+      "twitter": "X",
       "modern": "Modern",
       "note": "Note"
     },

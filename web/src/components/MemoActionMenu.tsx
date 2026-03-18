@@ -6,8 +6,9 @@ import {
   ArchiveRestoreIcon,
   BookmarkMinusIcon,
   BookmarkPlusIcon,
-  CopyIcon,
+  ClipboardIcon,
   Edit3Icon,
+  LinkIcon,
   MoreVerticalIcon,
   TrashIcon,
   SquareCheckIcon,
@@ -114,6 +115,11 @@ const MemoActionMenu = (props: Props) => {
     toast.success(t("message.succeed-copy-link"));
   };
 
+  const handleCopyContent = () => {
+    copy(memo.content);
+    toast.success(t("message.succeed-copy-content"));
+  };
+
   const handleDeleteMemoClick = async () => {
     const confirmed = window.confirm(t("memo.delete-confirm"));
     if (confirmed) {
@@ -178,8 +184,14 @@ const MemoActionMenu = (props: Props) => {
         )}
         {!hiddenActions?.includes("share") && (
           <MenuItem onClick={handleCopyLink}>
-            <CopyIcon className="w-4 h-auto" />
+            <LinkIcon className="w-4 h-auto" />
             {t("memo.copy-link")}
+          </MenuItem>
+        )}
+        {!hiddenActions?.includes("share") && (
+          <MenuItem onClick={handleCopyContent}>
+            <ClipboardIcon className="w-4 h-auto" />
+            {t("memo.copy-content")}
           </MenuItem>
         )}
         {!hiddenActions?.includes("share") && workspaceMemoRelatedSetting.enableShareToX && (

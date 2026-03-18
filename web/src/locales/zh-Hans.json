@@ -32,6 +32,7 @@
     "delete": "删除",
     "description": "说明",
     "edit": "编辑",
+    "export": "保存为图片",
     "email": "邮箱",
     "expand": "展开",
     "explore": "发现",
@@ -80,7 +81,9 @@
     "username": "用户名",
     "version": "版本",
     "visibility": "可见性",
-    "yourself": "您自己"
+    "yourself": "您自己",
+    "background": "背景",
+    "template": "模板"
   },
   "days": {
     "fri": "五",
@@ -112,6 +115,7 @@
     },
     "copy-link": "复制链接",
     "share-to-x": "分享到 X",
+    "copy-content": "复制内容",
     "count-memos-in-date": "{{date}} 有 {{count}} 条备忘录",
     "delete-confirm": "您确定要删除此条备忘录吗？（此操作不可逆）",
     "load-more": "加载更多",
@@ -146,6 +150,7 @@
     "password-changed": "密码已修改",
     "password-not-match": "密码不一致。",
     "restored-successfully": "恢复成功",
+    "succeed-copy-content": "复制内容到剪贴板成功。",
     "succeed-copy-link": "复制链接到剪贴板成功。",
     "update-succeed": "更新成功",
     "user-not-found": "未找到该用户",
@@ -380,5 +385,20 @@
     "surprise-title": "惊喜！",
     "surprise-desc": "从您的 memos 中随机抽取的一条。",
     "another-surprise": "再来一条"
+  },
+  "exportImage": {
+    "template": {
+      "default": "默认",
+      "twitter": "X",
+      "modern": "现代",
+      "note": "便签"
+    },
+    "background": {
+      "none": "无",
+      "sunset": "日落",
+      "ocean": "海洋",
+      "purple": "紫色",
+      "mint": "薄荷"
+    }
   }
 }

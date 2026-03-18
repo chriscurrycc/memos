@@ -30,6 +30,7 @@
     "delete": "刪除",
     "description": "說明",
     "edit": "編輯",
+    "export": "儲存為圖片",
     "email": "信箱",
     "explore": "探索",
     "file": "檔案",
@@ -77,7 +78,9 @@
     "username": "帳號",
     "version": "版本",
     "visibility": "可見度",
-    "yourself": "你自己"
+    "yourself": "你自己",
+    "background": "背景",
+    "template": "模板"
   },
   "days": {
     "fri": "五",
@@ -108,6 +111,7 @@
     },
     "copy-link": "複製連結",
     "share-to-x": "分享到 X",
+    "copy-content": "複製內容",
     "count-memos-in-date": "{{date}}的{{count}}個備忘錄",
     "delete-confirm": "您確定要刪除此 Memo？\n\n此操作無法逆轉",
     "delete-memo": "刪除 Memo",
@@ -144,6 +148,7 @@
     "password-changed": "密碼變更完成",
     "password-not-match": "密碼不一致。",
     "restored-successfully": "還原成功",
+    "succeed-copy-content": "複製內容到剪貼簿成功。",
     "succeed-copy-link": "複製連結到剪貼簿成功。",
     "update-succeed": "更新成功",
     "user-not-found": "查無該使用者",
@@ -381,5 +386,20 @@
     "surprise-title": "驚喜！",
     "surprise-desc": "從您的 memos 中隨機抽取的一條。",
     "another-surprise": "再來一條"
+  },
+  "exportImage": {
+    "template": {
+      "default": "預設",
+      "twitter": "X",
+      "modern": "現代",
+      "note": "便條"
+    },
+    "background": {
+      "none": "無",
+      "sunset": "日落",
+      "ocean": "海洋",
+      "purple": "紫色",
+      "mint": "薄荷"
+    }
   }
 }

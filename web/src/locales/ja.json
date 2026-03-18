@@ -30,6 +30,7 @@
     "delete": "削除する",
     "description": "説明",
     "edit": "編集する",
+    "export": "画像として保存",
     "email": "Eメール",
     "explore": "共有メモ",
     "file": "ファイル",
@@ -77,7 +78,9 @@
     "username": "ユーザーネーム",
     "version": "バージョン",
     "visibility": "公開範囲",
-    "yourself": "あなた自身の"
+    "yourself": "あなた自身の",
+    "background": "背景",
+    "template": "テンプレート"
   },
   "days": {
     "fri": "金",
@@ -108,6 +111,7 @@
     },
     "copy-link": "リンクをコピー",
     "share-to-x": "Xに共有",
+    "copy-content": "内容をコピー",
     "count-memos-in-date": "{{date}} 日に {{count}} 件のメモ",
     "delete-confirm": "本当に削除しますか？\n\n削除後の復元は不可能です。",
     "delete-memo": "メモを削除する",
@@ -144,6 +148,7 @@
     "password-changed": "パスワードを変更しました",
     "password-not-match": "パスワードが一致しません。",
     "restored-successfully": "リストア成功",
+    "succeed-copy-content": "内容のコピーに成功しました。",
     "succeed-copy-link": "リンクのコピーに成功しました。",
     "update-succeed": "変更は保存されました",
     "user-not-found": "ユーザーが見つかりませんでした",
@@ -380,5 +385,20 @@
     "surprise-title": "サプライズ！",
     "surprise-desc": "コレクションからランダムに選ばれたメモです。",
     "another-surprise": "もう一つ"
+  },
+  "exportImage": {
+    "template": {
+      "default": "デフォルト",
+      "twitter": "X",
+      "modern": "モダン",
+      "note": "ノート"
+    },
+    "background": {
+      "none": "なし",
+      "sunset": "サンセット",
+      "ocean": "オーシャン",
+      "purple": "パープル",
+      "mint": "ミント"
+    }
   }
 }
