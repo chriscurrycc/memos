@@ -40,7 +40,7 @@ const MemoRelatedSettings = () => {
 
   const updateSetting = async () => {
     if (memoRelatedSetting.reactions.length === 0) {
-      toast.error("Reactions must not be empty.");
+      toast.error(t("setting.memo-related-settings.reactions-not-empty"));
       return;
     }
 
@@ -187,7 +187,7 @@ const MemoRelatedSettings = () => {
           })}
           <Input
             className="w-32 !rounded-full !pl-3"
-            placeholder="Input"
+            placeholder={t("common.input")}
             size="sm"
             value={editingReaction}
             onChange={(event) => setEditingReaction(event.target.value.trim())}

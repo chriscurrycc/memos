@@ -41,12 +41,14 @@
     "home": "主页",
     "image": "图片",
     "inbox": "通知",
+    "input": "输入",
     "language": "语言",
     "learn-more": "了解更多",
     "link": "链接",
     "mark": "引用",
     "memos": "备忘录",
     "name": "名称",
+    "never": "永不",
     "new": "新建",
     "nickname": "昵称",
     "null": "空",
@@ -119,6 +121,8 @@
     "count-memos-in-date": "{{date}} 有 {{count}} 条备忘录",
     "delete-confirm": "您确定要删除此条备忘录吗？（此操作不可逆）",
     "load-more": "加载更多",
+    "no-memos": "暂无 memos",
+    "memo-count-in-days": "{{count}} 条 memos，共 {{days}} 天",
     "no-archived-memos": "没有已归档备忘录。",
     "search-placeholder": "搜索备忘录",
     "show-more": "查看更多",
@@ -160,6 +164,8 @@
     "add-references": "添加引用",
     "embedded-usage": "作为嵌入内容使用",
     "no-memos-found": "没有发现备忘录",
+    "referencing": "引用",
+    "referenced-by": "被引用",
     "search-placeholder": "搜索内容"
   },
   "resource": {
@@ -199,6 +205,10 @@
     "go-to-home": "回到首页"
   },
   "setting": {
+    "access-token-section": {
+      "copied": "Access Token 已复制到剪贴板",
+      "delete-confirm": "确定要删除 Access Token `{{token}}`？此操作不可撤销。"
+    },
     "account-section": {
       "change-password": "修改密码",
       "email-note": "可选",
@@ -254,7 +264,8 @@
       "template": "模板",
       "token-endpoint": "令牌端点（Token Endpoint）",
       "update-sso": "更新单点登录",
-      "user-endpoint": "用户端点（User Endpoint）"
+      "user-endpoint": "用户端点（User Endpoint）",
+      "no-sso-found": "未找到 SSO 配置。"
     },
     "storage": "存储",
     "storage-section": {
@@ -319,14 +330,30 @@
       "server-name": "服务器名称",
       "removed-completed-task-list-items": "启用移除已办"
     },
+    "webhook-section": {
+      "title": "Webhooks",
+      "url": "Url",
+      "no-webhooks-found": "未找到 Webhooks。"
+    },
+    "workspace-section": {
+      "disallow-user-registration": "禁止用户注册",
+      "disallow-password-auth": "禁止密码登录",
+      "disallow-change-username": "禁止修改用户名",
+      "disallow-change-nickname": "禁止修改昵称",
+      "week-start-day": "每周起始日",
+      "saturday": "星期六",
+      "sunday": "星期日",
+      "monday": "星期一"
+    },
     "memo-related": "备忘录",
     "memo-related-settings": {
       "title": "备忘录相关设置",
       "enable-link-preview": "启用链接预览",
       "enable-memo-comments": "启用备忘录评论",
-      "enable-memo-location": "启用备忘录位置",
+      "enable-memo-location": "启用地理位置设置",
       "content-lenght-limit": "内容长度限制（字节）",
       "reactions": "表情回应",
+      "reactions-not-empty": "表情回应不能为空。",
       "enable-reactions": "启用表情回应",
       "enable-save-as-image": "启用保存为图片",
       "enable-share-to-x": "启用分享到 X"
@@ -342,7 +369,8 @@
       "giscus-category-id": "分类 ID",
       "giscus-theme": "主题",
       "giscus-lang": "语言"
-    }
+    },
+    "version": "版本"
   },
   "tag": {
     "all-tags": "全部标签",
@@ -367,7 +395,6 @@
     "session-complete": "回顾完成！",
     "session-complete-desc": "您回顾了 {{count}} 条 memos。",
     "start-new-session": "开始新的回顾",
-    "settings": "设置",
     "previous": "上一条",
     "next": "下一条",
     "settings": "回顾设置",

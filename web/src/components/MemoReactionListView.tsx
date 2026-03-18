@@ -37,7 +37,15 @@ const MemoReactionListView = (props: Props) => {
     reactions.length > 0 && (
       <div className="w-full flex flex-row justify-start items-start flex-wrap gap-1 select-none">
         {Array.from(reactionGroup).map(([reactionType, users]) => {
-          return <ReactionView key={`${reactionType.toString()} ${users.length}`} memo={memo} reactionType={reactionType} users={users} disabled={props.disabled} />;
+          return (
+            <ReactionView
+              key={`${reactionType.toString()} ${users.length}`}
+              memo={memo}
+              reactionType={reactionType}
+              users={users}
+              disabled={props.disabled}
+            />
+          );
         })}
         {currentUser && !props.disabled && <ReactionSelector memo={memo} />}
       </div>

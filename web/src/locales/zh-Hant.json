@@ -38,12 +38,14 @@
     "home": "首頁",
     "image": "圖片",
     "inbox": "通知",
+    "input": "輸入",
     "language": "語言",
     "learn-more": "了解",
     "link": "連結",
     "mark": "Mark",
     "memos": "備忘錄",
     "name": "名稱",
+    "never": "永不",
     "new": "新增",
     "nickname": "暱稱",
     "null": "空",
@@ -119,6 +121,8 @@
     "fetch-more": "點此以載入更多",
     "fetching-data": "抓取資料中…",
     "links": "連結",
+    "no-memos": "暫無 memos",
+    "memo-count-in-days": "{{count}} 條 memos，共 {{days}} 天",
     "no-archived-memos": "無封存的 Memos",
     "search-placeholder": "搜尋 Memos",
     "show-more": "查看更多",
@@ -158,6 +162,8 @@
     "add-references": "添加參考資料",
     "embedded-usage": "作為嵌入式內容使用",
     "no-memos-found": "未找到任何備忘錄",
+    "referencing": "引用",
+    "referenced-by": "被引用",
     "search-placeholder": "搜尋內容"
   },
   "resource": {
@@ -197,6 +203,10 @@
     "go-to-home": "回到首頁"
   },
   "setting": {
+    "access-token-section": {
+      "copied": "Access Token 已複製到剪貼簿",
+      "delete-confirm": "確定要刪除 Access Token `{{token}}`？此操作不可撤銷。"
+    },
     "account-section": {
       "change-password": "變更密碼",
       "email-note": "非必須的",
@@ -224,14 +234,30 @@
       "delete-member": "刪除使用者",
       "delete-warning": "您確定要刪除 {{username}}?\n\n此操作無法逆轉"
     },
+    "webhook-section": {
+      "title": "Webhooks",
+      "url": "Url",
+      "no-webhooks-found": "未找到 Webhooks。"
+    },
+    "workspace-section": {
+      "disallow-user-registration": "禁止使用者註冊",
+      "disallow-password-auth": "禁止密碼登入",
+      "disallow-change-username": "禁止修改使用者名稱",
+      "disallow-change-nickname": "禁止修改暱稱",
+      "week-start-day": "每週起始日",
+      "saturday": "星期六",
+      "sunday": "星期日",
+      "monday": "星期一"
+    },
     "memo-related": "Memo",
     "memo-related-settings": {
       "title": "Memo 相關設定",
       "enable-link-preview": "啟用連結預覽",
       "enable-memo-comments": "啟用 Memo 評論",
-      "enable-memo-location": "啟用 Memo 位置",
+      "enable-memo-location": "啟用地理位置設置",
       "content-lenght-limit": "內容長度限制（位元組）",
       "reactions": "表情回應",
+      "reactions-not-empty": "表情回應不能為空。",
       "enable-reactions": "啟用表情回應",
       "enable-save-as-image": "啟用儲存為圖片",
       "enable-share-to-x": "啟用分享到 X"
@@ -276,7 +302,8 @@
       "template": "範本",
       "token-endpoint": "權杖端點（Token Endpoint）",
       "update-sso": "更新 SSO",
-      "user-endpoint": "使用者端點（User Endpoint）"
+      "user-endpoint": "使用者端點（User Endpoint）",
+      "no-sso-found": "未找到 SSO 設定。"
     },
     "storage": "儲存空間",
     "storage-section": {
@@ -340,7 +367,8 @@
       "max-upload-size-hint": "建議值為 32 MiB。",
       "server-name": "伺服器名稱",
       "removed-completed-task-list-items": "啟用移除已完成"
-    }
+    },
+    "version": "版本"
   },
   "tag": {
     "all-tags": "所有標籤",
@@ -368,7 +396,6 @@
     "session-complete": "回顧完成！",
     "session-complete-desc": "您回顧了 {{count}} 條 memos。",
     "start-new-session": "開始新的回顧",
-    "settings": "設定",
     "previous": "上一條",
     "next": "下一條",
     "settings": "回顧設定",
