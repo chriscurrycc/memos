@@ -29,6 +29,8 @@ func (s *APIV1Service) GetWorkspaceSetting(ctx context.Context, request *v1pb.Ge
 		_, err = s.Store.GetWorkspaceMemoRelatedSetting(ctx)
 	case storepb.WorkspaceSettingKey_STORAGE:
 		_, err = s.Store.GetWorkspaceStorageSetting(ctx)
+	case storepb.WorkspaceSettingKey_PUBLIC_COMMENT:
+		_, err = s.Store.GetWorkspacePublicCommentSetting(ctx)
 	default:
 		return nil, status.Errorf(codes.InvalidArgument, "unsupported workspace setting key: %v", workspaceSettingKey)
 	}
@@ -101,6 +103,10 @@ func convertWorkspaceSettingFromStore(setting *storepb.WorkspaceSetting) *v1pb.W
 		workspaceSetting.Value = &v1pb.WorkspaceSetting_MemoRelatedSetting{
 			MemoRelatedSetting: convertWorkspaceMemoRelatedSettingFromStore(setting.GetMemoRelatedSetting()),
 		}
+	case *storepb.WorkspaceSetting_PublicCommentSetting:
+		workspaceSetting.Value = &v1pb.WorkspaceSetting_PublicCommentSetting{
+			PublicCommentSetting: convertWorkspacePublicCommentSettingFromStore(setting.GetPublicCommentSetting()),
+		}
 	}
 	return workspaceSetting
 }
@@ -125,6 +131,10 @@ func convertWorkspaceSettingToStore(setting *v1pb.WorkspaceSetting) *storepb.Wor
 	case storepb.WorkspaceSettingKey_MEMO_RELATED:
 		workspaceSetting.Value = &storepb.WorkspaceSetting_MemoRelatedSetting{
 			MemoRelatedSetting: convertWorkspaceMemoRelatedSettingToStore(setting.GetMemoRelatedSetting()),
+		}
+	case storepb.WorkspaceSettingKey_PUBLIC_COMMENT:
+		workspaceSetting.Value = &storepb.WorkspaceSetting_PublicCommentSetting{
+			PublicCommentSetting: convertWorkspacePublicCommentSettingToStore(setting.GetPublicCommentSetting()),
 		}
 	}
 	return workspaceSetting
@@ -257,5 +267,35 @@ func convertWorkspaceMemoRelatedSettingToStore(setting *v1pb.WorkspaceMemoRelate
 		DefaultVisibility:        setting.DefaultVisibility,
 		Reactions:                setting.Reactions,
 		DisableMarkdownShortcuts: setting.DisableMarkdownShortcuts,
+	}
+}
+
+func convertWorkspacePublicCommentSettingFromStore(setting *storepb.WorkspacePublicCommentSetting) *v1pb.WorkspacePublicCommentSetting {
+	if setting == nil {
+		return nil
+	}
+	return &v1pb.WorkspacePublicCommentSetting{
+		Enabled:    setting.Enabled,
+		Repo:       setting.Repo,
+		RepoId:     setting.RepoId,
+		Category:   setting.Category,
+		CategoryId: setting.CategoryId,
+		Theme:      setting.Theme,
+		Lang:       setting.Lang,
+	}
+}
+
+func convertWorkspacePublicCommentSettingToStore(setting *v1pb.WorkspacePublicCommentSetting) *storepb.WorkspacePublicCommentSetting {
+	if setting == nil {
+		return nil
+	}
+	return &storepb.WorkspacePublicCommentSetting{
+		Enabled:    setting.Enabled,
+		Repo:       setting.Repo,
+		RepoId:     setting.RepoId,
+		Category:   setting.Category,
+		CategoryId: setting.CategoryId,
+		Theme:      setting.Theme,
+		Lang:       setting.Lang,
 	}
 }

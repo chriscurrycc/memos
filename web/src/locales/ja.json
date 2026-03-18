@@ -103,7 +103,8 @@
     "code": "コード",
     "comment": {
       "self": "コメント",
-      "write-a-comment": "コメントを書く"
+      "write-a-comment": "コメントを書く",
+      "public-comments": "パブリックコメント"
     },
     "copy-link": "リンクをコピー",
     "count-memos-in-date": "{{date}} 日に {{count}} 件のメモ",
@@ -218,6 +219,18 @@
       "delete-warning": "本当に{{username}}を消去していいですか?\n\n消去後、元に戻せません！"
     },
     "memo-related": "Memo",
+    "public-comment": "Giscus",
+    "public-comment-settings": {
+      "title": "パブリックコメント (Giscus)",
+      "guide": "giscus.app で設定を生成し、リポジトリ、リポジトリ ID、カテゴリ、カテゴリ ID を以下にコピーしてください。",
+      "enable": "パブリックコメントを有効にする",
+      "giscus-repo": "GitHub リポジトリ",
+      "giscus-repo-id": "リポジトリ ID",
+      "giscus-category": "ディスカッションカテゴリ",
+      "giscus-category-id": "カテゴリ ID",
+      "giscus-theme": "テーマ",
+      "giscus-lang": "言語"
+    },
     "my-account": "アカウント設定",
     "preference": "設定",
     "preference-section": {

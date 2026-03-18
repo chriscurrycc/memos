@@ -110,7 +110,8 @@
     "archived-at": "Archived at",
     "comment": {
       "self": "Comments",
-      "write-a-comment": "Write a comment"
+      "write-a-comment": "Write a comment",
+      "public-comments": "Public Comments"
     },
     "copy-link": "Copy Link",
     "count-memos-in-date": "{{count}} memos in {{date}}",
@@ -318,6 +319,18 @@
       "removed-completed-task-list-items": "Enable removal of completed task list items"
     },
     "memo-related": "Memo",
+    "public-comment": "Giscus",
+    "public-comment-settings": {
+      "title": "Public Comments (Giscus)",
+      "guide": "Go to giscus.app to generate your configuration, then copy the repo, repo ID, category and category ID below.",
+      "enable": "Enable public comments",
+      "giscus-repo": "GitHub Repository",
+      "giscus-repo-id": "Repository ID",
+      "giscus-category": "Discussion Category",
+      "giscus-category-id": "Category ID",
+      "giscus-theme": "Theme",
+      "giscus-lang": "Language"
+    },
     "access-token-section": {
       "title": "Access Tokens",
       "description": "A list of all access tokens for your account.",

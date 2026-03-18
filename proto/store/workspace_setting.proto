@@ -14,6 +14,8 @@ enum WorkspaceSettingKey {
   STORAGE = 3;
   // MEMO_RELATED is the key for memo related settings.
   MEMO_RELATED = 4;
+  // PUBLIC_COMMENT is the key for public comment (Giscus) settings.
+  PUBLIC_COMMENT = 5;
 }
 
 message WorkspaceSetting {
@@ -23,6 +25,7 @@ message WorkspaceSetting {
     WorkspaceGeneralSetting general_setting = 3;
     WorkspaceStorageSetting storage_setting = 4;
     WorkspaceMemoRelatedSetting memo_related_setting = 5;
+    WorkspacePublicCommentSetting public_comment_setting = 6;
   }
 }
 
@@ -116,4 +119,14 @@ message WorkspaceMemoRelatedSetting {
   repeated string reactions = 10;
   // disable markdown shortcuts
   bool disable_markdown_shortcuts = 11;
+}
+
+message WorkspacePublicCommentSetting {
+  bool enabled = 1;
+  string repo = 2;
+  string repo_id = 3;
+  string category = 4;
+  string category_id = 5;
+  string theme = 6;
+  string lang = 7;
 }

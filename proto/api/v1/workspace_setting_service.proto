@@ -32,6 +32,7 @@ message WorkspaceSetting {
     WorkspaceGeneralSetting general_setting = 2;
     WorkspaceStorageSetting storage_setting = 3;
     WorkspaceMemoRelatedSetting memo_related_setting = 4;
+    WorkspacePublicCommentSetting public_comment_setting = 5;
   }
 }
 
@@ -117,6 +118,16 @@ message WorkspaceMemoRelatedSetting {
   repeated string reactions = 10;
   // disable_markdown_shortcuts disallow the registration of markdown shortcuts.
   bool disable_markdown_shortcuts = 11;
+}
+
+message WorkspacePublicCommentSetting {
+  bool enabled = 1;
+  string repo = 2;
+  string repo_id = 3;
+  string category = 4;
+  string category_id = 5;
+  string theme = 6;
+  string lang = 7;
 }
 
 message GetWorkspaceSettingRequest {

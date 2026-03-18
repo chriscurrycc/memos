@@ -926,6 +926,8 @@ paths:
                 $ref: '#/definitions/apiV1WorkspaceStorageSetting'
               memoRelatedSetting:
                 $ref: '#/definitions/apiV1WorkspaceMemoRelatedSetting'
+              publicCommentSetting:
+                $ref: '#/definitions/apiV1WorkspacePublicCommentSetting'
             title: setting is the setting to update.
       tags:
         - WorkspaceSettingService
@@ -2047,18 +2049,6 @@ definitions:
       bucket:
         type: string
     title: 'Reference: https://developers.cloudflare.com/r2/examples/aws/aws-sdk-go/'
-  WorkspaceStorageSettingStorageType:
-    type: string
-    enum:
-      - STORAGE_TYPE_UNSPECIFIED
-      - DATABASE
-      - LOCAL
-      - S3
-    default: STORAGE_TYPE_UNSPECIFIED
-    description: |2-
-       - DATABASE: DATABASE is the database storage type.
-       - LOCAL: LOCAL is the local storage type.
-       - S3: S3 is the S3 storage type.
   apiHttpBody:
     type: object
     properties:
@@ -2164,7 +2154,7 @@ definitions:
           The name of the identityProvider.
           Format: identityProviders/{id}
       type:
-        $ref: '#/definitions/v1IdentityProviderType'
+        $ref: '#/definitions/apiV1IdentityProviderType'
       title:
         type: string
       identifierFilter:
@@ -2176,6 +2166,12 @@ definitions:
     properties:
       oauth2Config:
         $ref: '#/definitions/apiV1OAuth2Config'
+  apiV1IdentityProviderType:
+    type: string
+    enum:
+      - TYPE_UNSPECIFIED
+      - OAUTH2
+    default: TYPE_UNSPECIFIED
   apiV1Location:
     type: object
     properties:
@@ -2401,6 +2397,23 @@ definitions:
       disableMarkdownShortcuts:
         type: boolean
         description: disable_markdown_shortcuts disallow the registration of markdown shortcuts.
+  apiV1WorkspacePublicCommentSetting:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+      repo:
+        type: string
+      repoId:
+        type: string
+      category:
+        type: string
+      categoryId:
+        type: string
+      theme:
+        type: string
+      lang:
+        type: string
   apiV1WorkspaceSetting:
     type: object
     properties:
@@ -2415,11 +2428,13 @@ definitions:
         $ref: '#/definitions/apiV1WorkspaceStorageSetting'
       memoRelatedSetting:
         $ref: '#/definitions/apiV1WorkspaceMemoRelatedSetting'
+      publicCommentSetting:
+        $ref: '#/definitions/apiV1WorkspacePublicCommentSetting'
   apiV1WorkspaceStorageSetting:
     type: object
     properties:
       storageType:
-        $ref: '#/definitions/WorkspaceStorageSettingStorageType'
+        $ref: '#/definitions/apiV1WorkspaceStorageSettingStorageType'
         description: storage_type is the storage type.
       filepathTemplate:
         type: string
@@ -2433,6 +2448,18 @@ definitions:
       s3Config:
         $ref: '#/definitions/WorkspaceStorageSettingS3Config'
         description: The S3 config.
+  apiV1WorkspaceStorageSettingStorageType:
+    type: string
+    enum:
+      - STORAGE_TYPE_UNSPECIFIED
+      - DATABASE
+      - LOCAL
+      - S3
+    default: STORAGE_TYPE_UNSPECIFIED
+    description: |2-
+       - DATABASE: DATABASE is the database storage type.
+       - LOCAL: LOCAL is the local storage type.
+       - S3: S3 is the S3 storage type.
   googleRpcStatus:
     type: object
     properties:
@@ -2745,12 +2772,6 @@ definitions:
     properties:
       symbol:
         type: string
-  v1IdentityProviderType:
-    type: string
-    enum:
-      - TYPE_UNSPECIFIED
-      - OAUTH2
-    default: TYPE_UNSPECIFIED
   v1ImageNode:
     type: object
     properties:

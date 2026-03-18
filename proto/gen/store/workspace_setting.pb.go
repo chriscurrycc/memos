@@ -33,6 +33,8 @@ const (
 	WorkspaceSettingKey_STORAGE WorkspaceSettingKey = 3
 	// MEMO_RELATED is the key for memo related settings.
 	WorkspaceSettingKey_MEMO_RELATED WorkspaceSettingKey = 4
+	// PUBLIC_COMMENT is the key for public comment (Giscus) settings.
+	WorkspaceSettingKey_PUBLIC_COMMENT WorkspaceSettingKey = 5
 )
 
 // Enum value maps for WorkspaceSettingKey.
@@ -43,6 +45,7 @@ var (
 		2: "GENERAL",
 		3: "STORAGE",
 		4: "MEMO_RELATED",
+		5: "PUBLIC_COMMENT",
 	}
 	WorkspaceSettingKey_value = map[string]int32{
 		"WORKSPACE_SETTING_KEY_UNSPECIFIED": 0,
@@ -50,6 +53,7 @@ var (
 		"GENERAL":                           2,
 		"STORAGE":                           3,
 		"MEMO_RELATED":                      4,
+		"PUBLIC_COMMENT":                    5,
 	}
 )
 
@@ -144,6 +148,7 @@ type WorkspaceSetting struct {
 	//	*WorkspaceSetting_GeneralSetting
 	//	*WorkspaceSetting_StorageSetting
 	//	*WorkspaceSetting_MemoRelatedSetting
+	//	*WorkspaceSetting_PublicCommentSetting
 	Value         isWorkspaceSetting_Value `protobuf_oneof:"value"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -229,6 +234,15 @@ func (x *WorkspaceSetting) GetMemoRelatedSetting() *WorkspaceMemoRelatedSetting 
 	return nil
 }
 
+func (x *WorkspaceSetting) GetPublicCommentSetting() *WorkspacePublicCommentSetting {
+	if x != nil {
+		if x, ok := x.Value.(*WorkspaceSetting_PublicCommentSetting); ok {
+			return x.PublicCommentSetting
+		}
+	}
+	return nil
+}
+
 type isWorkspaceSetting_Value interface {
 	isWorkspaceSetting_Value()
 }
@@ -249,6 +263,10 @@ type WorkspaceSetting_MemoRelatedSetting struct {
 	MemoRelatedSetting *WorkspaceMemoRelatedSetting `protobuf:"bytes,5,opt,name=memo_related_setting,json=memoRelatedSetting,proto3,oneof"`
 }
 
+type WorkspaceSetting_PublicCommentSetting struct {
+	PublicCommentSetting *WorkspacePublicCommentSetting `protobuf:"bytes,6,opt,name=public_comment_setting,json=publicCommentSetting,proto3,oneof"`
+}
+
 func (*WorkspaceSetting_BasicSetting) isWorkspaceSetting_Value() {}
 
 func (*WorkspaceSetting_GeneralSetting) isWorkspaceSetting_Value() {}
@@ -256,6 +274,8 @@ func (*WorkspaceSetting_GeneralSetting) isWorkspaceSetting_Value() {}
 func (*WorkspaceSetting_StorageSetting) isWorkspaceSetting_Value() {}
 
 func (*WorkspaceSetting_MemoRelatedSetting) isWorkspaceSetting_Value() {}
+
+func (*WorkspaceSetting_PublicCommentSetting) isWorkspaceSetting_Value() {}
 
 type WorkspaceBasicSetting struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -782,17 +802,110 @@ func (x *WorkspaceMemoRelatedSetting) GetDisableMarkdownShortcuts() bool {
 	return false
 }
 
+type WorkspacePublicCommentSetting struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Enabled       bool                   `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+	Repo          string                 `protobuf:"bytes,2,opt,name=repo,proto3" json:"repo,omitempty"`
+	RepoId        string                 `protobuf:"bytes,3,opt,name=repo_id,json=repoId,proto3" json:"repo_id,omitempty"`
+	Category      string                 `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`
+	CategoryId    string                 `protobuf:"bytes,5,opt,name=category_id,json=categoryId,proto3" json:"category_id,omitempty"`
+	Theme         string                 `protobuf:"bytes,6,opt,name=theme,proto3" json:"theme,omitempty"`
+	Lang          string                 `protobuf:"bytes,7,opt,name=lang,proto3" json:"lang,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *WorkspacePublicCommentSetting) Reset() {
+	*x = WorkspacePublicCommentSetting{}
+	mi := &file_store_workspace_setting_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WorkspacePublicCommentSetting) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WorkspacePublicCommentSetting) ProtoMessage() {}
+
+func (x *WorkspacePublicCommentSetting) ProtoReflect() protoreflect.Message {
+	mi := &file_store_workspace_setting_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WorkspacePublicCommentSetting.ProtoReflect.Descriptor instead.
+func (*WorkspacePublicCommentSetting) Descriptor() ([]byte, []int) {
+	return file_store_workspace_setting_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *WorkspacePublicCommentSetting) GetEnabled() bool {
+	if x != nil {
+		return x.Enabled
+	}
+	return false
+}
+
+func (x *WorkspacePublicCommentSetting) GetRepo() string {
+	if x != nil {
+		return x.Repo
+	}
+	return ""
+}
+
+func (x *WorkspacePublicCommentSetting) GetRepoId() string {
+	if x != nil {
+		return x.RepoId
+	}
+	return ""
+}
+
+func (x *WorkspacePublicCommentSetting) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *WorkspacePublicCommentSetting) GetCategoryId() string {
+	if x != nil {
+		return x.CategoryId
+	}
+	return ""
+}
+
+func (x *WorkspacePublicCommentSetting) GetTheme() string {
+	if x != nil {
+		return x.Theme
+	}
+	return ""
+}
+
+func (x *WorkspacePublicCommentSetting) GetLang() string {
+	if x != nil {
+		return x.Lang
+	}
+	return ""
+}
+
 var File_store_workspace_setting_proto protoreflect.FileDescriptor
 
 const file_store_workspace_setting_proto_rawDesc = "" +
 	"\n" +
-	"\x1dstore/workspace_setting.proto\x12\vmemos.store\"\x9a\x03\n" +
+	"\x1dstore/workspace_setting.proto\x12\vmemos.store\"\xfe\x03\n" +
 	"\x10WorkspaceSetting\x122\n" +
 	"\x03key\x18\x01 \x01(\x0e2 .memos.store.WorkspaceSettingKeyR\x03key\x12I\n" +
 	"\rbasic_setting\x18\x02 \x01(\v2\".memos.store.WorkspaceBasicSettingH\x00R\fbasicSetting\x12O\n" +
 	"\x0fgeneral_setting\x18\x03 \x01(\v2$.memos.store.WorkspaceGeneralSettingH\x00R\x0egeneralSetting\x12O\n" +
 	"\x0fstorage_setting\x18\x04 \x01(\v2$.memos.store.WorkspaceStorageSettingH\x00R\x0estorageSetting\x12\\\n" +
-	"\x14memo_related_setting\x18\x05 \x01(\v2(.memos.store.WorkspaceMemoRelatedSettingH\x00R\x12memoRelatedSettingB\a\n" +
+	"\x14memo_related_setting\x18\x05 \x01(\v2(.memos.store.WorkspaceMemoRelatedSettingH\x00R\x12memoRelatedSetting\x12b\n" +
+	"\x16public_comment_setting\x18\x06 \x01(\v2*.memos.store.WorkspacePublicCommentSettingH\x00R\x14publicCommentSettingB\a\n" +
 	"\x05value\"]\n" +
 	"\x15WorkspaceBasicSetting\x12\x1d\n" +
 	"\n" +
@@ -843,13 +956,23 @@ const file_store_workspace_setting_proto_rawDesc = "" +
 	"\x12default_visibility\x18\t \x01(\tR\x11defaultVisibility\x12\x1c\n" +
 	"\treactions\x18\n" +
 	" \x03(\tR\treactions\x12<\n" +
-	"\x1adisable_markdown_shortcuts\x18\v \x01(\bR\x18disableMarkdownShortcuts*s\n" +
+	"\x1adisable_markdown_shortcuts\x18\v \x01(\bR\x18disableMarkdownShortcuts\"\xcd\x01\n" +
+	"\x1dWorkspacePublicCommentSetting\x12\x18\n" +
+	"\aenabled\x18\x01 \x01(\bR\aenabled\x12\x12\n" +
+	"\x04repo\x18\x02 \x01(\tR\x04repo\x12\x17\n" +
+	"\arepo_id\x18\x03 \x01(\tR\x06repoId\x12\x1a\n" +
+	"\bcategory\x18\x04 \x01(\tR\bcategory\x12\x1f\n" +
+	"\vcategory_id\x18\x05 \x01(\tR\n" +
+	"categoryId\x12\x14\n" +
+	"\x05theme\x18\x06 \x01(\tR\x05theme\x12\x12\n" +
+	"\x04lang\x18\a \x01(\tR\x04lang*\x87\x01\n" +
 	"\x13WorkspaceSettingKey\x12%\n" +
 	"!WORKSPACE_SETTING_KEY_UNSPECIFIED\x10\x00\x12\t\n" +
 	"\x05BASIC\x10\x01\x12\v\n" +
 	"\aGENERAL\x10\x02\x12\v\n" +
 	"\aSTORAGE\x10\x03\x12\x10\n" +
-	"\fMEMO_RELATED\x10\x04B\xa0\x01\n" +
+	"\fMEMO_RELATED\x10\x04\x12\x12\n" +
+	"\x0ePUBLIC_COMMENT\x10\x05B\xa0\x01\n" +
 	"\x0fcom.memos.storeB\x15WorkspaceSettingProtoP\x01Z)github.com/usememos/memos/proto/gen/store\xa2\x02\x03MSX\xaa\x02\vMemos.Store\xca\x02\vMemos\\Store\xe2\x02\x17Memos\\Store\\GPBMetadata\xea\x02\fMemos::Storeb\x06proto3"
 
 var (
@@ -865,7 +988,7 @@ func file_store_workspace_setting_proto_rawDescGZIP() []byte {
 }
 
 var file_store_workspace_setting_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
-var file_store_workspace_setting_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_store_workspace_setting_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_store_workspace_setting_proto_goTypes = []any{
 	(WorkspaceSettingKey)(0),                 // 0: memos.store.WorkspaceSettingKey
 	(WorkspaceStorageSetting_StorageType)(0), // 1: memos.store.WorkspaceStorageSetting.StorageType
@@ -876,6 +999,7 @@ var file_store_workspace_setting_proto_goTypes = []any{
 	(*WorkspaceStorageSetting)(nil),          // 6: memos.store.WorkspaceStorageSetting
 	(*StorageS3Config)(nil),                  // 7: memos.store.StorageS3Config
 	(*WorkspaceMemoRelatedSetting)(nil),      // 8: memos.store.WorkspaceMemoRelatedSetting
+	(*WorkspacePublicCommentSetting)(nil),    // 9: memos.store.WorkspacePublicCommentSetting
 }
 var file_store_workspace_setting_proto_depIdxs = []int32{
 	0, // 0: memos.store.WorkspaceSetting.key:type_name -> memos.store.WorkspaceSettingKey
@@ -883,14 +1007,15 @@ var file_store_workspace_setting_proto_depIdxs = []int32{
 	4, // 2: memos.store.WorkspaceSetting.general_setting:type_name -> memos.store.WorkspaceGeneralSetting
 	6, // 3: memos.store.WorkspaceSetting.storage_setting:type_name -> memos.store.WorkspaceStorageSetting
 	8, // 4: memos.store.WorkspaceSetting.memo_related_setting:type_name -> memos.store.WorkspaceMemoRelatedSetting
-	5, // 5: memos.store.WorkspaceGeneralSetting.custom_profile:type_name -> memos.store.WorkspaceCustomProfile
-	1, // 6: memos.store.WorkspaceStorageSetting.storage_type:type_name -> memos.store.WorkspaceStorageSetting.StorageType
-	7, // 7: memos.store.WorkspaceStorageSetting.s3_config:type_name -> memos.store.StorageS3Config
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	9, // 5: memos.store.WorkspaceSetting.public_comment_setting:type_name -> memos.store.WorkspacePublicCommentSetting
+	5, // 6: memos.store.WorkspaceGeneralSetting.custom_profile:type_name -> memos.store.WorkspaceCustomProfile
+	1, // 7: memos.store.WorkspaceStorageSetting.storage_type:type_name -> memos.store.WorkspaceStorageSetting.StorageType
+	7, // 8: memos.store.WorkspaceStorageSetting.s3_config:type_name -> memos.store.StorageS3Config
+	9, // [9:9] is the sub-list for method output_type
+	9, // [9:9] is the sub-list for method input_type
+	9, // [9:9] is the sub-list for extension type_name
+	9, // [9:9] is the sub-list for extension extendee
+	0, // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_store_workspace_setting_proto_init() }
@@ -903,6 +1028,7 @@ func file_store_workspace_setting_proto_init() {
 		(*WorkspaceSetting_GeneralSetting)(nil),
 		(*WorkspaceSetting_StorageSetting)(nil),
 		(*WorkspaceSetting_MemoRelatedSetting)(nil),
+		(*WorkspaceSetting_PublicCommentSetting)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -910,7 +1036,7 @@ func file_store_workspace_setting_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_store_workspace_setting_proto_rawDesc), len(file_store_workspace_setting_proto_rawDesc)),
 			NumEnums:      2,
-			NumMessages:   7,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

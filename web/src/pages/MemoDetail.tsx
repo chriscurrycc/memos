@@ -1,3 +1,4 @@
+import Giscus from "@giscus/react";
 import { Button } from "@usememos/mui";
 import clsx from "clsx";
 import { ArrowUpLeftFromCircleIcon, MessageCircleIcon } from "lucide-react";
@@ -15,7 +16,8 @@ import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoStore, useWorkspaceSettingStore } from "@/store/v1";
 import { useMemoMetadataStore } from "@/store/v1/memoMetadata";
 import { MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
-import { Memo } from "@/types/proto/api/v1/memo_service";
+import { Memo, Visibility } from "@/types/proto/api/v1/memo_service";
+import { WorkspacePublicCommentSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceMemoRelatedSetting, WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
 
@@ -42,6 +44,11 @@ const MemoDetail = () => {
     memo?.relations.filter((relation) => relation.relatedMemo?.name === memo.name && relation.type === MemoRelation_Type.COMMENT) || [];
   const comments = commentRelations.map((relation) => memoStore.getMemoByName(relation.memo!.name)).filter((memo) => memo) as any as Memo[];
   const showCreateCommentButton = workspaceMemoRelatedSetting.enableComment && currentUser && !showCommentEditor;
+  const publicCommentSetting = WorkspacePublicCommentSetting.fromPartial(
+    workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.PUBLIC_COMMENT)?.publicCommentSetting || {},
+  );
+  const showPublicComments =
+    publicCommentSetting.enabled && memo?.visibility === Visibility.PUBLIC && publicCommentSetting.repo && publicCommentSetting.repoId;
 
   // Clear edit param from URL after reading it.
   useEffect(() => {
@@ -184,6 +191,29 @@ const MemoDetail = () => {
               </div>
             )}
           </div>
+          {showPublicComments && (
+            <div className="w-full pt-4 pb-8">
+              <div className="w-full flex flex-row items-center mb-4">
+                <div className="flex-grow border-t border-gray-200 dark:border-gray-600" />
+                <span className="px-4 text-sm text-gray-400">{t("memo.comment.public-comments")}</span>
+                <div className="flex-grow border-t border-gray-200 dark:border-gray-600" />
+              </div>
+              <Giscus
+                id="public-comments"
+                repo={publicCommentSetting.repo as `${string}/${string}`}
+                repoId={publicCommentSetting.repoId}
+                category={publicCommentSetting.category || "Announcements"}
+                categoryId={publicCommentSetting.categoryId}
+                mapping="specific"
+                term={memo.uid}
+                reactionsEnabled="1"
+                emitMetadata="0"
+                inputPosition="top"
+                theme={publicCommentSetting.theme || "preferred_color_scheme"}
+                lang={publicCommentSetting.lang || "en"}
+              />
+            </div>
+          )}
         </div>
         {md && (
           <div className="sticky top-0 left-0 shrink-0 -mt-6 w-56 h-full">

@@ -37,6 +37,8 @@ func (s *Store) UpsertWorkspaceSetting(ctx context.Context, upsert *storepb.Work
 		valueBytes, err = protojson.Marshal(upsert.GetStorageSetting())
 	} else if upsert.Key == storepb.WorkspaceSettingKey_MEMO_RELATED {
 		valueBytes, err = protojson.Marshal(upsert.GetMemoRelatedSetting())
+	} else if upsert.Key == storepb.WorkspaceSettingKey_PUBLIC_COMMENT {
+		valueBytes, err = protojson.Marshal(upsert.GetPublicCommentSetting())
 	} else {
 		return nil, errors.Errorf("unsupported workspace setting key: %v", upsert.Key)
 	}
@@ -174,6 +176,25 @@ const (
 	defaultWorkspaceFilepathTemplate  = "assets/{timestamp}_{filename}"
 )
 
+func (s *Store) GetWorkspacePublicCommentSetting(ctx context.Context) (*storepb.WorkspacePublicCommentSetting, error) {
+	workspaceSetting, err := s.GetWorkspaceSetting(ctx, &FindWorkspaceSetting{
+		Name: storepb.WorkspaceSettingKey_PUBLIC_COMMENT.String(),
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get workspace public comment setting")
+	}
+
+	workspacePublicCommentSetting := &storepb.WorkspacePublicCommentSetting{}
+	if workspaceSetting != nil {
+		workspacePublicCommentSetting = workspaceSetting.GetPublicCommentSetting()
+	}
+	s.workspaceSettingCache.Store(storepb.WorkspaceSettingKey_PUBLIC_COMMENT.String(), &storepb.WorkspaceSetting{
+		Key:   storepb.WorkspaceSettingKey_PUBLIC_COMMENT,
+		Value: &storepb.WorkspaceSetting_PublicCommentSetting{PublicCommentSetting: workspacePublicCommentSetting},
+	})
+	return workspacePublicCommentSetting, nil
+}
+
 func (s *Store) GetWorkspaceStorageSetting(ctx context.Context) (*storepb.WorkspaceStorageSetting, error) {
 	workspaceSetting, err := s.GetWorkspaceSetting(ctx, &FindWorkspaceSetting{
 		Name: storepb.WorkspaceSettingKey_STORAGE.String(),
@@ -231,6 +252,12 @@ func convertWorkspaceSettingFromRaw(workspaceSettingRaw *WorkspaceSetting) (*sto
 			return nil, err
 		}
 		workspaceSetting.Value = &storepb.WorkspaceSetting_MemoRelatedSetting{MemoRelatedSetting: memoRelatedSetting}
+	case storepb.WorkspaceSettingKey_PUBLIC_COMMENT.String():
+		publicCommentSetting := &storepb.WorkspacePublicCommentSetting{}
+		if err := protojsonUnmarshaler.Unmarshal([]byte(workspaceSettingRaw.Value), publicCommentSetting); err != nil {
+			return nil, err
+		}
+		workspaceSetting.Value = &storepb.WorkspaceSetting_PublicCommentSetting{PublicCommentSetting: publicCommentSetting}
 	default:
 		// Skip unsupported workspace setting key.
 		return nil, nil
