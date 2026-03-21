@@ -1,3 +1,4 @@
+import { devtoolsLoggingMiddleware } from "nice-grpc-client-middleware-devtools";
 import { createChannel, createClientFactory, FetchTransport } from "nice-grpc-web";
 import { ActivityServiceDefinition } from "./types/proto/api/v1/activity_service";
 import { AuthServiceDefinition } from "./types/proto/api/v1/auth_service";
@@ -20,7 +21,7 @@ const channel = createChannel(
   }),
 );
 
-const clientFactory = createClientFactory();
+const clientFactory = createClientFactory().use(devtoolsLoggingMiddleware);
 
 export const workspaceServiceClient = clientFactory.create(WorkspaceServiceDefinition, channel);
 

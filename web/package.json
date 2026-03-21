@@ -85,6 +85,7 @@
     "eslint-plugin-react": "^7.37.3",
     "less": "^4.2.1",
     "long": "^5.2.3",
+    "nice-grpc-client-middleware-devtools": "^1.0.9",
     "nice-grpc-web": "^3.3.5",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",

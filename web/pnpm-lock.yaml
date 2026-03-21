@@ -228,6 +228,9 @@ importers:
       long:
         specifier: ^5.2.3
         version: 5.2.3
+      nice-grpc-client-middleware-devtools:
+        specifier: ^1.0.9
+        version: 1.0.9
       nice-grpc-web:
         specifier: ^3.3.5
         version: 3.3.5(ws@8.17.0)
@@ -2802,6 +2805,9 @@ packages:
     resolution: {integrity: sha512-6k0YULvhpw+RoLNiQCRKOl09Rv1dPLr8hHnVjHqdolKwDrdNyk+Hmrthi4lIGPPz3r39dLx0hsF5s40sZ3Us4Q==}
     engines: {node: '>= 4.4.x'}
     hasBin: true
+
+  nice-grpc-client-middleware-devtools@1.0.9:
+    resolution: {integrity: sha512-weQFgNxpxj+8ji6ewcNtVjBfia9KDVsu9elAaJRJo2kTO2AGXtyUfbdJxoYgBVFm2toRAFyjQJjCYC29RAB+uw==}
 
   nice-grpc-common@2.0.2:
     resolution: {integrity: sha512-7RNWbls5kAL1QVUOXvBsv1uO0wPQK3lHv+cY1gwkTzirnG1Nop4cBJZubpgziNbaVc/bl9QJcyvsf/NQxa3rjQ==}
@@ -6501,6 +6507,11 @@ snapshots:
       iconv-lite: 0.6.3
       sax: 1.4.1
     optional: true
+
+  nice-grpc-client-middleware-devtools@1.0.9:
+    dependencies:
+      abort-controller-x: 0.4.3
+      nice-grpc-common: 2.0.2
 
   nice-grpc-common@2.0.2:
     dependencies:
