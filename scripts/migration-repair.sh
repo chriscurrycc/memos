@@ -22,7 +22,13 @@
 # Design & How to Extend
 # ---------------------------------------------------------------------------
 #
-# This script has two phases, applied in order:
+# This script has three phases, applied in order:
+#
+#   Phase 0 — Ensure migration_history table exists
+#     The fork's migrator requires this table to recognize an existing database.
+#     Without it, the migrator treats the DB as a fresh install and crashes.
+#     Schema version is read from store/migration/SCHEMA_VERSION (shared with
+#     the Go migrator). Update that file when adding new fork migration versions.
 #
 #   Phase 1 — Reverse upstream breaking changes
 #     Undoes schema changes that upstream usememos/memos made but this fork
@@ -56,6 +62,24 @@
 #
 
 set -euo pipefail
+
+# Schema version is read from store/migration/SCHEMA_VERSION (single source of
+# truth shared with the Go migrator). When this script is piped from curl, the
+# local file is not available, so it falls back to fetching from GitHub.
+_get_schema_version() {
+  local dir="${BASH_SOURCE[0]%/*}"
+  local f="$dir/../store/migration/SCHEMA_VERSION"
+  if [ -f "$f" ]; then
+    tr -d '[:space:]' < "$f"
+  else
+    curl -sfL https://raw.githubusercontent.com/chriscurrycc/memos/main/store/migration/SCHEMA_VERSION
+  fi
+}
+SCHEMA_VERSION=$(_get_schema_version)
+if [ -z "$SCHEMA_VERSION" ]; then
+  echo "Error: failed to determine schema version."
+  exit 1
+fi
 
 DRIVER="sqlite"
 DSN=""
@@ -92,6 +116,26 @@ run_sqlite() {
   fi
 
   echo "Using SQLite database: $db"
+
+  # =========================================================================
+  # Phase 0: Ensure migration_history table exists
+  # =========================================================================
+  # The fork's migrator requires this table to recognize an existing database.
+  # Without it, the migrator treats the database as a fresh install and tries
+  # to apply LATEST.sql, which fails because tables already exist.
+  echo "Checking migration_history table..."
+
+  sqlite3 "$db" "CREATE TABLE IF NOT EXISTS migration_history (
+    version TEXT NOT NULL PRIMARY KEY,
+    created_ts BIGINT NOT NULL DEFAULT (strftime('%s', 'now'))
+  );"
+
+  local has_version
+  has_version=$(sqlite3 "$db" "SELECT COUNT(*) FROM migration_history WHERE version='${SCHEMA_VERSION}';")
+  if [ "$has_version" = "0" ]; then
+    echo "  Inserting schema version ${SCHEMA_VERSION} into migration_history..."
+    sqlite3 "$db" "INSERT OR IGNORE INTO migration_history (version) VALUES ('${SCHEMA_VERSION}');"
+  fi
 
   # =========================================================================
   # Phase 1: Reverse upstream breaking changes
@@ -257,6 +301,23 @@ run_mysql() {
   }
 
   # =========================================================================
+  # Phase 0: Ensure migration_history table exists
+  # =========================================================================
+  echo "Checking migration_history table..."
+
+  run_query "CREATE TABLE IF NOT EXISTS \`migration_history\` (
+    \`version\` VARCHAR(256) NOT NULL PRIMARY KEY,
+    \`created_ts\` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );"
+
+  local has_version
+  has_version=$(run_query "SELECT COUNT(*) FROM \`migration_history\` WHERE \`version\`='${SCHEMA_VERSION}';")
+  if [ "$has_version" = "0" ]; then
+    echo "  Inserting schema version ${SCHEMA_VERSION} into migration_history..."
+    run_query "INSERT IGNORE INTO \`migration_history\` (\`version\`) VALUES ('${SCHEMA_VERSION}');"
+  fi
+
+  # =========================================================================
   # Phase 1: Reverse upstream breaking changes
   # =========================================================================
 
@@ -403,6 +464,23 @@ run_postgres() {
   run_query() {
     psql "$dsn" -tA -c "$1"
   }
+
+  # =========================================================================
+  # Phase 0: Ensure migration_history table exists
+  # =========================================================================
+  echo "Checking migration_history table..."
+
+  run_query "CREATE TABLE IF NOT EXISTS migration_history (
+    version TEXT NOT NULL PRIMARY KEY,
+    created_ts BIGINT NOT NULL DEFAULT EXTRACT(EPOCH FROM NOW())
+  );"
+
+  local has_version
+  has_version=$(run_query "SELECT COUNT(*) FROM migration_history WHERE version='${SCHEMA_VERSION}';")
+  if [ "$has_version" = "0" ]; then
+    echo "  Inserting schema version ${SCHEMA_VERSION} into migration_history..."
+    run_query "INSERT INTO migration_history (version) VALUES ('${SCHEMA_VERSION}') ON CONFLICT DO NOTHING;"
+  fi
 
   # =========================================================================
   # Phase 1: Reverse upstream breaking changes

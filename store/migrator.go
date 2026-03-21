@@ -210,19 +210,15 @@ func (s *Store) seed(ctx context.Context) error {
 	return tx.Commit()
 }
 
+// GetCurrentSchemaVersion reads the schema version from the embedded SCHEMA_VERSION file.
+// This file is the single source of truth shared with scripts/migration-repair.sh.
+// Update store/migration/SCHEMA_VERSION when adding new migration versions.
 func (s *Store) GetCurrentSchemaVersion() (string, error) {
-	currentVersion := version.GetCurrentVersion(s.Profile.Mode)
-	minorVersion := version.GetMinorVersion(currentVersion)
-	filePaths, err := fs.Glob(migrationFS, fmt.Sprintf("%s%s/*.sql", s.getMigrationBasePath(), minorVersion))
+	bytes, err := migrationFS.ReadFile("migration/SCHEMA_VERSION")
 	if err != nil {
-		return "", errors.Wrap(err, "failed to read migration files")
+		return "", errors.Wrap(err, "failed to read SCHEMA_VERSION")
 	}
-
-	sort.Strings(filePaths)
-	if len(filePaths) == 0 {
-		return fmt.Sprintf("%s.0", minorVersion), nil
-	}
-	return s.getSchemaVersionOfMigrateScript(filePaths[len(filePaths)-1])
+	return strings.TrimSpace(string(bytes)), nil
 }
 
 func (s *Store) getSchemaVersionOfMigrateScript(filePath string) (string, error) {
