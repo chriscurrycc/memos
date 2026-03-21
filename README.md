@@ -8,6 +8,17 @@ A lightweight, self-hosted memo hub for capturing and organizing your thoughts.
 
 This is a customized fork of [usememos/memos](https://github.com/usememos/memos), forked from [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## Versioning
+
+This project uses two independent version numbers:
+
+- **Application version** (e.g., `v0.30.0`) — the release version, incremented when new features or improvements are added. This is what you see in Docker tags and GitHub releases.
+- **Database schema version** (e.g., `0.25.2`) — the database migration version, only incremented when the database structure changes. Defined in [`store/migration/SCHEMA_VERSION`](store/migration/SCHEMA_VERSION).
+
+The application version may increase without any database schema change. For example, multiple feature releases can share the same schema version if they only involve frontend or API changes.
+
+> **Note:** You don't need to worry about the database schema version in daily use. It only matters when migrating from the original usememos/memos. The original project ties its database version to the application version — even if the database hasn't changed, the version number still increases with each minor release (e.g., v0.26 → v0.27). So the compatibility range "v0.24.0 ~ v0.26.2" below refers to the original project's **application version**, not actual database changes.
+
 ## What's Different
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed list of features and improvements compared to the original Memos.

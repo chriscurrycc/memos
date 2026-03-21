@@ -8,6 +8,17 @@
 
 本專案是 [usememos/memos](https://github.com/usememos/memos) 的定製分支，從 [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 版本 fork 而來。
 
+## 版本說明
+
+本專案使用兩個獨立的版本號：
+
+- **應用版本**（如 `v0.30.0`）— 發布版本，每次新增功能或改進時遞增。對應 Docker 標籤和 GitHub Releases。
+- **資料庫版本**（如 `0.25.2`）— 資料庫遷移版本，僅在資料庫結構變更時遞增。定義在 [`store/migration/SCHEMA_VERSION`](store/migration/SCHEMA_VERSION)。
+
+應用版本可能在資料庫版本不變的情況下多次遞增。例如，多個功能發布可能共享同一個資料庫版本（如僅涉及前端或 API 變更）。
+
+> **說明：** 日常使用無需關注資料庫版本，僅在從原版 usememos/memos 遷移時需要了解。原版的資料庫版本與應用版本綁定——即使資料庫沒有任何變化，資料庫版本號也會隨每次 minor 版本發布而遞增（如 v0.26 → v0.27）。因此下文相容性範圍中提到的「v0.24.0 ~ v0.26.2」指的是原版的**應用版本**，並非實際的資料庫變更版本。
+
 ## 版本差異
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解與原版 Memos 的詳細功能和改進。
