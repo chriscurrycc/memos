@@ -213,7 +213,7 @@ func (s *Store) seed(ctx context.Context) error {
 // GetCurrentSchemaVersion reads the schema version from the embedded SCHEMA_VERSION file.
 // This file is the single source of truth shared with scripts/migration-repair.sh.
 // Update store/migration/SCHEMA_VERSION when adding new migration versions.
-func (s *Store) GetCurrentSchemaVersion() (string, error) {
+func (*Store) GetCurrentSchemaVersion() (string, error) {
 	bytes, err := migrationFS.ReadFile("migration/SCHEMA_VERSION")
 	if err != nil {
 		return "", errors.Wrap(err, "failed to read SCHEMA_VERSION")
