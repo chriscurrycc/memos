@@ -157,17 +157,17 @@ For detailed information about what changed at the database level and what the r
 
 **Migration Repair:**
 
-After migrating from upstream v0.24.0 ~ v0.26.2, run the [migration repair script](scripts/migration-repair.sh) to fix schema differences and create missing tables:
+If migrating from upstream v0.24.0 ~ v0.26.2, run the [migration repair script](scripts/migration-repair.sh) **before starting this fork's service**, to fix database schema differences and create missing tables. The script requires `sqlite3`, `mysql`, or `psql` CLI tools depending on your database driver:
 
 ```bash
-# SQLite (default, inside Docker)
-docker exec memos sh -c "apk add --no-cache sqlite curl bash && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite"
+# SQLite (default path: ~/.memos/memos_prod.db)
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite --dsn ~/.memos/memos_prod.db
 
 # MySQL
-bash scripts/migration-repair.sh --driver mysql --dsn "user:password@tcp(host:3306)/memos"
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver mysql --dsn "user:password@tcp(host:3306)/memos"
 
 # PostgreSQL
-bash scripts/migration-repair.sh --driver postgres --dsn "postgresql://user:password@host:5432/memos"
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver postgres --dsn "postgresql://user:password@host:5432/memos"
 ```
 
 The script is idempotent and safe to run multiple times.

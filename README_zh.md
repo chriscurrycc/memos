@@ -157,17 +157,17 @@ docker run -d \
 
 **迁移修复：**
 
-从上游 v0.24.0 ~ v0.26.2 迁移后，运行[迁移修复脚本](scripts/migration-repair.sh)来修复数据库结构差异并创建缺失的表：
+从上游 v0.24.0 ~ v0.26.2 迁移时，**在启动本 fork 服务之前**运行[迁移修复脚本](scripts/migration-repair.sh)来修复数据库结构差异并创建缺失的表。脚本需要对应数据库的命令行工具（`sqlite3`、`mysql` 或 `psql`）：
 
 ```bash
-# SQLite（默认，Docker 容器内）
-docker exec memos sh -c "apk add --no-cache sqlite curl bash && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite"
+# SQLite（默认路径：~/.memos/memos_prod.db）
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite --dsn ~/.memos/memos_prod.db
 
 # MySQL
-bash scripts/migration-repair.sh --driver mysql --dsn "user:password@tcp(host:3306)/memos"
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver mysql --dsn "user:password@tcp(host:3306)/memos"
 
 # PostgreSQL
-bash scripts/migration-repair.sh --driver postgres --dsn "postgresql://user:password@host:5432/memos"
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver postgres --dsn "postgresql://user:password@host:5432/memos"
 ```
 
 该脚本是幂等的，可以安全地多次运行。

@@ -157,17 +157,17 @@ docker run -d \
 
 **移行修復：**
 
-上流 v0.24.0 ~ v0.26.2 から移行後、[移行修復スクリプト](scripts/migration-repair.sh)を実行してデータベーススキーマの差異を修正し、不足テーブルを作成してください：
+上流 v0.24.0 ~ v0.26.2 から移行する場合、**本 fork のサービスを起動する前に**[移行修復スクリプト](scripts/migration-repair.sh)を実行してデータベーススキーマの差異を修正し、不足テーブルを作成してください。スクリプトにはデータベースに応じた CLI ツール（`sqlite3`、`mysql`、または `psql`）が必要です：
 
 ```bash
-# SQLite（デフォルト、Docker コンテナ内）
-docker exec memos sh -c "apk add --no-cache sqlite curl bash && curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite"
+# SQLite（デフォルトパス：~/.memos/memos_prod.db）
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver sqlite --dsn ~/.memos/memos_prod.db
 
 # MySQL
-bash scripts/migration-repair.sh --driver mysql --dsn "user:password@tcp(host:3306)/memos"
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver mysql --dsn "user:password@tcp(host:3306)/memos"
 
 # PostgreSQL
-bash scripts/migration-repair.sh --driver postgres --dsn "postgresql://user:password@host:5432/memos"
+curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migration-repair.sh | bash -s -- --driver postgres --dsn "postgresql://user:password@host:5432/memos"
 ```
 
 このスクリプトは冪等性があり、複数回安全に実行できます。
