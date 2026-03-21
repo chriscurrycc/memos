@@ -147,13 +147,17 @@ docker run -d \
 
 **兼容性说明：**
 - 从 v0.23.0 ~ v0.23.1 迁移：完全兼容
-- 从 v0.24.0+ 迁移：如果未使用过置顶备忘录或 Webhook 功能则兼容；否则迁移后需要重新配置这些功能
+- 从 v0.24.0 ~ v0.26.2 迁移：运行下方的迁移修复脚本后兼容
 
-> **重要提示：** 迁移前请先停止服务并备份数据目录（默认：`~/.memos/`）。
+关于数据库层面的具体差异和修复脚本的工作原理，请参阅[迁移指南](docs/migration-guide_zh.md)。
 
-**故障排除：**
+> **警告：迁移前必须备份数据，此步骤不可跳过。**
+>
+> 如果迁移失败或产生意外结果，备份是恢复数据的唯一途径。请先停止服务，然后复制数据目录（默认：`~/.memos/`）。MySQL/PostgreSQL 用户的数据库在外部服务器上，还需额外执行 `mysqldump`/`pg_dump` 来备份数据库。详细备份步骤请参阅[迁移指南](docs/migration-guide_zh.md)。
 
-如果迁移后遇到 `no such table` 错误（如 `tag`、`memo_review`、`memo_review_session`），运行[迁移修复脚本](scripts/migration-repair.sh)来创建所有缺失的表：
+**迁移修复：**
+
+从上游 v0.24.0 ~ v0.26.2 迁移后，运行[迁移修复脚本](scripts/migration-repair.sh)来修复数据库结构差异并创建缺失的表：
 
 ```bash
 # SQLite（默认，Docker 容器内）

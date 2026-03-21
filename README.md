@@ -147,13 +147,17 @@ If you are migrating from the original [usememos/memos](https://github.com/useme
 
 **Compatibility:**
 - From v0.23.0 ~ v0.23.1: Fully compatible
-- From v0.24.0+: Compatible if you haven't used pinned memos or webhooks; otherwise these features need to be reconfigured after migration
+- From v0.24.0 ~ v0.26.2: Compatible after running the migration repair script below
 
-> **Important:** Stop the service and backup your data directory before migrating (default: `~/.memos/`).
+For detailed information about what changed at the database level and what the repair script does, see the [Migration Guide](docs/migration-guide.md).
 
-**Troubleshooting:**
+> **WARNING: Back up your data BEFORE migrating. This step is NOT optional.**
+>
+> If the migration fails or produces unexpected results, having a backup is the ONLY way to recover your data. Stop the service first, then copy your data directory (default: `~/.memos/`). For MySQL/PostgreSQL users, your database is on an external server, so you also need to run `mysqldump`/`pg_dump`. See the [Migration Guide](docs/migration-guide.md) for detailed backup instructions.
 
-If you encounter `no such table` errors (e.g. `tag`, `memo_review`, `memo_review_session`) after migration, run the [migration repair script](scripts/migration-repair.sh) to create all missing tables:
+**Migration Repair:**
+
+After migrating from upstream v0.24.0 ~ v0.26.2, run the [migration repair script](scripts/migration-repair.sh) to fix schema differences and create missing tables:
 
 ```bash
 # SQLite (default, inside Docker)
