@@ -183,6 +183,16 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 
 该脚本是幂等的，可以安全地多次运行。
 
+## MCP 服务器
+
+使用 [MCP 服务器](https://github.com/chriscurrycc/memos-mcp) 将 AI 助手（Claude Code、Claude Desktop、Cursor 等）连接到你的 Memos 实例：
+
+```bash
+npx @chriscurrycc/memos-mcp
+```
+
+27 个工具，支持 Memo 增删改查、搜索、评论、标签、资源、关联、反应和间隔重复复习。详细配置请参阅 [memos-mcp](https://github.com/chriscurrycc/memos-mcp) 仓库。
+
 ## 文档
 
 - [开发指南](docs/development.md) - 搭建本地开发环境

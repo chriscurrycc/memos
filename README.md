@@ -183,6 +183,16 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 
 The script is idempotent and safe to run multiple times.
 
+## MCP Server
+
+Use the [MCP server](https://github.com/chriscurrycc/memos-mcp) to connect AI assistants (Claude Code, Claude Desktop, Cursor, etc.) to your Memos instance:
+
+```bash
+npx @chriscurrycc/memos-mcp
+```
+
+27 tools for memo CRUD, search, comments, tags, resources, relations, reactions, and spaced-repetition review. See the [memos-mcp](https://github.com/chriscurrycc/memos-mcp) repo for setup instructions.
+
 ## Documentation
 
 - [Development Guide](docs/development.md) - Set up local development environment

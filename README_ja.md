@@ -183,6 +183,16 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 
 このスクリプトは冪等性があり、複数回安全に実行できます。
 
+## MCP サーバー
+
+[MCP サーバー](https://github.com/chriscurrycc/memos-mcp) を使用して、AI アシスタント（Claude Code、Claude Desktop、Cursor など）を Memos インスタンスに接続できます：
+
+```bash
+npx @chriscurrycc/memos-mcp
+```
+
+27 のツールで、メモの CRUD、検索、コメント、タグ、リソース、リレーション、リアクション、間隔反復レビューに対応。設定方法は [memos-mcp](https://github.com/chriscurrycc/memos-mcp) リポジトリをご覧ください。
+
 ## ドキュメント
 
 - [開発ガイド](docs/development.md) - ローカル開発環境のセットアップ
