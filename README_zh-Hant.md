@@ -191,7 +191,7 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 npx @chriscurrycc/memos-mcp
 ```
 
-27 個工具，支援 Memo 增刪改查、搜尋、評論、標籤、資源、關聯、反應和間隔重複複習。詳細配置請參閱 [memos-mcp](https://github.com/chriscurrycc/memos-mcp) 倉庫。
+17 個工具，支援 Memo 增刪改查與搜尋、標籤、資源、關聯和回顧 — 以及 6 個工作流提示詞（活動摘要、間隔回顧、關係圖譜等）。詳細配置請參閱 [memos-mcp](https://github.com/chriscurrycc/memos-mcp) 倉庫。
 
 ## 文件
 

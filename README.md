@@ -191,7 +191,7 @@ Use the [MCP server](https://github.com/chriscurrycc/memos-mcp) to connect AI as
 npx @chriscurrycc/memos-mcp
 ```
 
-27 tools for memo CRUD, search, comments, tags, resources, relations, reactions, and spaced-repetition review. See the [memos-mcp](https://github.com/chriscurrycc/memos-mcp) repo for setup instructions.
+17 tools for memo CRUD & search, tags, resources, relations, and review — plus 6 workflow prompts (digest, review, relation graph, etc.). See the [memos-mcp](https://github.com/chriscurrycc/memos-mcp) repo for setup instructions.
 
 ## Documentation
 

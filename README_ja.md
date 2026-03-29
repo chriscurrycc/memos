@@ -191,7 +191,7 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 npx @chriscurrycc/memos-mcp
 ```
 
-27 のツールで、メモの CRUD、検索、コメント、タグ、リソース、リレーション、リアクション、間隔反復レビューに対応。設定方法は [memos-mcp](https://github.com/chriscurrycc/memos-mcp) リポジトリをご覧ください。
+17 のツールでメモの CRUD・検索、タグ、リソース、リレーション、レビューに対応。さらに 6 つのワークフロープロンプト（ダイジェスト、レビュー、リレーショングラフなど）を搭載。設定方法は [memos-mcp](https://github.com/chriscurrycc/memos-mcp) リポジトリをご覧ください。
 
 ## ドキュメント
 
