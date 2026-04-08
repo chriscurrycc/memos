@@ -4,6 +4,29 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.31.0](https://github.com/chriscurrycc/memos/releases/tag/v0.31.0) - 2026-04-09
+
+### Features
+- Add image filter to quickly find memos containing images (both inline and attached)
+- Task filter now supports three-state toggle: click to cycle through "incomplete tasks" → "all tasks" → clear filter
+- Filter chips are hidden when their count is zero for a cleaner look
+- Filter chips now support click to activate/deactivate with visual highlight
+
+### Improvements
+- Unified image preview: inline images and attached images now share the same gallery, swipe to browse all
+- Attached images now display in the same compact style as inline images
+- Consecutive images separated by a single newline are merged into one row; only a blank line creates a new row
+- Consistent icons between sidebar chips and the filter bar
+- Filter bar labels now support multiple languages
+
+### Fixes
+- Fixed minor internal code issues
+
+### Docs
+- Added MCP Server section to READMEs
+- Added versioning section to READMEs
+- Updated migration compatibility notes
+
 ## [v0.30.0](https://github.com/chriscurrycc/memos/releases/tag/v0.30.0) - 2026-03-18
 
 ### Features
