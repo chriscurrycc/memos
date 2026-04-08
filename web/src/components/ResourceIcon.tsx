@@ -11,9 +11,9 @@ import {
   SheetIcon,
 } from "lucide-react";
 import React from "react";
+import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Resource } from "@/types/proto/api/v1/resource_service";
 import { getResourceType, getResourceUrl } from "@/utils/resource";
-import showPreviewImageDialog from "./PreviewImageDialog";
 import SquareDiv from "./kit/SquareDiv";
 
 interface Props {
@@ -35,15 +35,18 @@ const ResourceIcon = (props: Props) => {
 
   if (resourceType === "image/*") {
     return (
-      <SquareDiv className={clsx(className, "flex items-center justify-center overflow-clip")}>
-        <img
-          className="min-w-full min-h-full object-cover"
-          src={resource.externalLink ? resourceUrl : resourceUrl + "?thumbnail=true"}
-          onClick={() => showPreviewImageDialog(resourceUrl)}
-          decoding="async"
-          loading="lazy"
-        />
-      </SquareDiv>
+      <PhotoProvider>
+        <SquareDiv className={clsx(className, "flex items-center justify-center overflow-clip")}>
+          <PhotoView src={resourceUrl}>
+            <img
+              className="min-w-full min-h-full object-cover cursor-pointer"
+              src={resource.externalLink ? resourceUrl : resourceUrl + "?thumbnail=true"}
+              decoding="async"
+              loading="lazy"
+            />
+          </PhotoView>
+        </SquareDiv>
+      </PhotoProvider>
     );
   }
 

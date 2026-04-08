@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon } from "lucide-react";
 import { memo, useCallback, useRef, useState } from "react";
+import { PhotoProvider } from "react-photo-view";
 import { Link, useLocation } from "react-router-dom";
 import Tooltip from "@/components/kit/Tooltip";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
@@ -23,7 +24,6 @@ import MemoLocationView from "./MemoLocationView";
 import MemoReactionistView from "./MemoReactionListView";
 import MemoRelationListView from "./MemoRelationListView";
 import MemoResourceListView from "./MemoResourceListView";
-import showPreviewImageDialog from "./PreviewImageDialog";
 import ReactionSelector from "./ReactionSelector";
 import UserAvatar from "./UserAvatar";
 import VisibilityIcon from "./VisibilityIcon";
@@ -84,17 +84,6 @@ const MemoView: React.FC<Props> = (props: Props) => {
       },
     });
   }, [memo.uid, parentPage]);
-
-  const handleMemoContentClick = useCallback(async (e: React.MouseEvent) => {
-    const targetEl = e.target as HTMLElement;
-
-    if (targetEl.tagName === "IMG") {
-      const imgUrl = targetEl.getAttribute("src");
-      if (imgUrl) {
-        showPreviewImageDialog([imgUrl], 0);
-      }
-    }
-  }, []);
 
   const handleMemoContentDoubleClick = useCallback(async (e: React.MouseEvent) => {
     if (readonly) {
@@ -308,22 +297,24 @@ const MemoView: React.FC<Props> = (props: Props) => {
               )}
             </div>
           </div>
-          <MemoContent
-            key={memo.name}
-            memoName={memo.name}
-            nodes={memo.nodes}
-            readonly={readonly}
-            onClick={handleMemoContentClick}
-            onDoubleClick={handleMemoContentDoubleClick}
-            enableCollapse={enableCollapse}
-            collapsible={collapsible}
-            isCollapsed={isCollapsed}
-            onCollapsibleChange={handleCollapsibleChange}
-            onToggleCollapse={handleToggleCollapse}
-            parentPage={parentPage}
-          />
-          {memo.location && <MemoLocationView location={memo.location} />}
-          <MemoResourceListView resources={memo.resources} />
+          <PhotoProvider>
+            <MemoContent
+              key={memo.name}
+              memoName={memo.name}
+              nodes={memo.nodes}
+              readonly={readonly}
+              onDoubleClick={handleMemoContentDoubleClick}
+              enableCollapse={enableCollapse}
+              collapsible={collapsible}
+              isCollapsed={isCollapsed}
+              onCollapsibleChange={handleCollapsibleChange}
+              onToggleCollapse={handleToggleCollapse}
+              parentPage={parentPage}
+              disablePhotoProvider
+            />
+            {memo.location && <MemoLocationView location={memo.location} />}
+            <MemoResourceListView resources={memo.resources} />
+          </PhotoProvider>
           <MemoRelationListView memo={memo} relations={referencedMemos} parentPage={parentPage} />
           <MemoReactionistView memo={memo} reactions={memo.reactions} disabled={workspaceMemoRelatedSetting.disableReactions} />
           {showExportModal && <ExportModal memo={memo} onClose={() => setShowExportModal(false)} />}
