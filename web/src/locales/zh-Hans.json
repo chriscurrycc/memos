@@ -146,6 +146,7 @@
     "links": "链接",
     "to-do": "待办",
     "code": "代码",
+    "images": "图片",
     "remove-completed-task-list-items": "移除已办",
     "remove-completed-task-list-items-confirm": "您确定要移除所有完成的待办吗？（此操作不可逆）",
     "updated-at": "已编辑"

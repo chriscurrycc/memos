@@ -9,7 +9,8 @@ export type FilterFactor =
   | "displayTime"
   | "property.hasLink"
   | "property.hasTaskList"
-  | "property.hasCode";
+  | "property.hasCode"
+  | "property.hasImage";
 
 export interface MemoFilter {
   factor: FilterFactor;

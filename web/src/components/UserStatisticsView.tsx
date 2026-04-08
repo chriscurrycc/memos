@@ -7,6 +7,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Code2Icon,
+  ImageIcon,
   LinkIcon,
   ListTodoIcon,
   RotateCcwIcon,
@@ -14,7 +15,7 @@ import {
 import { useRef, useState } from "react";
 import Tooltip from "@/components/kit/Tooltip";
 import i18n from "@/i18n";
-import { useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore } from "@/store/v1";
+import { FilterFactor, useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
 import ActivityCalendar from "./ActivityCalendar";
 
@@ -35,6 +36,41 @@ const UserStatisticsViewSkeleton = () => {
         <Skeleton variant="rectangular" width={48} height={24} />
       </div>
     </div>
+  );
+};
+
+interface FilterChipProps {
+  factor: FilterFactor;
+  tooltip: string;
+  icon: React.ReactNode;
+  label: React.ReactNode;
+}
+
+const FilterChip = ({ factor, tooltip, icon, label }: FilterChipProps) => {
+  const memoFilterStore = useMemoFilterStore();
+  const isActive = memoFilterStore.getFiltersByFactor(factor).length > 0;
+
+  const handleClick = () => {
+    if (isActive) {
+      memoFilterStore.removeFilter((f) => f.factor === factor);
+    } else {
+      memoFilterStore.addFilter({ factor, value: "" });
+    }
+  };
+
+  return (
+    <Tooltip title={tooltip} placement="top" arrow>
+      <div
+        className={clsx(
+          "border pl-1 pr-1.5 rounded-md flex items-center cursor-pointer hover:opacity-80",
+          isActive ? "border-primary bg-primary/10 text-primary" : "dark:border-zinc-800",
+        )}
+        onClick={handleClick}
+      >
+        {icon}
+        {label}
+      </div>
+    </Tooltip>
   );
 };
 
@@ -250,52 +286,61 @@ const UserStatisticsView = ({ onCloseHomeSidebarDrawer }: Props) => {
           <p className="mt-1 w-full text-xs italic opacity-80">{t("memo.memo-count-in-days", { count: memoAmount, days })}</p>
         )}
       </div>
-      <Divider className="!my-2 opacity-50" />
-      <div className="w-full flex flex-row justify-start items-center gap-x-2 gap-y-1 flex-wrap">
-        <div
-          className={clsx("w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center")}
-          onClick={() => memoFilterStore.addFilter({ factor: "property.hasLink", value: "" })}
-        >
-          <div className="w-auto flex justify-start items-center mr-1">
-            <LinkIcon className="w-4 h-auto mr-1" />
+      {(memoStats.link > 0 || memoStats.taskList > 0 || memoStats.code > 0 || memoStats.image > 0) && (
+        <>
+          <Divider className="!my-2 opacity-50" />
+          <div className="w-full flex flex-row flex-wrap gap-x-2 gap-y-1">
+            {memoStats.link > 0 && (
+              <FilterChip
+                factor="property.hasLink"
+                tooltip={t("memo.links")}
+                icon={<LinkIcon className="w-4 h-auto mr-1" />}
+                label={<span className="text-sm truncate">{memoStats.link}</span>}
+              />
+            )}
+            {memoStats.taskList > 0 && (
+              <FilterChip
+                factor="property.hasTaskList"
+                tooltip={t("memo.to-do")}
+                icon={
+                  memoStats.incompleteTasks > 0 ? (
+                    <ListTodoIcon className="w-4 h-auto mr-1" />
+                  ) : (
+                    <CheckCircleIcon className="w-4 h-auto mr-1" />
+                  )
+                }
+                label={
+                  memoStats.incompleteTasks > 0 ? (
+                    <div className="text-sm flex flex-row items-start justify-center">
+                      <span className="truncate">{memoStats.taskList - memoStats.incompleteTasks}</span>
+                      <span className="font-mono opacity-50">/</span>
+                      <span className="truncate">{memoStats.taskList}</span>
+                    </div>
+                  ) : (
+                    <span className="text-sm truncate">{memoStats.taskList}</span>
+                  )
+                }
+              />
+            )}
+            {memoStats.code > 0 && (
+              <FilterChip
+                factor="property.hasCode"
+                tooltip={t("memo.code")}
+                icon={<Code2Icon className="w-4 h-auto mr-1" />}
+                label={<span className="text-sm truncate">{memoStats.code}</span>}
+              />
+            )}
+            {memoStats.image > 0 && (
+              <FilterChip
+                factor="property.hasImage"
+                tooltip={t("memo.images")}
+                icon={<ImageIcon className="w-4 h-auto mr-1" />}
+                label={<span className="text-sm truncate">{memoStats.image}</span>}
+              />
+            )}
           </div>
-          <Tooltip title={t("memo.links")} placement="top" arrow>
-            <span className="text-sm truncate">{memoStats.link}</span>
-          </Tooltip>
-        </div>
-        <div
-          className={clsx("w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center")}
-          onClick={() => memoFilterStore.addFilter({ factor: "property.hasTaskList", value: "" })}
-        >
-          <div className="w-auto flex justify-start items-center mr-1">
-            {memoStats.incompleteTasks > 0 ? <ListTodoIcon className="w-4 h-auto mr-1" /> : <CheckCircleIcon className="w-4 h-auto mr-1" />}
-          </div>
-          {memoStats.incompleteTasks > 0 ? (
-            <Tooltip title={t("memo.to-do")} placement="top" arrow>
-              <div className="text-sm flex flex-row items-start justify-center">
-                <span className="truncate">{memoStats.taskList - memoStats.incompleteTasks}</span>
-                <span className="font-mono opacity-50">/</span>
-                <span className="truncate">{memoStats.taskList}</span>
-              </div>
-            </Tooltip>
-          ) : (
-            <Tooltip title={t("memo.to-do")} placement="top" arrow>
-              <span className="text-sm truncate">{memoStats.taskList}</span>
-            </Tooltip>
-          )}
-        </div>
-        <div
-          className={clsx("w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center")}
-          onClick={() => memoFilterStore.addFilter({ factor: "property.hasCode", value: "" })}
-        >
-          <div className="w-auto flex justify-start items-center mr-1">
-            <Code2Icon className="w-4 h-auto mr-1" />
-          </div>
-          <Tooltip title={t("memo.code")} placement="top" arrow>
-            <span className="text-sm truncate">{memoStats.code}</span>
-          </Tooltip>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 };

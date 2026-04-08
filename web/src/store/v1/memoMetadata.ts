@@ -16,6 +16,7 @@ interface MemoStats {
   taskList: number;
   code: number;
   incompleteTasks: number;
+  image: number;
 }
 
 export interface TagTreeNode {
@@ -49,7 +50,7 @@ const getDefaultState = (): State => ({
   tagCounts: {},
   sortedTags: [],
   tagTree: [],
-  stats: { link: 0, taskList: 0, code: 0, incompleteTasks: 0 },
+  stats: { link: 0, taskList: 0, code: 0, incompleteTasks: 0, image: 0 },
   activityStats: {},
   memoCount: 0,
   days: 0,
@@ -106,7 +107,7 @@ export const useMemoMetadataStore = create(
       const memoMap: Record<string, Memo> = {};
       const tagCounts: Record<string, number> = {};
       const activityStats: Record<string, number> = {};
-      const stats: MemoStats = { link: 0, taskList: 0, code: 0, incompleteTasks: 0 };
+      const stats: MemoStats = { link: 0, taskList: 0, code: 0, incompleteTasks: 0, image: 0 };
       let earliestTime = Date.now();
 
       for (const memo of memos) {
@@ -130,6 +131,7 @@ export const useMemoMetadataStore = create(
         if (property?.hasTaskList) stats.taskList += 1;
         if (property?.hasCode) stats.code += 1;
         if (property?.hasIncompleteTasks) stats.incompleteTasks += 1;
+        if (property?.hasImage) stats.image += 1;
       }
 
       const days = memos.length > 0 ? Math.ceil((Date.now() - earliestTime) / 86400000) : 0;

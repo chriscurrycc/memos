@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { isEqual } from "lodash-es";
-import { CheckCircleIcon, Code2Icon, HashIcon, LinkIcon } from "lucide-react";
+import { CheckCircleIcon, Code2Icon, HashIcon, ImageIcon, LinkIcon } from "lucide-react";
 import { MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
 import { Memo, MemoProperty } from "@/types/proto/api/v1/memo_service";
 import { useTranslate } from "@/utils/i18n";
@@ -15,7 +15,8 @@ interface Props {
 const MemoDetailSidebar = ({ memo, className, parentPage }: Props) => {
   const t = useTranslate();
   const property = MemoProperty.fromPartial(memo.property || {});
-  const hasSpecialProperty = property.hasLink || property.hasTaskList || property.hasCode || property.hasIncompleteTasks;
+  const hasSpecialProperty =
+    property.hasLink || property.hasTaskList || property.hasCode || property.hasIncompleteTasks || property.hasImage;
   const shouldShowRelationGraph = memo.relations.filter((r) => r.type === MemoRelation_Type.REFERENCE).length > 0;
 
   return (
@@ -76,6 +77,14 @@ const MemoDetailSidebar = ({ memo, className, parentPage }: Props) => {
                   <div className="w-auto flex justify-start items-center mr-1">
                     <Code2Icon className="w-4 h-auto mr-1" />
                     <span className="block text-sm">{t("memo.code")}</span>
+                  </div>
+                </div>
+              )}
+              {property.hasImage && (
+                <div className="w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center">
+                  <div className="w-auto flex justify-start items-center mr-1">
+                    <ImageIcon className="w-4 h-auto mr-1" />
+                    <span className="block text-sm">{t("memo.images")}</span>
                   </div>
                 </div>
               )}

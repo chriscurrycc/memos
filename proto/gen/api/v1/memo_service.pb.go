@@ -332,6 +332,7 @@ type MemoProperty struct {
 	HasTaskList        bool                   `protobuf:"varint,2,opt,name=has_task_list,json=hasTaskList,proto3" json:"has_task_list,omitempty"`
 	HasCode            bool                   `protobuf:"varint,3,opt,name=has_code,json=hasCode,proto3" json:"has_code,omitempty"`
 	HasIncompleteTasks bool                   `protobuf:"varint,4,opt,name=has_incomplete_tasks,json=hasIncompleteTasks,proto3" json:"has_incomplete_tasks,omitempty"`
+	HasImage           bool                   `protobuf:"varint,5,opt,name=has_image,json=hasImage,proto3" json:"has_image,omitempty"`
 	unknownFields      protoimpl.UnknownFields
 	sizeCache          protoimpl.SizeCache
 }
@@ -390,6 +391,13 @@ func (x *MemoProperty) GetHasCode() bool {
 func (x *MemoProperty) GetHasIncompleteTasks() bool {
 	if x != nil {
 		return x.HasIncompleteTasks
+	}
+	return false
+}
+
+func (x *MemoProperty) GetHasImage() bool {
+	if x != nil {
+		return x.HasImage
 	}
 	return false
 }
@@ -1632,12 +1640,13 @@ const file_api_v1_memo_service_proto_rawDesc = "" +
 	"\asnippet\x18\x13 \x01(\tB\x04\xe2A\x01\x03R\asnippet\x127\n" +
 	"\blocation\x18\x14 \x01(\v2\x16.memos.api.v1.LocationH\x01R\blocation\x88\x01\x01B\t\n" +
 	"\a_parentB\v\n" +
-	"\t_location\"\x9a\x01\n" +
+	"\t_location\"\xb7\x01\n" +
 	"\fMemoProperty\x12\x19\n" +
 	"\bhas_link\x18\x01 \x01(\bR\ahasLink\x12\"\n" +
 	"\rhas_task_list\x18\x02 \x01(\bR\vhasTaskList\x12\x19\n" +
 	"\bhas_code\x18\x03 \x01(\bR\ahasCode\x120\n" +
-	"\x14has_incomplete_tasks\x18\x04 \x01(\bR\x12hasIncompleteTasks\"f\n" +
+	"\x14has_incomplete_tasks\x18\x04 \x01(\bR\x12hasIncompleteTasks\x12\x1b\n" +
+	"\thas_image\x18\x05 \x01(\bR\bhasImage\"f\n" +
 	"\bLocation\x12 \n" +
 	"\vplaceholder\x18\x01 \x01(\tR\vplaceholder\x12\x1a\n" +
 	"\blatitude\x18\x02 \x01(\x01R\blatitude\x12\x1c\n" +

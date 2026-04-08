@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 	"unicode/utf8"
 
@@ -262,6 +263,17 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 			memo.Content = request.Memo.Content
 			if err := memopayload.RebuildMemoPayload(memo); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to rebuild memo payload: %v", err)
+			}
+			// Also check attached image resources.
+			resources, err := s.Store.ListResources(ctx, &store.FindResource{MemoID: &memo.ID})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to list resources")
+			}
+			for _, r := range resources {
+				if strings.HasPrefix(r.Type, "image/") {
+					memo.Payload.Property.HasImage = true
+					break
+				}
 			}
 			update.Content = &memo.Content
 			update.Payload = memo.Payload

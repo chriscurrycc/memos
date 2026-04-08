@@ -3,6 +3,7 @@ package v1
 import (
 	"context"
 	"slices"
+	"strings"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -10,6 +11,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 
 	v1pb "github.com/usememos/memos/proto/gen/api/v1"
+	"github.com/usememos/memos/server/runner/memopayload"
 	"github.com/usememos/memos/store"
 )
 
@@ -58,6 +60,33 @@ func (s *APIV1Service) SetMemoResources(ctx context.Context, request *v1pb.SetMe
 			UpdatedTs: &updatedTs,
 		}); err != nil {
 			return nil, status.Errorf(codes.Internal, "failed to update resource: %v", err)
+		}
+	}
+
+	// Rebuild memo payload to update hasImage property.
+	memo, err := s.Store.GetMemo(ctx, &store.FindMemo{ID: &memoID})
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get memo")
+	}
+	if memo != nil {
+		if err := memopayload.RebuildMemoPayload(memo); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to rebuild memo payload: %v", err)
+		}
+		updatedResources, err := s.Store.ListResources(ctx, &store.FindResource{MemoID: &memoID})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to list resources")
+		}
+		for _, r := range updatedResources {
+			if strings.HasPrefix(r.Type, "image/") {
+				memo.Payload.Property.HasImage = true
+				break
+			}
+		}
+		if err := s.Store.UpdateMemo(ctx, &store.UpdateMemo{
+			ID:      memo.ID,
+			Payload: memo.Payload,
+		}); err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to update memo payload")
 		}
 	}
 

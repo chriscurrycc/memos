@@ -3028,6 +3028,8 @@ definitions:
         type: boolean
       hasIncompleteTasks:
         type: boolean
+      hasImage:
+        type: boolean
   v1MemoRelation:
     type: object
     properties:

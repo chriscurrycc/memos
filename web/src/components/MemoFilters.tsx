@@ -1,5 +1,16 @@
 import { isEqual } from "lodash-es";
-import { CalendarIcon, CheckCircleIcon, CodeIcon, EyeIcon, FilterIcon, LinkIcon, SearchIcon, TagIcon, XIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  CheckCircleIcon,
+  CodeIcon,
+  EyeIcon,
+  FilterIcon,
+  ImageIcon,
+  LinkIcon,
+  SearchIcon,
+  TagIcon,
+  XIcon,
+} from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FilterFactor, getMemoFilterKey, MemoFilter, parseFilterQuery, stringifyFilters, useMemoFilterStore } from "@/store/v1";
@@ -105,6 +116,7 @@ const FactorIcon = ({ factor, className }: { factor: FilterFactor; className?: s
     "property.hasLink": <LinkIcon className={className} />,
     "property.hasTaskList": <CheckCircleIcon className={className} />,
     "property.hasCode": <CodeIcon className={className} />,
+    "property.hasImage": <ImageIcon className={className} />,
   };
   return iconMap[factor as keyof typeof iconMap] || <></>;
 };
