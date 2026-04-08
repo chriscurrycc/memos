@@ -67,6 +67,8 @@ const Home = () => {
         filters.push(`has_code == true`);
       } else if (filter.factor === "property.hasImage") {
         filters.push(`has_image == true`);
+      } else if (filter.factor === "property.hasIncompleteTasks") {
+        filters.push(`has_incomplete_tasks == true`);
       } else if (filter.factor === "displayTime") {
         const filterDate = new Date(filter.value);
         const filterUtcTimestamp = filterDate.getTime() + filterDate.getTimezoneOffset() * 60 * 1000;

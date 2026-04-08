@@ -2,20 +2,23 @@ import { isEqual } from "lodash-es";
 import {
   CalendarIcon,
   CheckCircleIcon,
-  CodeIcon,
+  Code2Icon,
   EyeIcon,
   FilterIcon,
   ImageIcon,
   LinkIcon,
   SearchIcon,
+  SquareIcon,
   TagIcon,
   XIcon,
 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FilterFactor, getMemoFilterKey, MemoFilter, parseFilterQuery, stringifyFilters, useMemoFilterStore } from "@/store/v1";
+import { useTranslate } from "@/utils/i18n";
 
 const MemoFilters = () => {
+  const t = useTranslate();
   const [searchParams, setSearchParams] = useSearchParams();
   const memoFilterStore = useMemoFilterStore();
   const filters = memoFilterStore.filters;
@@ -72,10 +75,14 @@ const MemoFilters = () => {
     if (filter.value) {
       return filter.value;
     }
-    if (filter.factor.startsWith("property.")) {
-      return filter.factor.replace("property.", "");
-    }
-    return filter.factor;
+    const labelMap: Partial<Record<FilterFactor, string>> = {
+      "property.hasLink": t("memo.links"),
+      "property.hasTaskList": t("memo.all-tasks"),
+      "property.hasCode": t("memo.code"),
+      "property.hasImage": t("memo.images"),
+      "property.hasIncompleteTasks": t("memo.incomplete-tasks"),
+    };
+    return labelMap[filter.factor] || filter.factor;
   };
 
   if (filters.length === 0) {
@@ -115,8 +122,9 @@ const FactorIcon = ({ factor, className }: { factor: FilterFactor; className?: s
     displayTime: <CalendarIcon className={className} />,
     "property.hasLink": <LinkIcon className={className} />,
     "property.hasTaskList": <CheckCircleIcon className={className} />,
-    "property.hasCode": <CodeIcon className={className} />,
+    "property.hasCode": <Code2Icon className={className} />,
     "property.hasImage": <ImageIcon className={className} />,
+    "property.hasIncompleteTasks": <SquareIcon className={className} />,
   };
   return iconMap[factor as keyof typeof iconMap] || <></>;
 };

@@ -10,7 +10,8 @@ export type FilterFactor =
   | "property.hasLink"
   | "property.hasTaskList"
   | "property.hasCode"
-  | "property.hasImage";
+  | "property.hasImage"
+  | "property.hasIncompleteTasks";
 
 export interface MemoFilter {
   factor: FilterFactor;
