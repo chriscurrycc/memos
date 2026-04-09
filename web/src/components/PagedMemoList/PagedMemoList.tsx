@@ -1,7 +1,7 @@
-import { Button } from "@usememos/mui";
 import { ArrowDownIcon, LoaderIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import PullToRefresh from "react-simple-pull-to-refresh";
+import Button from "@/components/ui/Button";
 import { DEFAULT_LIST_MEMOS_PAGE_SIZE } from "@/helpers/consts";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoList, useMemoStore } from "@/store/v1";

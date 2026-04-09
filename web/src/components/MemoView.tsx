@@ -3,7 +3,7 @@ import { BookmarkIcon, MessageCircleMoreIcon, ImageIcon } from "lucide-react";
 import { memo, useCallback, useRef, useState } from "react";
 import { PhotoProvider } from "react-photo-view";
 import { Link, useLocation } from "react-router-dom";
-import Tooltip from "@/components/kit/Tooltip";
+import Tooltip from "@/components/ui/Tooltip";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useNavigateTo from "@/hooks/useNavigateTo";

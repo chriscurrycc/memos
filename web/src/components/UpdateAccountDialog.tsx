@@ -1,9 +1,10 @@
 import { Textarea } from "@mui/joy";
-import { Button, Input } from "@usememos/mui";
 import { isEqual } from "lodash-es";
 import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { convertFileToBase64 } from "@/helpers/utils";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useUserStore, useWorkspaceSettingStore } from "@/store/v1";

@@ -1,7 +1,7 @@
-import { Button } from "@usememos/mui";
 import { PaperclipIcon } from "lucide-react";
 import { useContext, useRef, useState } from "react";
 import toast from "react-hot-toast";
+import Button from "@/components/ui/Button";
 import { useResourceStore } from "@/store/v1";
 import { Resource } from "@/types/proto/api/v1/resource_service";
 import { MemoEditorContext } from "../types";

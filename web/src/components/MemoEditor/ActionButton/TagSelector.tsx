@@ -1,9 +1,9 @@
 import { Dropdown, Menu, MenuButton } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { HashIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import useClickAway from "react-use/lib/useClickAway";
-import OverflowTip from "@/components/kit/OverflowTip";
+import Button from "@/components/ui/Button";
+import OverflowTip from "@/components/ui/OverflowTip";
 import { useMemoTagList } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
 import { EditorRefActions } from "../Editor";

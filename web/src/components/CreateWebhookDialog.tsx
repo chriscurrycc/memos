@@ -1,7 +1,8 @@
-import { Button, Input } from "@usememos/mui";
 import { XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { webhookServiceClient } from "@/grpcweb";
 import useLoading from "@/hooks/useLoading";
 import { useTranslate } from "@/utils/i18n";

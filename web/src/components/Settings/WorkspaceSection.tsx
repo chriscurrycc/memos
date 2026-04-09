@@ -1,10 +1,10 @@
 import { Select, Textarea, Option, Divider, Switch } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { isEqual } from "lodash-es";
 import { ExternalLinkIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Button from "@/components/ui/Button";
 import { identityProviderServiceClient } from "@/grpcweb";
 import { workspaceSettingNamePrefix, useWorkspaceSettingStore } from "@/store/v1";
 import { IdentityProvider } from "@/types/proto/api/v1/idp_service";

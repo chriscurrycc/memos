@@ -14,7 +14,7 @@ import {
   SquareIcon,
 } from "lucide-react";
 import { useRef, useState } from "react";
-import Tooltip from "@/components/kit/Tooltip";
+import Tooltip from "@/components/ui/Tooltip";
 import i18n from "@/i18n";
 import { FilterFactor, useMemoFilterStore, useMemoMetadataInitialized, useMemoMetadataStore } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";

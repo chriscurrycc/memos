@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
-import Tooltip from "@/components/kit/Tooltip";
+import Tooltip from "@/components/ui/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Routes } from "@/router";
 import { useInboxStore } from "@/store/v1";

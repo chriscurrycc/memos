@@ -14,7 +14,7 @@ import React from "react";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import { Resource } from "@/types/proto/api/v1/resource_service";
 import { getResourceType, getResourceUrl } from "@/utils/resource";
-import SquareDiv from "./kit/SquareDiv";
+import SquareDiv from "./ui/SquareDiv";
 
 interface Props {
   resource: Resource;

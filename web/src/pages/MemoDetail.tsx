@@ -1,5 +1,4 @@
 import Giscus from "@giscus/react";
-import { Button } from "@usememos/mui";
 import clsx from "clsx";
 import { ArrowUpLeftFromCircleIcon, MessageCircleIcon } from "lucide-react";
 import { ClientError } from "nice-grpc-web";
@@ -10,6 +9,7 @@ import { MemoDetailSidebar, MemoDetailSidebarDrawer } from "@/components/MemoDet
 import MemoEditor from "@/components/MemoEditor";
 import MemoView from "@/components/MemoView";
 import MobileHeader from "@/components/MobileHeader";
+import Button from "@/components/ui/Button";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";

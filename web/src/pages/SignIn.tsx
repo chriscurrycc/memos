@@ -1,11 +1,11 @@
 import { Divider } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import AppearanceSelect from "@/components/AppearanceSelect";
 import LocaleSelect from "@/components/LocaleSelect";
 import PasswordSignInForm from "@/components/PasswordSignInForm";
+import Button from "@/components/ui/Button";
 import { identityProviderServiceClient } from "@/grpcweb";
 import { absolutifyLink } from "@/helpers/utils";
 import useCurrentUser from "@/hooks/useCurrentUser";

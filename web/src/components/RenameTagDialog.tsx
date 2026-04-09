@@ -1,7 +1,8 @@
 import { DialogContent, DialogTitle, Modal, ModalClose, ModalDialog } from "@mui/joy";
-import { Button, Input } from "@usememos/mui";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { memoServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import useLoading from "@/hooks/useLoading";

@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { QuoteIcon } from "lucide-react";
 import { useContext, useEffect } from "react";
 import MemoResourceListView from "@/components/MemoResourceListView";
-import Tooltip from "@/components/kit/Tooltip";
+import Tooltip from "@/components/ui/Tooltip";
 import useLoading from "@/hooks/useLoading";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import { useMemoStore } from "@/store/v1";
