@@ -18,9 +18,7 @@ All notable changes to this fork compared to the original [usememos/memos v0.23.
 - Consecutive images separated by a single newline are merged into one row; only a blank line creates a new row
 - Consistent icons between sidebar chips and the filter bar
 - Filter bar labels now support multiple languages
-
-### Fixes
-- Fixed minor internal code issues
+- Replaced third-party UI component library with built-in components to avoid dependency issues
 
 ### Docs
 - Added MCP Server section to READMEs
