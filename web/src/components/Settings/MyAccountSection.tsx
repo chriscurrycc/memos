@@ -1,6 +1,6 @@
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { MoreVerticalIcon, PenLineIcon } from "lucide-react";
+import Button from "@/components/ui/Button";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useTranslate } from "@/utils/i18n";
 import showChangeMemberPasswordDialog from "../ChangeMemberPasswordDialog";

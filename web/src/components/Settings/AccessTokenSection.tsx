@@ -1,8 +1,8 @@
-import { Button } from "@usememos/mui";
 import copy from "copy-to-clipboard";
 import { ClipboardIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
 import { userServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { UserAccessToken } from "@/types/proto/api/v1/user_service";

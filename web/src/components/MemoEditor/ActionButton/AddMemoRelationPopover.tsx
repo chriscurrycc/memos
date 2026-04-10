@@ -1,10 +1,11 @@
 import { Autocomplete, AutocompleteOption, Chip } from "@mui/joy";
-import { Button, Checkbox } from "@usememos/mui";
 import { uniqBy } from "lodash-es";
 import { LinkIcon } from "lucide-react";
 import React, { useContext, useState } from "react";
 import { toast } from "react-hot-toast";
 import useDebounce from "react-use/lib/useDebounce";
+import Button from "@/components/ui/Button";
+import Checkbox from "@/components/ui/Checkbox";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { memoServiceClient } from "@/grpcweb";
 import { DEFAULT_LIST_MEMOS_PAGE_SIZE } from "@/helpers/consts";
@@ -157,7 +158,7 @@ const AddMemoRelationPopover = (props: Props) => {
             renderOption={(props, memo) => (
               <AutocompleteOption {...props} key={memo.name} sx={{ py: 0.5 }}>
                 <div className="w-full flex flex-col justify-start items-start">
-                  <p className="text-xs text-gray-400 select-none">{memo.displayTime?.toLocaleString()}</p>
+                  <p className="text-xs text-gray-400 select-none">{memo.createTime?.toLocaleString()}</p>
                   <p className="text-sm leading-4 line-clamp-2">{searchText ? getHighlightedContent(memo.content) : memo.snippet}</p>
                 </div>
               </AutocompleteOption>
@@ -166,7 +167,7 @@ const AddMemoRelationPopover = (props: Props) => {
               memos.map((memo) => (
                 <Chip key={memo.name} className="max-w-full overflow-hidden rounded" size="sm" variant="outlined" color="neutral">
                   <div className="w-full overflow-hidden flex flex-col justify-start items-start">
-                    <p className="text-xs text-gray-400 select-none">{memo.displayTime?.toLocaleString()}</p>
+                    <p className="text-xs text-gray-400 select-none">{memo.createTime?.toLocaleString()}</p>
                     <span className="w-full text-xs leading-4 truncate">{memo.content}</span>
                   </div>
                 </Chip>

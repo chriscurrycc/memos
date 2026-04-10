@@ -1,6 +1,5 @@
 import "@github/relative-time-element";
 import { CssVarsProvider } from "@mui/joy";
-import "@usememos/mui/dist/index.css";
 import "leaflet/dist/leaflet.css";
 import { createRoot } from "react-dom/client";
 import { Toaster } from "react-hot-toast";

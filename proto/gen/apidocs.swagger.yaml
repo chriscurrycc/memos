@@ -1062,9 +1062,6 @@ paths:
               updateTime:
                 type: string
                 format: date-time
-              displayTime:
-                type: string
-                format: date-time
               content:
                 type: string
               nodes:
@@ -2209,9 +2206,6 @@ definitions:
       updateTime:
         type: string
         format: date-time
-      displayTime:
-        type: string
-        format: date-time
       content:
         type: string
       nodes:
@@ -3027,6 +3021,8 @@ definitions:
       hasCode:
         type: boolean
       hasIncompleteTasks:
+        type: boolean
+      hasImage:
         type: boolean
   v1MemoRelation:
     type: object

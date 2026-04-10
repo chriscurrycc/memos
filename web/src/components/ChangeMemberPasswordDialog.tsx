@@ -1,7 +1,8 @@
-import { Button, Input } from "@usememos/mui";
 import { XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { useUserStore } from "@/store/v1";
 import { User } from "@/types/proto/api/v1/user_service";
 import { useTranslate } from "@/utils/i18n";

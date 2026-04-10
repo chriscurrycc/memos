@@ -4,6 +4,7 @@ import (
 	"context"
 	"log/slog"
 	"slices"
+	"strings"
 
 	"github.com/pkg/errors"
 	"github.com/usememos/gomark/ast"
@@ -36,6 +37,18 @@ func (r *Runner) RunOnce(ctx context.Context) {
 		if err := RebuildMemoPayload(memo); err != nil {
 			slog.Error("failed to rebuild memo payload", "err", err)
 			continue
+		}
+		// Also check attached image resources.
+		resources, err := r.Store.ListResources(ctx, &store.FindResource{MemoID: &memo.ID})
+		if err != nil {
+			slog.Error("failed to list resources for memo", "err", err)
+		} else {
+			for _, res := range resources {
+				if strings.HasPrefix(res.Type, "image/") {
+					memo.Payload.Property.HasImage = true
+					break
+				}
+			}
 		}
 		if err := r.Store.UpdateMemo(ctx, &store.UpdateMemo{
 			ID:      memo.ID,
@@ -74,6 +87,8 @@ func RebuildMemoPayload(memo *store.Memo) error {
 			}
 		case *ast.Code, *ast.CodeBlock:
 			property.HasCode = true
+		case *ast.Image:
+			property.HasImage = true
 		case *ast.EmbeddedContent:
 			// TODO: validate references.
 			references = append(references, n.ResourceName)

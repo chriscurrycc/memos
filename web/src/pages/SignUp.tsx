@@ -1,4 +1,3 @@
-import { Button, Input } from "@usememos/mui";
 import { LoaderIcon } from "lucide-react";
 import { ClientError } from "nice-grpc-web";
 import { useState } from "react";
@@ -6,6 +5,8 @@ import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import AppearanceSelect from "@/components/AppearanceSelect";
 import LocaleSelect from "@/components/LocaleSelect";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { authServiceClient } from "@/grpcweb";
 import useLoading from "@/hooks/useLoading";
 import useNavigateTo from "@/hooks/useNavigateTo";

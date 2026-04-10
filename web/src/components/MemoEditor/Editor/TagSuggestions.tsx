@@ -3,7 +3,7 @@ import Fuse from "fuse.js";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import getCaretCoordinates from "textarea-caret";
-import OverflowTip from "@/components/kit/OverflowTip";
+import OverflowTip from "@/components/ui/OverflowTip";
 import { useMemoTagList } from "@/store/v1";
 import { EditorRefActions } from ".";
 

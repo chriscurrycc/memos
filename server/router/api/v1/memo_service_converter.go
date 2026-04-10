@@ -17,28 +17,18 @@ import (
 )
 
 func (s *APIV1Service) convertMemoFromStore(ctx context.Context, memo *store.Memo, view v1pb.MemoView) (*v1pb.Memo, error) {
-	displayTs := memo.CreatedTs
-	workspaceMemoRelatedSetting, err := s.Store.GetWorkspaceMemoRelatedSetting(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get workspace memo related setting")
-	}
-	if workspaceMemoRelatedSetting.DisplayWithUpdateTime {
-		displayTs = memo.UpdatedTs
-	}
-
 	name := fmt.Sprintf("%s%d", MemoNamePrefix, memo.ID)
 	memoMessage := &v1pb.Memo{
-		Name:        name,
-		Uid:         memo.UID,
-		RowStatus:   convertRowStatusFromStore(memo.RowStatus),
-		Creator:     fmt.Sprintf("%s%d", UserNamePrefix, memo.CreatorID),
-		CreateTime:  timestamppb.New(time.Unix(memo.CreatedTs, 0)),
-		UpdateTime:  timestamppb.New(time.Unix(memo.UpdatedTs, 0)),
-		DisplayTime: timestamppb.New(time.Unix(displayTs, 0)),
-		Content:     memo.Content,
-		Visibility:  convertVisibilityFromStore(memo.Visibility),
-		Pinned:      memo.Pinned,
-		Tags:        memo.Payload.Tags,
+		Name:       name,
+		Uid:        memo.UID,
+		RowStatus:  convertRowStatusFromStore(memo.RowStatus),
+		Creator:    fmt.Sprintf("%s%d", UserNamePrefix, memo.CreatorID),
+		CreateTime: timestamppb.New(time.Unix(memo.CreatedTs, 0)),
+		UpdateTime: timestamppb.New(time.Unix(memo.UpdatedTs, 0)),
+		Content:    memo.Content,
+		Visibility: convertVisibilityFromStore(memo.Visibility),
+		Pinned:     memo.Pinned,
+		Tags:       memo.Payload.Tags,
 	}
 	if memo.Payload != nil {
 		memoMessage.Property = convertMemoPropertyFromStore(memo.Payload.Property)
@@ -94,6 +84,7 @@ func convertMemoPropertyFromStore(property *storepb.MemoPayload_Property) *v1pb.
 		HasTaskList:        property.HasTaskList,
 		HasCode:            property.HasCode,
 		HasIncompleteTasks: property.HasIncompleteTasks,
+		HasImage:           property.HasImage,
 	}
 }
 

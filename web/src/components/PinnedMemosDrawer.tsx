@@ -1,7 +1,7 @@
 import { Drawer } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { LoaderIcon, PinIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import Button from "@/components/ui/Button";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { useMemoStore, usePinnedMemoList } from "@/store/v1";
 import { Memo } from "@/types/proto/api/v1/memo_service";

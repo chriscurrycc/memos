@@ -16,14 +16,7 @@ const Paragraph: React.FC<Props> = ({ children }: Props) => {
 
   const renderChildren = useCallback(() => {
     const nodes = children.map((child, index) => {
-      return (
-        <Renderer
-          key={`${child.type}-${index}`}
-          index={String(index)}
-          node={child}
-          imageConfig={isChildrenAllImage ? { enablePhotoView: true } : undefined}
-        />
-      );
+      return <Renderer key={`${child.type}-${index}`} index={String(index)} node={child} />;
     });
 
     return nodes;

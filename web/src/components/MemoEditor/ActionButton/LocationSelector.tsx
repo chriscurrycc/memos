@@ -1,9 +1,10 @@
-import { Button, Input } from "@usememos/mui";
 import { LatLng } from "leaflet";
 import { MapPinIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import LeafletMap from "@/components/LeafletMap";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/Popover";
 import { Location } from "@/types/proto/api/v1/memo_service";
 import { useTranslate } from "@/utils/i18n";

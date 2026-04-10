@@ -1,9 +1,9 @@
 import { Divider, Dropdown, List, ListItem, Menu, MenuButton, MenuItem } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { MoreVerticalIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Button from "@/components/ui/Button";
 import { identityProviderServiceClient } from "@/grpcweb";
 import { IdentityProvider } from "@/types/proto/api/v1/idp_service";
 import { useTranslate } from "@/utils/i18n";

@@ -1,6 +1,6 @@
-import { Checkbox } from "@usememos/mui";
 import clsx from "clsx";
 import { useContext } from "react";
+import Checkbox from "@/components/ui/Checkbox";
 import { markdownServiceClient } from "@/grpcweb";
 import { useMemoStore } from "@/store/v1";
 import { Node, TaskListItemNode } from "@/types/proto/api/v1/markdown_service";

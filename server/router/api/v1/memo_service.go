@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 	"unicode/utf8"
 
@@ -263,6 +264,17 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 			if err := memopayload.RebuildMemoPayload(memo); err != nil {
 				return nil, status.Errorf(codes.Internal, "failed to rebuild memo payload: %v", err)
 			}
+			// Also check attached image resources.
+			resources, err := s.Store.ListResources(ctx, &store.FindResource{MemoID: &memo.ID})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to list resources")
+			}
+			for _, r := range resources {
+				if strings.HasPrefix(r.Type, "image/") {
+					memo.Payload.Property.HasImage = true
+					break
+				}
+			}
 			update.Content = &memo.Content
 			update.Payload = memo.Payload
 		} else if path == "visibility" {
@@ -280,18 +292,22 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 			update.RowStatus = &rowStatus
 		} else if path == "create_time" {
 			createdTs := request.Memo.CreateTime.AsTime().Unix()
+			if createdTs > time.Now().Unix() {
+				return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be in the future")
+			}
+			if createdTs > memo.UpdatedTs {
+				return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be after update_time")
+			}
 			update.CreatedTs = &createdTs
-		} else if path == "display_time" {
-			displayTs := request.Memo.DisplayTime.AsTime().Unix()
-			memoRelatedSetting, err := s.Store.GetWorkspaceMemoRelatedSetting(ctx)
-			if err != nil {
-				return nil, status.Errorf(codes.Internal, "failed to get workspace memo related setting")
+		} else if path == "update_time" {
+			updatedTs := request.Memo.UpdateTime.AsTime().Unix()
+			if updatedTs > time.Now().Unix() {
+				return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be in the future")
 			}
-			if memoRelatedSetting.DisplayWithUpdateTime {
-				update.UpdatedTs = &displayTs
-			} else {
-				update.CreatedTs = &displayTs
+			if updatedTs < memo.CreatedTs {
+				return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be before create_time")
 			}
+			update.UpdatedTs = &updatedTs
 		} else if path == "pinned" {
 			if _, err := s.Store.UpsertMemoOrganizer(ctx, &store.MemoOrganizer{
 				MemoID: id,

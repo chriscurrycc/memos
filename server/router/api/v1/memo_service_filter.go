@@ -39,23 +39,18 @@ func (s *APIV1Service) buildMemoFindWithFilter(ctx context.Context, find *store.
 		if filter.OrderByTimeAsc {
 			find.OrderByTimeAsc = filter.OrderByTimeAsc
 		}
+		if filter.OrderByField != nil && *filter.OrderByField == "update_time" {
+			find.OrderByUpdatedTs = true
+		}
 		if filter.DisplayTimeAfter != nil {
-			workspaceMemoRelatedSetting, err := s.Store.GetWorkspaceMemoRelatedSetting(ctx)
-			if err != nil {
-				return status.Errorf(codes.Internal, "failed to get workspace memo related setting")
-			}
-			if workspaceMemoRelatedSetting.DisplayWithUpdateTime {
+			if filter.OrderByField != nil && *filter.OrderByField == "update_time" {
 				find.UpdatedTsAfter = filter.DisplayTimeAfter
 			} else {
 				find.CreatedTsAfter = filter.DisplayTimeAfter
 			}
 		}
 		if filter.DisplayTimeBefore != nil {
-			workspaceMemoRelatedSetting, err := s.Store.GetWorkspaceMemoRelatedSetting(ctx)
-			if err != nil {
-				return status.Errorf(codes.Internal, "failed to get workspace memo related setting")
-			}
-			if workspaceMemoRelatedSetting.DisplayWithUpdateTime {
+			if filter.OrderByField != nil && *filter.OrderByField == "update_time" {
 				find.UpdatedTsBefore = filter.DisplayTimeBefore
 			} else {
 				find.CreatedTsBefore = filter.DisplayTimeBefore
@@ -101,6 +96,9 @@ func (s *APIV1Service) buildMemoFindWithFilter(ctx context.Context, find *store.
 		if filter.HasIncompleteTasks {
 			find.PayloadFind.HasIncompleteTasks = true
 		}
+		if filter.HasImage {
+			find.PayloadFind.HasImage = true
+		}
 		if filter.Pinned {
 			find.Pinned = &filter.Pinned
 		}
@@ -123,13 +121,6 @@ func (s *APIV1Service) buildMemoFindWithFilter(ctx context.Context, find *store.
 		find.VisibilityList = []store.Visibility{store.Public, store.Protected}
 	}
 
-	workspaceMemoRelatedSetting, err := s.Store.GetWorkspaceMemoRelatedSetting(ctx)
-	if err != nil {
-		return status.Errorf(codes.Internal, "failed to get workspace memo related setting")
-	}
-	if workspaceMemoRelatedSetting.DisplayWithUpdateTime {
-		find.OrderByUpdatedTs = true
-	}
 	return nil
 }
 
@@ -140,6 +131,7 @@ var MemoFilterCELAttributes = []cel.EnvOption{
 	cel.Variable("tag_search", cel.ListType(cel.StringType)),
 	cel.Variable("order_by_pinned", cel.BoolType),
 	cel.Variable("order_by_time_asc", cel.BoolType),
+	cel.Variable("order_by_field", cel.StringType),
 	cel.Variable("display_time_before", cel.IntType),
 	cel.Variable("display_time_after", cel.IntType),
 	cel.Variable("creator", cel.StringType),
@@ -152,6 +144,7 @@ var MemoFilterCELAttributes = []cel.EnvOption{
 	cel.Variable("has_task_list", cel.BoolType),
 	cel.Variable("has_code", cel.BoolType),
 	cel.Variable("has_incomplete_tasks", cel.BoolType),
+	cel.Variable("has_image", cel.BoolType),
 	cel.Variable("pinned", cel.BoolType),
 }
 
@@ -161,6 +154,7 @@ type MemoFilter struct {
 	TagSearch          []string
 	OrderByPinned      bool
 	OrderByTimeAsc     bool
+	OrderByField       *string
 	DisplayTimeBefore  *int64
 	DisplayTimeAfter   *int64
 	Creator            *string
@@ -172,6 +166,7 @@ type MemoFilter struct {
 	HasTaskList        bool
 	HasCode            bool
 	HasIncompleteTasks bool
+	HasImage           bool
 	Pinned             bool
 }
 
@@ -225,6 +220,9 @@ func findMemoField(callExpr *expr.Expr_Call, filter *MemoFilter) {
 			} else if idExpr.Name == "order_by_time_asc" {
 				value := callExpr.Args[1].GetConstExpr().GetBoolValue()
 				filter.OrderByTimeAsc = value
+			} else if idExpr.Name == "order_by_field" {
+				value := callExpr.Args[1].GetConstExpr().GetStringValue()
+				filter.OrderByField = &value
 			} else if idExpr.Name == "display_time_before" {
 				displayTimeBefore := callExpr.Args[1].GetConstExpr().GetInt64Value()
 				filter.DisplayTimeBefore = &displayTimeBefore
@@ -258,6 +256,9 @@ func findMemoField(callExpr *expr.Expr_Call, filter *MemoFilter) {
 			} else if idExpr.Name == "has_incomplete_tasks" {
 				value := callExpr.Args[1].GetConstExpr().GetBoolValue()
 				filter.HasIncompleteTasks = value
+			} else if idExpr.Name == "has_image" {
+				value := callExpr.Args[1].GetConstExpr().GetBoolValue()
+				filter.HasImage = value
 			} else if idExpr.Name == "pinned" {
 				value := callExpr.Args[1].GetConstExpr().GetBoolValue()
 				filter.Pinned = value

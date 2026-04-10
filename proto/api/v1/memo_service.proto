@@ -147,8 +147,6 @@ message Memo {
 
   google.protobuf.Timestamp update_time = 6;
 
-  google.protobuf.Timestamp display_time = 7;
-
   string content = 8;
 
   repeated Node nodes = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
@@ -183,6 +181,7 @@ message MemoProperty {
   bool has_task_list = 2;
   bool has_code = 3;
   bool has_incomplete_tasks = 4;
+  bool has_image = 5;
 }
 
 message Location {

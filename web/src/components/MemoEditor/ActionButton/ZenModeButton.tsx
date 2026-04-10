@@ -1,6 +1,6 @@
-import { Button } from "@usememos/mui";
 import { Maximize2Icon, Minimize2Icon } from "lucide-react";
-import Tooltip from "@/components/kit/Tooltip";
+import Button from "@/components/ui/Button";
+import Tooltip from "@/components/ui/Tooltip";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useTranslate } from "@/utils/i18n";
 

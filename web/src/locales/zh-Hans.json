@@ -134,6 +134,8 @@
     "relations": "关联",
     "order-by": "排序方式",
     "display-time": "显示时间",
+    "created-time": "创建时间",
+    "updated-time": "更新时间",
     "direction": "排序方向",
     "desc": "降序",
     "asc": "升序",
@@ -146,6 +148,9 @@
     "links": "链接",
     "to-do": "待办",
     "code": "代码",
+    "images": "图片",
+    "all-tasks": "全部",
+    "incomplete-tasks": "未完成",
     "remove-completed-task-list-items": "移除已办",
     "remove-completed-task-list-items-confirm": "您确定要移除所有完成的待办吗？（此操作不可逆）",
     "updated-at": "已编辑"

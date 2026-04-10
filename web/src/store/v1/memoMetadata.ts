@@ -7,6 +7,9 @@ import { memoServiceClient } from "@/grpcweb";
 import { Routes } from "@/router";
 import { Memo, MemoView } from "@/types/proto/api/v1/memo_service";
 import { User } from "@/types/proto/api/v1/user_service";
+import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
+import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
+import { useWorkspaceSettingStore } from "./workspaceSetting";
 
 // Set the maximum number of memos to fetch.
 const DEFAULT_MEMO_PAGE_SIZE = 1000000;
@@ -16,6 +19,7 @@ interface MemoStats {
   taskList: number;
   code: number;
   incompleteTasks: number;
+  image: number;
 }
 
 export interface TagTreeNode {
@@ -49,7 +53,7 @@ const getDefaultState = (): State => ({
   tagCounts: {},
   sortedTags: [],
   tagTree: [],
-  stats: { link: 0, taskList: 0, code: 0, incompleteTasks: 0 },
+  stats: { link: 0, taskList: 0, code: 0, incompleteTasks: 0, image: 0 },
   activityStats: {},
   memoCount: 0,
   days: 0,
@@ -87,6 +91,11 @@ export const useMemoMetadataStore = create(
     setState: (state: State) => set(state),
     getState: () => get(),
     fetchMemoMetadata: async (params: { user?: User; location?: Location<any> }) => {
+      const workspaceSettingStore = useWorkspaceSettingStore.getState();
+      const memoRelatedSetting = WorkspaceMemoRelatedSetting.fromPartial(
+        workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED)?.memoRelatedSetting || {},
+      );
+      const isUpdateTime = memoRelatedSetting.displayWithUpdateTime;
       const filters = [`row_status == "NORMAL"`];
       if (params.user) {
         if (params.location?.pathname === Routes.EXPLORE) {
@@ -106,7 +115,7 @@ export const useMemoMetadataStore = create(
       const memoMap: Record<string, Memo> = {};
       const tagCounts: Record<string, number> = {};
       const activityStats: Record<string, number> = {};
-      const stats: MemoStats = { link: 0, taskList: 0, code: 0, incompleteTasks: 0 };
+      const stats: MemoStats = { link: 0, taskList: 0, code: 0, incompleteTasks: 0, image: 0 };
       let earliestTime = Date.now();
 
       for (const memo of memos) {
@@ -118,7 +127,7 @@ export const useMemoMetadataStore = create(
         }
 
         // Activity stats
-        const dateKey = dayjs(memo.displayTime).format("YYYY-MM-DD");
+        const dateKey = dayjs(isUpdateTime ? memo.updateTime : memo.createTime).format("YYYY-MM-DD");
         activityStats[dateKey] = (activityStats[dateKey] || 0) + 1;
 
         // Memo stats
@@ -130,6 +139,7 @@ export const useMemoMetadataStore = create(
         if (property?.hasTaskList) stats.taskList += 1;
         if (property?.hasCode) stats.code += 1;
         if (property?.hasIncompleteTasks) stats.incompleteTasks += 1;
+        if (property?.hasImage) stats.image += 1;
       }
 
       const days = memos.length > 0 ? Math.ceil((Date.now() - earliestTime) / 86400000) : 0;

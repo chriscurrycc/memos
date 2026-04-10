@@ -1,9 +1,10 @@
 import { Switch, Select, Option, Chip, ChipDelete } from "@mui/joy";
-import { Button, Input } from "@usememos/mui";
 import { isEqual, uniq } from "lodash-es";
 import { CheckIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { workspaceSettingNamePrefix, useWorkspaceSettingStore } from "@/store/v1";
 import { Visibility } from "@/types/proto/api/v1/memo_service";
 import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";

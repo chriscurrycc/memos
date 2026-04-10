@@ -1,7 +1,7 @@
-import { Button } from "@usememos/mui";
 import { ExternalLinkIcon, TrashIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Button from "@/components/ui/Button";
 import { webhookServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Webhook } from "@/types/proto/api/v1/webhook_service";

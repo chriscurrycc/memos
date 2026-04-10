@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { SquarePenIcon } from "lucide-react";
+import { PhotoProvider } from "react-photo-view";
 import MemoContent from "@/components/MemoContent";
 import MemoResourceListView from "@/components/MemoResourceListView";
 import { Memo } from "@/types/proto/api/v1/memo_service";
@@ -49,12 +50,14 @@ const ReviewMemoCard = ({ memo, onEdit, dateDisplay = "date", className, headerS
             </span>
           </div>
         )}
-        <MemoContent memoName={memo.name} nodes={memo.nodes} />
-        {memo.resources.length > 0 && (
-          <div className="mt-2">
-            <MemoResourceListView resources={memo.resources} />
-          </div>
-        )}
+        <PhotoProvider>
+          <MemoContent memoName={memo.name} nodes={memo.nodes} disablePhotoProvider />
+          {memo.resources.length > 0 && (
+            <div className="mt-2">
+              <MemoResourceListView resources={memo.resources} />
+            </div>
+          )}
+        </PhotoProvider>
       </div>
     </div>
   );

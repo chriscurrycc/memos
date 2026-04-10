@@ -134,6 +134,8 @@
     "relations": "Relations",
     "order-by": "Order by",
     "display-time": "Display Time",
+    "created-time": "Created Time",
+    "updated-time": "Updated Time",
     "direction": "Direction",
     "desc": "DESC",
     "asc": "ASC",
@@ -146,6 +148,9 @@
     "links": "Links",
     "to-do": "To-do",
     "code": "Code",
+    "images": "Images",
+    "all-tasks": "All",
+    "incomplete-tasks": "Incomplete",
     "remove-completed-task-list-items": "Remove done",
     "remove-completed-task-list-items-confirm": "Are you sure you want to remove all completed to-dos? THIS ACTION IS IRREVERSIBLE",
     "updated-at": "edited"

@@ -31,7 +31,7 @@ checksum:
   disable: true
 
 release:
-  draft: true
+  draft: false
   replace_existing_draft: true
   make_latest: true
   mode: replace

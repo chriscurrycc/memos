@@ -1,9 +1,10 @@
 import { Switch, Select, Option } from "@mui/joy";
-import { Button, Input } from "@usememos/mui";
 import { isEqual } from "lodash-es";
 import { ExternalLinkIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
 import { workspaceSettingNamePrefix, useWorkspaceSettingStore } from "@/store/v1";
 import { WorkspacePublicCommentSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";

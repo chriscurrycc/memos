@@ -1,7 +1,7 @@
 import { Modal, Select, Option } from "@mui/joy";
-import { Button } from "@usememos/mui";
 import { toPng } from "html-to-image";
 import { useState, useRef, useEffect } from "react";
+import Button from "@/components/ui/Button";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import { Translations, useTranslate } from "@/utils/i18n";
 import { getBackgroundStyle, BackgroundType, BACKGROUND_OPTIONS } from "./backgrounds";
