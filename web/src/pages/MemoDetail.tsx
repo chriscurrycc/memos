@@ -1,4 +1,5 @@
 import Giscus from "@giscus/react";
+import { useColorScheme } from "@mui/joy";
 import clsx from "clsx";
 import { ArrowUpLeftFromCircleIcon, MessageCircleIcon } from "lucide-react";
 import { ClientError } from "nice-grpc-web";
@@ -23,6 +24,7 @@ import { useTranslate } from "@/utils/i18n";
 
 const MemoDetail = () => {
   const t = useTranslate();
+  const { mode } = useColorScheme();
   const { md } = useResponsiveWidth();
   const params = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -48,6 +50,12 @@ const MemoDetail = () => {
     workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.PUBLIC_COMMENT)?.publicCommentSetting || {},
   );
   const hasInternalCommentSection = workspaceMemoRelatedSetting.enableComment || comments.length > 0;
+  const giscusTheme =
+    publicCommentSetting.theme && publicCommentSetting.theme !== "preferred_color_scheme"
+      ? publicCommentSetting.theme
+      : mode === "dark"
+        ? "dark"
+        : "light";
   const showPublicComments =
     publicCommentSetting.enabled && memo?.visibility === Visibility.PUBLIC && publicCommentSetting.repo && publicCommentSetting.repoId;
 
@@ -214,7 +222,7 @@ const MemoDetail = () => {
                 reactionsEnabled="1"
                 emitMetadata="0"
                 inputPosition="top"
-                theme={publicCommentSetting.theme || "preferred_color_scheme"}
+                theme={giscusTheme}
                 lang={publicCommentSetting.lang || "en"}
               />
             </div>
