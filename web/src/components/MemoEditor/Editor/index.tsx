@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import MemoSuggestions from "./MemoSuggestions";
 import TagSuggestions from "./TagSuggestions";
 
 export interface EditorRefActions {
@@ -201,6 +202,7 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
         onCompositionEnd={() => setTimeout(() => setIsInIME(false))}
       ></textarea>
       <TagSuggestions editorRef={editorRef} editorActions={ref} />
+      <MemoSuggestions editorRef={editorRef} editorActions={ref} />
     </div>
   );
 });
