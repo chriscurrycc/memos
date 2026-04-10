@@ -4,6 +4,18 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.32.0](https://github.com/chriscurrycc/memos/releases/tag/v0.32.0) - 2026-04-10
+
+### Features
+- Add @-mention autocomplete for linking memos in editor: type `@` to search and insert memo references
+
+### Fixes
+- Giscus comment theme now follows site theme instead of system theme
+
+### Refactor
+- Remove display time editor and let frontend control sort/filter field
+- Remove display_time from proto definition
+
 ## [v0.31.0](https://github.com/chriscurrycc/memos/releases/tag/v0.31.0) - 2026-04-09
 
 ### Features

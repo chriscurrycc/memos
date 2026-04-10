@@ -4,6 +4,18 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.32.0](https://github.com/chriscurrycc/memos/releases/tag/v0.32.0) - 2026-04-10
+
+### 新功能
+- 编辑器支持 @ 提及：输入 `@` 可搜索并插入 Memo 引用链接
+
+### 修复
+- Giscus 评论组件主题跟随站点主题，不再跟随系统主题
+
+### 重构
+- 移除 display time 编辑器，由前端控制排序/筛选字段
+- 从 proto 定义中移除 display_time 字段
+
 ## [v0.31.0](https://github.com/chriscurrycc/memos/releases/tag/v0.31.0) - 2026-04-09
 
 ### 新功能
