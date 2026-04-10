@@ -144,7 +144,7 @@ const MemoSuggestions = ({ editorRef, editorActions }: Props) => {
             i === selected ? "bg-zinc-300 dark:bg-zinc-600" : "",
           )}
         >
-          <p className="text-xs text-gray-400 select-none">{memo.displayTime?.toLocaleString()}</p>
+          <p className="text-xs text-gray-400 select-none">{memo.createTime?.toLocaleString()}</p>
           <p className="text-sm leading-4 line-clamp-2">{memo.snippet || memo.content.slice(0, 80)}</p>
         </div>
       ))}
