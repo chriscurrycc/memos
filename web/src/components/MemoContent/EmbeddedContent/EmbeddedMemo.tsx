@@ -77,7 +77,7 @@ const EmbeddedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
           onClick={() => navigateTo(`/m/${memo.uid}`, { state: { from: context.parentPage } })}
         >
           <QuoteIcon className="w-3 h-3" />
-          <relative-time datetime={memo.displayTime?.toISOString()} format="datetime"></relative-time>
+          <relative-time datetime={memo.createTime?.toISOString()} format="datetime"></relative-time>
         </span>
       </Tooltip>
       {contentNode}

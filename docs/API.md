@@ -430,6 +430,8 @@ visibilities == ['PUBLIC', 'PROTECTED']
 creator == 'users/1' && visibilities == ['PUBLIC']
 tag == 'work'
 content_search == ['keyword1', 'keyword2']
+order_by_field == 'create_time'
+order_by_field == 'update_time'
 display_time_before == '2024-12-31T23:59:59Z'
 display_time_after == '2024-01-01T00:00:00Z'
 has_link == true
@@ -449,7 +451,6 @@ has_incomplete_tasks == true
       "creator": "users/1",
       "createTime": "2024-01-01T00:00:00Z",
       "updateTime": "2024-01-01T00:00:00Z",
-      "displayTime": "2024-01-01T00:00:00Z",
       "content": "Hello, World! #greeting",
       "visibility": "PRIVATE",
       "tags": ["greeting"],
@@ -1538,7 +1539,6 @@ GET /api/v1/markdown/link:metadata?link={url}
   "creator": "users/{id}",
   "createTime": "timestamp",
   "updateTime": "timestamp",
-  "displayTime": "timestamp",
   "content": "string",
   "visibility": "PRIVATE|PROTECTED|PUBLIC",
   "tags": ["string"],

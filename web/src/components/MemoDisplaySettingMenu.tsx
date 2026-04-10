@@ -1,6 +1,7 @@
 import { Option, Select } from "@mui/joy";
 import clsx from "clsx";
 import { Settings2Icon } from "lucide-react";
+import useDisplayTimeField from "@/hooks/useDisplayTimeField";
 import { useMemoFilterStore } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover";
@@ -12,6 +13,7 @@ interface Props {
 const MemoDisplaySettingMenu = ({ className }: Props) => {
   const t = useTranslate();
   const memoFilterStore = useMemoFilterStore();
+  const { orderByField } = useDisplayTimeField();
   const isApplying = Boolean(memoFilterStore.orderByTimeAsc) !== false;
 
   return (
@@ -25,8 +27,9 @@ const MemoDisplaySettingMenu = ({ className }: Props) => {
         <div className="flex flex-col gap-2">
           <div className="w-full flex flex-row justify-between items-center">
             <span className="text-sm shrink-0 mr-3">{t("memo.order-by")}</span>
-            <Select value="displayTime">
-              <Option value={"displayTime"}>{t("memo.display-time")}</Option>
+            <Select value={orderByField} disabled>
+              <Option value="create_time">{t("memo.created-time")}</Option>
+              <Option value="update_time">{t("memo.updated-time")}</Option>
             </Select>
           </div>
           <div className="w-full flex flex-row justify-between items-center">

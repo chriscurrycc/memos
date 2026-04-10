@@ -7,6 +7,7 @@ import MemoView from "@/components/MemoView";
 import MobileHeader from "@/components/MobileHeader";
 import PagedMemoList from "@/components/PagedMemoList";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import useDisplayTimeField from "@/hooks/useDisplayTimeField";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoFilterStore } from "@/store/v1";
 import { RowStatus } from "@/types/proto/api/v1/common";
@@ -16,9 +17,11 @@ const Explore = () => {
   const { md } = useResponsiveWidth();
   const user = useCurrentUser();
   const memoFilterStore = useMemoFilterStore();
+  const { getDisplayTime, orderByField } = useDisplayTimeField();
 
   const memoListFilter = useMemo(() => {
     const filters = [`row_status == "NORMAL"`, `visibilities == [${user ? "'PUBLIC', 'PROTECTED'" : "'PUBLIC'"}]`];
+    filters.push(`order_by_field == "${orderByField}"`);
     const contentSearch: string[] = [];
     const tagSearch: string[] = [];
     for (const filter of memoFilterStore.filters) {
@@ -38,7 +41,7 @@ const Explore = () => {
       filters.push(`tag_search == [${tagSearch.join(", ")}]`);
     }
     return filters.join(" && ");
-  }, [user, memoFilterStore.filters, memoFilterStore.orderByTimeAsc]);
+  }, [user, memoFilterStore.filters, memoFilterStore.orderByTimeAsc, orderByField]);
 
   return (
     <section className="@container w-full max-w-5xl min-h-full flex flex-col justify-start items-center sm:pt-3 md:pt-6 pb-8">
@@ -56,8 +59,8 @@ const Explore = () => {
                   .filter((memo) => memo.rowStatus === RowStatus.ACTIVE)
                   .sort((a, b) =>
                     memoFilterStore.orderByTimeAsc
-                      ? dayjs(a.displayTime).unix() - dayjs(b.displayTime).unix()
-                      : dayjs(b.displayTime).unix() - dayjs(a.displayTime).unix(),
+                      ? dayjs(getDisplayTime(a)).unix() - dayjs(getDisplayTime(b)).unix()
+                      : dayjs(getDisplayTime(b)).unix() - dayjs(getDisplayTime(a)).unix(),
                   )
               }
               filter={memoListFilter}

@@ -138,6 +138,8 @@
     "relations": "關聯",
     "order-by": "排序方式",
     "display-time": "顯示時間",
+    "created-time": "建立時間",
+    "updated-time": "更新時間",
     "direction": "排序方向",
     "desc": "降序",
     "asc": "升序",

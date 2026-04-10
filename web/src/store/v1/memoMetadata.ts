@@ -7,6 +7,9 @@ import { memoServiceClient } from "@/grpcweb";
 import { Routes } from "@/router";
 import { Memo, MemoView } from "@/types/proto/api/v1/memo_service";
 import { User } from "@/types/proto/api/v1/user_service";
+import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
+import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
+import { useWorkspaceSettingStore } from "./workspaceSetting";
 
 // Set the maximum number of memos to fetch.
 const DEFAULT_MEMO_PAGE_SIZE = 1000000;
@@ -88,6 +91,11 @@ export const useMemoMetadataStore = create(
     setState: (state: State) => set(state),
     getState: () => get(),
     fetchMemoMetadata: async (params: { user?: User; location?: Location<any> }) => {
+      const workspaceSettingStore = useWorkspaceSettingStore.getState();
+      const memoRelatedSetting = WorkspaceMemoRelatedSetting.fromPartial(
+        workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED)?.memoRelatedSetting || {},
+      );
+      const isUpdateTime = memoRelatedSetting.displayWithUpdateTime;
       const filters = [`row_status == "NORMAL"`];
       if (params.user) {
         if (params.location?.pathname === Routes.EXPLORE) {
@@ -119,7 +127,7 @@ export const useMemoMetadataStore = create(
         }
 
         // Activity stats
-        const dateKey = dayjs(memo.displayTime).format("YYYY-MM-DD");
+        const dateKey = dayjs(isUpdateTime ? memo.updateTime : memo.createTime).format("YYYY-MM-DD");
         activityStats[dateKey] = (activityStats[dateKey] || 0) + 1;
 
         // Memo stats

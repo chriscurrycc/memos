@@ -10,6 +10,7 @@ import MobileHeader from "@/components/MobileHeader";
 import PagedMemoList from "@/components/PagedMemoList";
 import UserAvatar from "@/components/UserAvatar";
 import Button from "@/components/ui/Button";
+import useDisplayTimeField from "@/hooks/useDisplayTimeField";
 import useLoading from "@/hooks/useLoading";
 import { useMemoFilterStore, useUserStore } from "@/store/v1";
 import { RowStatus } from "@/types/proto/api/v1/common";
@@ -24,6 +25,7 @@ const UserProfile = () => {
   const loadingState = useLoading();
   const [user, setUser] = useState<User>();
   const memoFilterStore = useMemoFilterStore();
+  const { getDisplayTime } = useDisplayTimeField();
 
   useEffect(() => {
     const username = params.username;
@@ -107,15 +109,15 @@ const UserProfile = () => {
               <MemoFilters />
               <PagedMemoList
                 renderer={(memo: Memo) => (
-                  <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned enableCollapse />
+                  <MemoView key={`${memo.name}-${memo.updateTime}`} memo={memo} showVisibility showPinned enableCollapse />
                 )}
                 listSort={(memos: Memo[]) =>
                   memos
                     .filter((memo) => memo.rowStatus === RowStatus.ACTIVE)
                     .sort((a, b) =>
                       memoFilterStore.orderByTimeAsc
-                        ? dayjs(a.displayTime).unix() - dayjs(b.displayTime).unix()
-                        : dayjs(b.displayTime).unix() - dayjs(a.displayTime).unix(),
+                        ? dayjs(getDisplayTime(a)).unix() - dayjs(getDisplayTime(b)).unix()
+                        : dayjs(getDisplayTime(b)).unix() - dayjs(getDisplayTime(a)).unix(),
                     )
                     .sort((a, b) => Number(b.pinned) - Number(a.pinned))
                 }

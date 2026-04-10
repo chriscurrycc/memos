@@ -10,6 +10,7 @@ import PagedMemoList from "@/components/PagedMemoList";
 import SearchBar from "@/components/SearchBar";
 import Tooltip from "@/components/ui/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import useDisplayTimeField from "@/hooks/useDisplayTimeField";
 import { useMemoFilterStore, useMemoStore } from "@/store/v1";
 import { RowStatus } from "@/types/proto/api/v1/common";
 import { Memo } from "@/types/proto/api/v1/memo_service";
@@ -20,9 +21,11 @@ const Archived = () => {
   const user = useCurrentUser();
   const memoStore = useMemoStore();
   const memoFilterStore = useMemoFilterStore();
+  const { getDisplayTime, orderByField } = useDisplayTimeField();
 
   const memoListFilter = useMemo(() => {
     const filters = [`creator == "${user.name}"`, `row_status == "ARCHIVED"`];
+    filters.push(`order_by_field == "${orderByField}"`);
     const contentSearch: string[] = [];
     const tagSearch: string[] = [];
     for (const filter of memoFilterStore.filters) {
@@ -42,7 +45,7 @@ const Archived = () => {
       filters.push(`tag_search == [${tagSearch.join(", ")}]`);
     }
     return filters.join(" && ");
-  }, [user, memoFilterStore.filters]);
+  }, [user, memoFilterStore.filters, memoFilterStore.orderByTimeAsc, orderByField]);
 
   const handleDeleteMemoClick = async (memo: Memo) => {
     const confirmed = window.confirm(t("memo.delete-confirm"));
@@ -91,7 +94,7 @@ const Archived = () => {
                 <div className="w-full mb-1 flex flex-row justify-between items-center">
                   <div className="w-full max-w-[calc(100%-20px)] flex flex-row justify-start items-center mr-1">
                     <div className="text-sm leading-6 text-gray-400 select-none">
-                      <relative-time datetime={memo.displayTime?.toISOString()}></relative-time>
+                      <relative-time datetime={getDisplayTime(memo)?.toISOString()}></relative-time>
                     </div>
                   </div>
                   <div className="flex flex-row justify-end items-center gap-x-2">
@@ -115,8 +118,8 @@ const Archived = () => {
                 .filter((memo) => memo.rowStatus === RowStatus.ARCHIVED)
                 .sort((a, b) =>
                   memoFilterStore.orderByTimeAsc
-                    ? dayjs(a.displayTime).unix() - dayjs(b.displayTime).unix()
-                    : dayjs(b.displayTime).unix() - dayjs(a.displayTime).unix(),
+                    ? dayjs(getDisplayTime(a)).unix() - dayjs(getDisplayTime(b)).unix()
+                    : dayjs(getDisplayTime(b)).unix() - dayjs(getDisplayTime(a)).unix(),
                 )
             }
             filter={memoListFilter}

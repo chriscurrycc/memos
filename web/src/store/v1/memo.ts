@@ -3,7 +3,10 @@ import { create } from "zustand";
 import { combine } from "zustand/middleware";
 import { memoServiceClient } from "@/grpcweb";
 import { CreateMemoRequest, ListMemosRequest, Memo, MemoView } from "@/types/proto/api/v1/memo_service";
+import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
+import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { removeMemoCollapseState } from "@/utils/memo";
+import { useWorkspaceSettingStore } from "./workspaceSetting";
 
 interface State {
   // stateId is used to identify the store instance state.
@@ -137,9 +140,14 @@ export const useMemoStore = create(
       // Used to decide between replace-in-place vs prepend for pinned ordering.
       const hasPinnedMemo = Boolean(pinnedMemoMap[memo.name]);
 
-      // Preserve displayTime to prevent reordering until refresh.
+      // Preserve the display time field to prevent reordering until refresh.
       const existingMemo = memoMap[memo.name];
-      const updatedMemo = existingMemo ? { ...memo, displayTime: existingMemo.displayTime } : memo;
+      const workspaceSettingStore = useWorkspaceSettingStore.getState();
+      const memoRelatedSetting = WorkspaceMemoRelatedSetting.fromPartial(
+        workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED)?.memoRelatedSetting || {},
+      );
+      const timeField = memoRelatedSetting.displayWithUpdateTime ? "updateTime" : "createTime";
+      const updatedMemo = existingMemo ? { ...memo, [timeField]: existingMemo[timeField] } : memo;
       memoMap[memo.name] = updatedMemo;
 
       // Also update memoMapByUid if this memo is tracked there.

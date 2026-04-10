@@ -134,6 +134,8 @@
     "relations": "关联",
     "order-by": "排序方式",
     "display-time": "显示时间",
+    "created-time": "创建时间",
+    "updated-time": "更新时间",
     "direction": "排序方向",
     "desc": "降序",
     "asc": "升序",

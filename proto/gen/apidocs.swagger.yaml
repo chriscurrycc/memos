@@ -1062,9 +1062,6 @@ paths:
               updateTime:
                 type: string
                 format: date-time
-              displayTime:
-                type: string
-                format: date-time
               content:
                 type: string
               nodes:
@@ -2207,9 +2204,6 @@ definitions:
         type: string
         format: date-time
       updateTime:
-        type: string
-        format: date-time
-      displayTime:
         type: string
         format: date-time
       content:

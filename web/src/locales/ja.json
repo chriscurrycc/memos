@@ -138,6 +138,8 @@
     "relations": "リレーション",
     "order-by": "並び順",
     "display-time": "表示時間",
+    "created-time": "作成日時",
+    "updated-time": "更新日時",
     "direction": "方向",
     "desc": "降順",
     "asc": "昇順",

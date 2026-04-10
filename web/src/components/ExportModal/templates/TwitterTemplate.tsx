@@ -82,7 +82,7 @@ const TwitterTemplate = ({ memo }: TwitterTemplateProps) => {
 
       {/* Time */}
       <div className="text-gray-500 text-sm mb-3">
-        {formatTwitterDate(memo.displayTime)} ·{" "}
+        {formatTwitterDate(memo.createTime)} ·{" "}
         <span className="font-bold text-black dark:text-white">{mockStats.views.toLocaleString()}</span> Views
       </div>
 

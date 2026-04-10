@@ -12,6 +12,7 @@ import PinnedMemoList from "@/components/PinnedMemoList";
 import PinnedMemosDrawer from "@/components/PinnedMemosDrawer";
 import ResizableSplitter from "@/components/ResizableSplitter";
 import useCurrentUser from "@/hooks/useCurrentUser";
+import useDisplayTimeField from "@/hooks/useDisplayTimeField";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoFilterStore } from "@/store/v1";
 import { RowStatus } from "@/types/proto/api/v1/common";
@@ -23,8 +24,10 @@ const Home = () => {
   const memoFilterStore = useMemoFilterStore();
   const [mobileFabZenMode, setMobileFabZenMode] = useState(false);
 
+  const { getDisplayTime, orderByField } = useDisplayTimeField();
+
   const memoRenderer = useCallback(
-    (memo: Memo) => <MemoView key={`${memo.name}-${memo.displayTime}`} memo={memo} showVisibility showPinned showExport enableCollapse />,
+    (memo: Memo) => <MemoView key={`${memo.name}-${memo.updateTime}`} memo={memo} showVisibility showPinned showExport enableCollapse />,
     [],
   );
 
@@ -44,14 +47,15 @@ const Home = () => {
         .filter((memo) => memo.rowStatus === RowStatus.ACTIVE && !memo.pinned)
         .sort((a, b) =>
           memoFilterStore.orderByTimeAsc
-            ? dayjs(a.displayTime).unix() - dayjs(b.displayTime).unix()
-            : dayjs(b.displayTime).unix() - dayjs(a.displayTime).unix(),
+            ? dayjs(getDisplayTime(a)).unix() - dayjs(getDisplayTime(b)).unix()
+            : dayjs(getDisplayTime(b)).unix() - dayjs(getDisplayTime(a)).unix(),
         ),
-    [memoFilterStore.orderByTimeAsc],
+    [memoFilterStore.orderByTimeAsc, getDisplayTime],
   );
 
   const memoListFilter = useMemo(() => {
     const filters = [`creator == "${user.name}"`, `row_status == "NORMAL"`, `order_by_pinned == true`];
+    filters.push(`order_by_field == "${orderByField}"`);
     const contentSearch: string[] = [];
     const tagSearch: string[] = [];
     for (const filter of memoFilterStore.filters) {
@@ -87,7 +91,7 @@ const Home = () => {
       filters.push(`tag_search == [${tagSearch.join(", ")}]`);
     }
     return filters.join(" && ");
-  }, [user, memoFilterStore.filters, memoFilterStore.orderByTimeAsc]);
+  }, [user, memoFilterStore.filters, memoFilterStore.orderByTimeAsc, orderByField]);
 
   return (
     <section className="@container w-full md:h-screen md:overflow-visible md:flex md:flex-col">

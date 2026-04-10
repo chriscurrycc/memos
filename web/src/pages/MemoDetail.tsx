@@ -169,7 +169,7 @@ const MemoDetail = () => {
                     </div>
                     {comments.map((comment) => (
                       <MemoView
-                        key={`${comment.name}-${comment.displayTime}`}
+                        key={`${comment.name}-${comment.updateTime}`}
                         memo={comment}
                         parentPage={locationState?.from}
                         showCreator

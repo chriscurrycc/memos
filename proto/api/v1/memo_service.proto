@@ -147,8 +147,6 @@ message Memo {
 
   google.protobuf.Timestamp update_time = 6;
 
-  google.protobuf.Timestamp display_time = 7;
-
   string content = 8;
 
   repeated Node nodes = 9 [(google.api.field_behavior) = OUTPUT_ONLY];
