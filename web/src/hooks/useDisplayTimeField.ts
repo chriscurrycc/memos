@@ -16,7 +16,6 @@ const useDisplayTimeField = () => {
       isUpdateTime,
       orderByField: isUpdateTime ? "update_time" : "create_time",
       getDisplayTime: (memo: Memo) => (isUpdateTime ? memo.updateTime : memo.createTime),
-      updateMaskField: isUpdateTime ? "update_time" : "create_time",
     }),
     [isUpdateTime],
   );

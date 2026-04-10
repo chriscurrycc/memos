@@ -292,9 +292,21 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 			update.RowStatus = &rowStatus
 		} else if path == "create_time" {
 			createdTs := request.Memo.CreateTime.AsTime().Unix()
+			if createdTs > time.Now().Unix() {
+				return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be in the future")
+			}
+			if createdTs > memo.UpdatedTs {
+				return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be after update_time")
+			}
 			update.CreatedTs = &createdTs
 		} else if path == "update_time" {
 			updatedTs := request.Memo.UpdateTime.AsTime().Unix()
+			if updatedTs > time.Now().Unix() {
+				return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be in the future")
+			}
+			if updatedTs < memo.CreatedTs {
+				return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be before create_time")
+			}
 			update.UpdatedTs = &updatedTs
 		} else if path == "pinned" {
 			if _, err := s.Store.UpsertMemoOrganizer(ctx, &store.MemoOrganizer{

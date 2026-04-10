@@ -3,8 +3,6 @@ import clsx from "clsx";
 import { isEqual } from "lodash-es";
 import { CalendarClockIcon, LoaderIcon, SendIcon, XIcon } from "lucide-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-hot-toast";
 import { useTranslation } from "react-i18next";
 import useLocalStorage from "react-use/lib/useLocalStorage";
@@ -15,7 +13,6 @@ import { TAB_SPACE_WIDTH } from "@/helpers/consts";
 import { isValidUrl } from "@/helpers/utils";
 import useAsyncEffect from "@/hooks/useAsyncEffect";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import useDisplayTimeField from "@/hooks/useDisplayTimeField";
 import { useMemoStore, useResourceStore, useUserStore, useWorkspaceSettingStore } from "@/store/v1";
 import { MemoRelation, MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
 import { Location, Memo, Visibility } from "@/types/proto/api/v1/memo_service";
@@ -76,7 +73,6 @@ const MemoEditor = (props: Props) => {
   const userStore = useUserStore();
   const memoStore = useMemoStore();
   const resourceStore = useResourceStore();
-  const { getDisplayTime, updateMaskField, isUpdateTime } = useDisplayTimeField();
   const currentUser = useCurrentUser();
   const [state, setState] = useState<State>({
     memoVisibility: Visibility.PRIVATE,
@@ -87,7 +83,6 @@ const MemoEditor = (props: Props) => {
     isRequesting: false,
     isComposing: false,
   });
-  const [displayTime, setDisplayTime] = useState<Date | undefined>();
   const [hasContent, setHasContent] = useState<boolean>(false);
   const [preserveUpdateTime, setPreserveUpdateTime] = useState<boolean>(false);
   const [zenModeOpen, setZenModeOpen] = useState(false);
@@ -134,7 +129,6 @@ const MemoEditor = (props: Props) => {
     const memo = await memoStore.getOrFetchMemoByName(memoName);
     if (memo) {
       focusEditor();
-      setDisplayTime(getDisplayTime(memo));
       setState((prevState) => ({
         ...prevState,
         memoVisibility: memo.visibility,
@@ -347,14 +341,6 @@ const MemoEditor = (props: Props) => {
             content,
             visibility: state.memoVisibility,
           };
-          if (!isEqual(displayTime, getDisplayTime(prevMemo))) {
-            updateMask.push(updateMaskField);
-            if (isUpdateTime) {
-              memoPatch.updateTime = displayTime;
-            } else {
-              memoPatch.createTime = displayTime;
-            }
-          }
           if (!isEqual(state.resourceList, prevMemo.resources)) {
             updateMask.push("resources");
             memoPatch.resources = state.resourceList;
@@ -435,20 +421,16 @@ const MemoEditor = (props: Props) => {
     }
   };
 
-  const showDisplayTime = useMemo(() => {
-    return memoName && displayTime;
-  }, [memoName, displayTime]);
-
   const editorConfig = useMemo(
     () => ({
       className: isZenMode ? "zen-mode-editor-inner" : undefined,
-      textareaClassName: clsx(enableZenMode && !showDisplayTime && "pr-8", showDisplayTime && "pt-0"),
+      textareaClassName: clsx(enableZenMode && "pr-8"),
       initialContent: "",
       placeholder: props.placeholder ?? t("editor.any-thoughts"),
       onContentChange: handleContentChange,
       onPaste: handlePasteEvent,
     }),
-    [i18n.language, isZenMode, enableZenMode, showDisplayTime],
+    [i18n.language, isZenMode, enableZenMode],
   );
 
   const allowSave = (hasContent || state.resourceList.length > 0) && !state.isUploadingResource && !state.isRequesting;
@@ -497,19 +479,6 @@ const MemoEditor = (props: Props) => {
           onCompositionEnd={handleCompositionEnd}
         >
           {enableZenMode && <ZenModeButton isZenMode={isZenMode} onClick={isZenMode ? onZenModeClose! : handleOpenZenMode} />}
-          {showDisplayTime && (
-            <div className="p-3 pb-2">
-              <DatePicker
-                selected={displayTime}
-                onChange={(date) => date && setDisplayTime(date)}
-                showTimeSelect
-                customInput={
-                  <span className="cursor-pointer text-sm text-gray-400 dark:text-gray-500">{displayTime?.toLocaleString()}</span>
-                }
-                calendarClassName="ml-24 sm:ml-44"
-              />
-            </div>
-          )}
           <Editor ref={editorRef} {...editorConfig} />
           <ResourceListView resourceList={state.resourceList} setResourceList={handleSetResourceList} />
           <RelationListView relationList={referenceRelations} setRelationList={handleSetRelationList} />
