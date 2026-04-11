@@ -1,0 +1,67 @@
+name: Auto Merge to Staging
+
+on:
+  push:
+    branches:
+      - "claude/**"
+
+concurrency:
+  group: auto-merge-staging
+  cancel-in-progress: false
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge to staging
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "Merging $BRANCH into staging..."
+
+          # Ensure staging branch exists
+          if ! git ls-remote --exit-code origin staging >/dev/null 2>&1; then
+            echo "Creating staging branch from main..."
+            git checkout -b staging origin/main
+            git push origin staging
+          else
+            git checkout staging
+            git pull origin staging
+          fi
+
+          # Try direct merge
+          if git merge "origin/$BRANCH" --no-edit; then
+            echo "Merge successful"
+            git push origin staging
+          else
+            echo "Merge conflict detected, rebuilding staging from main..."
+            git merge --abort
+
+            # Reset staging to main
+            git reset --hard origin/main
+
+            # Get all remote claude/* branches and merge them one by one
+            CLAUDE_BRANCHES=$(git branch -r | grep 'origin/claude/' | sed 's/^ *//' | sort)
+            for cb in $CLAUDE_BRANCHES; do
+              echo "Trying to merge $cb..."
+              if git merge "$cb" --no-edit; then
+                echo "  ✓ Merged $cb"
+              else
+                echo "  ✗ Skipping $cb (conflict)"
+                git merge --abort
+              fi
+            done
+
+            git push origin staging --force-with-lease
+          fi
