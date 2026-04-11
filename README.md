@@ -113,9 +113,42 @@ docker run -d \
 
 ## Update
 
+### Docker Image Tags
+
+| Tag | Description | Who should use |
+|-----|-------------|----------------|
+| `latest` | Updated on **every** release (including beta) | Early adopters who want the newest features |
+| `stable` | Updated only on **stable** releases | Users who prefer reliability over new features |
+| `vX.Y.Z` | Pinned to a specific version | Users who want full control over updates |
+
 ### With Watchtower (Recommended)
 
-One-time update:
+Use [Watchtower](https://containrrr.dev/watchtower/) for automatic updates. Choose the image tag based on your preference:
+
+```yaml
+# docker-compose.yml
+services:
+  memos:
+    image: chriscurrycc/memos:latest  # or :stable for stable-only updates
+    container_name: memos
+    restart: unless-stopped
+    ports:
+      - 5230:5230
+    volumes:
+      - ~/.memos/:/var/opt/memos
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Asia/Shanghai
+    command: --schedule "0 0 3 * * *" memos  # Check daily at 3:00 AM
+```
+
+Or run a one-time update:
 
 ```bash
 docker run --rm \
@@ -125,23 +158,10 @@ docker run --rm \
   memos
 ```
 
-Scheduled auto-update (e.g., at 3:00 AM UTC+8 daily):
-
-```bash
-docker run -d \
-  --name watchtower \
-  --restart unless-stopped \
-  --volume /var/run/docker.sock:/var/run/docker.sock \
-  -e TZ=Asia/Shanghai \
-  containrrr/watchtower \
-  --schedule "0 0 3 * * *" \
-  memos
-```
-
 ### Without Watchtower
 
 ```bash
-docker pull chriscurrycc/memos:latest
+docker pull chriscurrycc/memos:latest  # or :stable
 docker stop memos && docker rm memos
 docker run -d \
   --init \
