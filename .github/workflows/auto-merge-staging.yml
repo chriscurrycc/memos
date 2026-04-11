@@ -1,4 +1,4 @@
-name: Auto Merge to Staging
+name: Auto Merge (Staging)
 
 on:
   push:

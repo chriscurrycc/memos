@@ -1,4 +1,4 @@
-name: Build Staging Docker Image
+name: Docker Build (Staging)
 
 on:
   push:
