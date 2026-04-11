@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "claude/**"
+      - "chriscurry/**"
 
 concurrency:
   group: auto-merge-staging
@@ -19,6 +20,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.STAGING_DEPLOY_TOKEN }}
 
       - name: Configure git
         run: |
@@ -51,9 +53,9 @@ jobs:
             # Reset staging to main
             git reset --hard origin/main
 
-            # Get all remote claude/* branches and merge them one by one
-            CLAUDE_BRANCHES=$(git branch -r | grep 'origin/claude/' | sed 's/^ *//' | sort)
-            for cb in $CLAUDE_BRANCHES; do
+            # Get all remote claude/* and chriscurry/* branches and merge them one by one
+            BRANCHES=$(git branch -r | grep -E 'origin/(claude|chriscurry)/' | sed 's/^ *//' | sort)
+            for cb in $BRANCHES; do
               echo "Trying to merge $cb..."
               if git merge "$cb" --no-edit; then
                 echo "  ✓ Merged $cb"
