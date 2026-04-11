@@ -56,21 +56,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of features and improvement
 
 ## Quick Start
 
-### Docker (Recommended)
-
-```bash
-docker run -d \
-  --init \
-  --name memos \
-  --restart unless-stopped \
-  --publish 5230:5230 \
-  --volume ~/.memos/:/var/opt/memos \
-  chriscurrycc/memos:latest
-```
-
-Then visit `http://localhost:5230` in your browser.
-
-### Docker Compose
+### Docker Compose (Recommended)
 
 ```yaml
 services:
@@ -82,6 +68,24 @@ services:
       - 5230:5230
     volumes:
       - ~/.memos/:/var/opt/memos
+```
+
+```bash
+docker compose up -d
+```
+
+Then visit `http://localhost:5230` in your browser.
+
+### Docker
+
+```bash
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
 ```
 
 ### Build from Source

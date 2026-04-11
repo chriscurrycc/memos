@@ -56,21 +56,7 @@
 
 ## クイックスタート
 
-### Docker（推奨）
-
-```bash
-docker run -d \
-  --init \
-  --name memos \
-  --restart unless-stopped \
-  --publish 5230:5230 \
-  --volume ~/.memos/:/var/opt/memos \
-  chriscurrycc/memos:latest
-```
-
-ブラウザで `http://localhost:5230` にアクセスしてください。
-
-### Docker Compose
+### Docker Compose（推奨）
 
 ```yaml
 services:
@@ -82,6 +68,24 @@ services:
       - 5230:5230
     volumes:
       - ~/.memos/:/var/opt/memos
+```
+
+```bash
+docker compose up -d
+```
+
+ブラウザで `http://localhost:5230` にアクセスしてください。
+
+### Docker
+
+```bash
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
 ```
 
 ### ソースからビルド
@@ -113,9 +117,42 @@ docker run -d \
 
 ## 更新
 
-### Watchtower を使用（推奨）
+### Docker イメージタグ
 
-単発更新：
+| タグ | 説明 | 対象ユーザー |
+|------|------|--------------|
+| `latest` | すべてのリリースで更新（betaを含む） | 最新機能をいち早く試したいユーザー |
+| `stable` | 安定版リリースのみ更新 | 安定性を重視するユーザー |
+| `vX.Y.Z` | 特定バージョンに固定 | バージョンを完全にコントロールしたいユーザー |
+
+### Watchtower で自動更新（推奨）
+
+[Watchtower](https://containrrr.dev/watchtower/) を使って自動更新を設定します。お好みに応じてイメージタグを選択してください：
+
+```yaml
+# docker-compose.yml
+services:
+  memos:
+    image: chriscurrycc/memos:latest  # または :stable で安定版のみ更新
+    container_name: memos
+    restart: unless-stopped
+    ports:
+      - 5230:5230
+    volumes:
+      - ~/.memos/:/var/opt/memos
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Asia/Shanghai
+    command: --schedule "0 0 3 * * *" memos  # 毎日午前3時に更新確認
+```
+
+または単発更新：
 
 ```bash
 docker run --rm \
@@ -125,23 +162,10 @@ docker run --rm \
   memos
 ```
 
-定期自動更新（例：毎日 UTC+8 の午前3時に確認）：
+### 手動更新
 
 ```bash
-docker run -d \
-  --name watchtower \
-  --restart unless-stopped \
-  --volume /var/run/docker.sock:/var/run/docker.sock \
-  -e TZ=Asia/Shanghai \
-  containrrr/watchtower \
-  --schedule "0 0 3 * * *" \
-  memos
-```
-
-### Watchtower を使用しない
-
-```bash
-docker pull chriscurrycc/memos:latest
+docker pull chriscurrycc/memos:latest  # または :stable
 docker stop memos && docker rm memos
 docker run -d \
   --init \

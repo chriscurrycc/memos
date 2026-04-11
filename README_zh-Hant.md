@@ -56,21 +56,7 @@
 
 ## 快速開始
 
-### Docker（推薦）
-
-```bash
-docker run -d \
-  --init \
-  --name memos \
-  --restart unless-stopped \
-  --publish 5230:5230 \
-  --volume ~/.memos/:/var/opt/memos \
-  chriscurrycc/memos:latest
-```
-
-然後在瀏覽器中存取 `http://localhost:5230`。
-
-### Docker Compose
+### Docker Compose（推薦）
 
 ```yaml
 services:
@@ -82,6 +68,24 @@ services:
       - 5230:5230
     volumes:
       - ~/.memos/:/var/opt/memos
+```
+
+```bash
+docker compose up -d
+```
+
+然後在瀏覽器中存取 `http://localhost:5230`。
+
+### Docker
+
+```bash
+docker run -d \
+  --init \
+  --name memos \
+  --restart unless-stopped \
+  --publish 5230:5230 \
+  --volume ~/.memos/:/var/opt/memos \
+  chriscurrycc/memos:latest
 ```
 
 ### 從原始碼建構
@@ -113,9 +117,42 @@ docker run -d \
 
 ## 更新
 
-### 使用 Watchtower（推薦）
+### Docker 映像標籤
 
-單次更新：
+| 標籤 | 說明 | 適用對象 |
+|------|------|----------|
+| `latest` | 每次發佈都會更新（包括 beta） | 喜歡嘗鮮、想第一時間體驗新功能的使用者 |
+| `stable` | 僅在穩定版發佈時更新 | 追求穩定、不想踩坑的使用者 |
+| `vX.Y.Z` | 固定到某個具體版本 | 需要完全控制版本的使用者 |
+
+### 使用 Watchtower 自動更新（推薦）
+
+使用 [Watchtower](https://containrrr.dev/watchtower/) 實現自動更新，根據你的偏好選擇映像標籤：
+
+```yaml
+# docker-compose.yml
+services:
+  memos:
+    image: chriscurrycc/memos:latest  # 或 :stable 僅接收穩定版更新
+    container_name: memos
+    restart: unless-stopped
+    ports:
+      - 5230:5230
+    volumes:
+      - ~/.memos/:/var/opt/memos
+
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - TZ=Asia/Shanghai
+    command: --schedule "0 0 3 * * *" memos  # 每天凌晨 3:00 檢查更新
+```
+
+或執行單次更新：
 
 ```bash
 docker run --rm \
@@ -125,23 +162,10 @@ docker run --rm \
   memos
 ```
 
-定時自動更新（例如：每天凌晨 3:00 UTC+8 自動檢查更新）：
+### 手動更新
 
 ```bash
-docker run -d \
-  --name watchtower \
-  --restart unless-stopped \
-  --volume /var/run/docker.sock:/var/run/docker.sock \
-  -e TZ=Asia/Shanghai \
-  containrrr/watchtower \
-  --schedule "0 0 3 * * *" \
-  memos
-```
-
-### 不使用 Watchtower
-
-```bash
-docker pull chriscurrycc/memos:latest
+docker pull chriscurrycc/memos:latest  # 或 :stable
 docker stop memos && docker rm memos
 docker run -d \
   --init \
