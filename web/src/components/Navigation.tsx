@@ -15,7 +15,7 @@ import { NavLink } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
 import useCurrentUser from "@/hooks/useCurrentUser";
 import { Routes } from "@/router";
-import { useInboxStore } from "@/store/v1";
+import { useInboxStore, useResourceStore } from "@/store/v1";
 import { useTranslate } from "@/utils/i18n";
 import UserBanner from "./UserBanner";
 
@@ -36,12 +36,16 @@ const Navigation = (props: Props) => {
   const t = useTranslate();
   const user = useCurrentUser();
   const inboxStore = useInboxStore();
+  const resourceStore = useResourceStore();
+  const hasResources = resourceStore.resourceList.length > 0;
+
   useEffect(() => {
     if (!user) {
       return;
     }
 
     inboxStore.fetchInboxes();
+    resourceStore.fetchResources();
     // Fetch inboxes every 5 minutes.
     const timer = setInterval(
       async () => {
@@ -111,7 +115,15 @@ const Navigation = (props: Props) => {
   };
 
   const navLinks: NavLinkItem[] = user
-    ? [homeNavLink, resourcesNavLink, exploreNavLink, reviewNavLink, profileNavLink, archivedNavLink, settingNavLink]
+    ? [
+        homeNavLink,
+        ...(hasResources ? [resourcesNavLink] : []),
+        exploreNavLink,
+        reviewNavLink,
+        profileNavLink,
+        archivedNavLink,
+        settingNavLink,
+      ]
     : [exploreNavLink, signInNavLink, aboutNavLink];
 
   return (

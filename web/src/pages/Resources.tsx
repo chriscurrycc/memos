@@ -9,10 +9,9 @@ import ResourceIcon from "@/components/ResourceIcon";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Tooltip from "@/components/ui/Tooltip";
-import { resourceServiceClient } from "@/grpcweb";
 import useLoading from "@/hooks/useLoading";
 import i18n from "@/i18n";
-import { useMemoStore } from "@/store/v1";
+import { useMemoStore, useResourceStore } from "@/store/v1";
 import { Resource } from "@/types/proto/api/v1/resource_service";
 import { useTranslate } from "@/utils/i18n";
 
@@ -41,14 +40,14 @@ const Resources = () => {
     searchQuery: "",
   });
   const memoStore = useMemoStore();
-  const [resources, setResources] = useState<Resource[]>([]);
+  const resourceStore = useResourceStore();
+  const resources = resourceStore.resourceList;
   const filteredResources = resources.filter((resource) => includes(resource.filename, state.searchQuery));
   const groupedResources = groupResourcesByDate(filteredResources.filter((resource) => resource.memo));
   const unusedResources = filteredResources.filter((resource) => !resource.memo);
 
   useEffect(() => {
-    resourceServiceClient.listResources({}).then(({ resources }) => {
-      setResources(resources);
+    resourceStore.fetchResources().then((resources) => {
       loadingState.setFinish();
       Promise.all(resources.map((resource) => (resource.memo ? memoStore.getOrFetchMemoByName(resource.memo) : null)));
     });
@@ -58,9 +57,8 @@ const Resources = () => {
     const confirmed = window.confirm("Are you sure to delete all unused resources? This action cannot be undone.");
     if (confirmed) {
       for (const resource of unusedResources) {
-        await resourceServiceClient.deleteResource({ name: resource.name });
+        await resourceStore.deleteResource(resource.name);
       }
-      setResources(resources.filter((resource) => resource.memo));
     }
   };
 
