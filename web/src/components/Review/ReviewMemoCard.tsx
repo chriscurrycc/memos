@@ -2,7 +2,11 @@ import clsx from "clsx";
 import { SquarePenIcon } from "lucide-react";
 import { PhotoProvider } from "react-photo-view";
 import MemoContent from "@/components/MemoContent";
+import MemoLocationView from "@/components/MemoLocationView";
+import MemoReactionListView from "@/components/MemoReactionListView";
+import MemoRelationListView from "@/components/MemoRelationListView";
 import MemoResourceListView from "@/components/MemoResourceListView";
+import { MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
 import { Memo } from "@/types/proto/api/v1/memo_service";
 import { useLocale, useTranslate } from "@/utils/i18n";
 import { formatMemoDate, hasMeaningfulUpdate } from "@/utils/memo";
@@ -21,6 +25,7 @@ const ReviewMemoCard = ({ memo, onEdit, dateDisplay = "date", className, headerS
   const showEdited = dateDisplay !== "none" && hasMeaningfulUpdate(memo);
   const formatTime = (date: Date) =>
     dateDisplay === "time" ? date.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" }) : formatMemoDate(date, locale);
+  const referencedMemos = memo.relations.filter((relation) => relation.type === MemoRelation_Type.REFERENCE);
 
   return (
     <div
@@ -52,12 +57,15 @@ const ReviewMemoCard = ({ memo, onEdit, dateDisplay = "date", className, headerS
         )}
         <PhotoProvider>
           <MemoContent memoName={memo.name} nodes={memo.nodes} disablePhotoProvider />
+          {memo.location && <MemoLocationView location={memo.location} />}
           {memo.resources.length > 0 && (
             <div className="mt-2">
               <MemoResourceListView resources={memo.resources} />
             </div>
           )}
         </PhotoProvider>
+        <MemoRelationListView memo={memo} relations={referencedMemos} parentPage="/review" />
+        <MemoReactionListView memo={memo} reactions={memo.reactions} />
       </div>
     </div>
   );

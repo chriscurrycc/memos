@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
+import { Mousewheel } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import useNavigateTo from "@/hooks/useNavigateTo";
 import { useReviewStore } from "@/store/v1/review";
@@ -211,6 +212,9 @@ const ReviewModule = () => {
               spaceBetween={16}
               slidesPerView={1}
               autoHeight
+              simulateTouch={false}
+              modules={[Mousewheel]}
+              mousewheel={{ forceToAxis: true }}
             >
               {memos.map((memo) => (
                 <SwiperSlide key={memo.name}>
