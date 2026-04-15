@@ -1,15 +1,5 @@
 import clsx from "clsx";
-import {
-  ArchiveIcon,
-  BookOpenIcon,
-  Globe2Icon,
-  HomeIcon,
-  LogInIcon,
-  PaperclipIcon,
-  SettingsIcon,
-  SmileIcon,
-  User2Icon,
-} from "lucide-react";
+import { ArchiveIcon, BookOpenIcon, Globe2Icon, HomeIcon, LogInIcon, PaperclipIcon, SettingsIcon, User2Icon } from "lucide-react";
 import { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Tooltip from "@/components/ui/Tooltip";
@@ -107,13 +97,6 @@ const Navigation = (props: Props) => {
     title: t("common.sign-in"),
     icon: <LogInIcon className="w-6 h-auto opacity-70 shrink-0" />,
   };
-  const aboutNavLink: NavLinkItem = {
-    id: "header-about",
-    path: Routes.ABOUT,
-    title: t("common.about"),
-    icon: <SmileIcon className="w-6 h-auto opacity-70 shrink-0" />,
-  };
-
   const navLinks: NavLinkItem[] = user
     ? [
         homeNavLink,
@@ -124,7 +107,7 @@ const Navigation = (props: Props) => {
         archivedNavLink,
         settingNavLink,
       ]
-    : [exploreNavLink, signInNavLink, aboutNavLink];
+    : [exploreNavLink, signInNavLink];
 
   return (
     <header

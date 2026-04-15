@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "@/App";
 import RootLayout from "@/layouts/RootLayout";
 import SuspenseWrapper from "@/layouts/SuspenseWrapper";
-import About from "@/pages/About";
 import AdminSignIn from "@/pages/AdminSignIn";
 import Archived from "@/pages/Archived";
 import AuthCallback from "@/pages/AuthCallback";
@@ -27,7 +26,6 @@ export enum Routes {
   SETTING = "/setting",
   EXPLORE = "/explore",
   REVIEW = "/review",
-  ABOUT = "/about",
   AUTH = "/auth",
 }
 
@@ -97,10 +95,6 @@ const router = createBrowserRouter([
           {
             path: "u/:username",
             element: <UserProfile />,
-          },
-          {
-            path: Routes.ABOUT,
-            element: <About />,
           },
           {
             path: "403",

@@ -1,10 +1,8 @@
 import { Dropdown, Menu, MenuButton, MenuItem } from "@mui/joy";
 import clsx from "clsx";
-import { LogOutIcon, SmileIcon } from "lucide-react";
+import { LogOutIcon } from "lucide-react";
 import { authServiceClient } from "@/grpcweb";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import useNavigateTo from "@/hooks/useNavigateTo";
-import { Routes } from "@/router";
 import { useWorkspaceSettingStore } from "@/store/v1";
 import { WorkspaceGeneralSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
@@ -18,7 +16,6 @@ interface Props {
 const UserBanner = (props: Props) => {
   const { collapsed } = props;
   const t = useTranslate();
-  const navigateTo = useNavigateTo();
   const user = useCurrentUser();
   const workspaceSettingStore = useWorkspaceSettingStore();
   const workspaceGeneralSetting =
@@ -49,10 +46,6 @@ const UserBanner = (props: Props) => {
           <MenuItem onClick={handleSignOut}>
             <LogOutIcon className="w-4 h-auto opacity-60" />
             <span className="truncate">{t("common.sign-out")}</span>
-          </MenuItem>
-          <MenuItem onClick={() => navigateTo(Routes.ABOUT)}>
-            <SmileIcon className="w-4 h-auto opacity-60" />
-            <span className="truncate">{t("common.about")}</span>
           </MenuItem>
         </Menu>
       </Dropdown>
