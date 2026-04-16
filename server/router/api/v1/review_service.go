@@ -608,4 +608,3 @@ func (s *APIV1Service) GetReviewStats(ctx context.Context, _ *v1pb.GetReviewStat
 		TotalSessions:       totalSessions,
 	}, nil
 }
-
