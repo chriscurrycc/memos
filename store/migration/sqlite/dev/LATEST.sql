@@ -164,8 +164,7 @@ CREATE TABLE memo_review_session (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   user_id INTEGER NOT NULL,
   completed_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
-  memo_count INTEGER NOT NULL,
-  source TEXT NOT NULL DEFAULT 'review'
+  memo_count INTEGER NOT NULL
 );
 
 CREATE INDEX idx_memo_review_session_user ON memo_review_session(user_id, completed_at);
@@ -176,7 +175,6 @@ CREATE TABLE memo_review (
   user_id INTEGER NOT NULL,
   memo_id INTEGER NOT NULL,
   reviewed_at BIGINT NOT NULL DEFAULT (strftime('%s', 'now')),
-  source TEXT NOT NULL DEFAULT 'review',
   session_id INTEGER REFERENCES memo_review_session(id)
 );
 

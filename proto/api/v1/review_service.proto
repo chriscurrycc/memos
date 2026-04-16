@@ -38,14 +38,6 @@ service ReviewService {
   }
 }
 
-enum ReviewSource {
-  REVIEW_SOURCE_UNSPECIFIED = 0;
-  REVIEW_SOURCE_REVIEW = 1;
-  REVIEW_SOURCE_ON_THIS_DAY = 2;
-  REVIEW_SOURCE_SURPRISE = 3;
-  REVIEW_SOURCE_TIME_TRAVEL = 4;
-}
-
 message ListReviewMemosRequest {
   // Force refresh the daily review cache.
   bool force = 1;
@@ -128,9 +120,6 @@ message RecordReviewRequest {
   // The memo names that were reviewed.
   // Format: memos/{id}
   repeated string memo_names = 1;
-
-  // The source of the review.
-  ReviewSource source = 2;
 }
 
 message RecordReviewResponse {

@@ -23,61 +23,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ReviewSource int32
-
-const (
-	ReviewSource_REVIEW_SOURCE_UNSPECIFIED ReviewSource = 0
-	ReviewSource_REVIEW_SOURCE_REVIEW      ReviewSource = 1
-	ReviewSource_REVIEW_SOURCE_ON_THIS_DAY ReviewSource = 2
-	ReviewSource_REVIEW_SOURCE_SURPRISE    ReviewSource = 3
-	ReviewSource_REVIEW_SOURCE_TIME_TRAVEL ReviewSource = 4
-)
-
-// Enum value maps for ReviewSource.
-var (
-	ReviewSource_name = map[int32]string{
-		0: "REVIEW_SOURCE_UNSPECIFIED",
-		1: "REVIEW_SOURCE_REVIEW",
-		2: "REVIEW_SOURCE_ON_THIS_DAY",
-		3: "REVIEW_SOURCE_SURPRISE",
-		4: "REVIEW_SOURCE_TIME_TRAVEL",
-	}
-	ReviewSource_value = map[string]int32{
-		"REVIEW_SOURCE_UNSPECIFIED": 0,
-		"REVIEW_SOURCE_REVIEW":      1,
-		"REVIEW_SOURCE_ON_THIS_DAY": 2,
-		"REVIEW_SOURCE_SURPRISE":    3,
-		"REVIEW_SOURCE_TIME_TRAVEL": 4,
-	}
-)
-
-func (x ReviewSource) Enum() *ReviewSource {
-	p := new(ReviewSource)
-	*p = x
-	return p
-}
-
-func (x ReviewSource) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (ReviewSource) Descriptor() protoreflect.EnumDescriptor {
-	return file_api_v1_review_service_proto_enumTypes[0].Descriptor()
-}
-
-func (ReviewSource) Type() protoreflect.EnumType {
-	return &file_api_v1_review_service_proto_enumTypes[0]
-}
-
-func (x ReviewSource) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use ReviewSource.Descriptor instead.
-func (ReviewSource) EnumDescriptor() ([]byte, []int) {
-	return file_api_v1_review_service_proto_rawDescGZIP(), []int{0}
-}
-
 type ListReviewMemosRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Force refresh the daily review cache.
@@ -550,9 +495,7 @@ type RecordReviewRequest struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The memo names that were reviewed.
 	// Format: memos/{id}
-	MemoNames []string `protobuf:"bytes,1,rep,name=memo_names,json=memoNames,proto3" json:"memo_names,omitempty"`
-	// The source of the review.
-	Source        ReviewSource `protobuf:"varint,2,opt,name=source,proto3,enum=memos.api.v1.ReviewSource" json:"source,omitempty"`
+	MemoNames     []string `protobuf:"bytes,1,rep,name=memo_names,json=memoNames,proto3" json:"memo_names,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -592,13 +535,6 @@ func (x *RecordReviewRequest) GetMemoNames() []string {
 		return x.MemoNames
 	}
 	return nil
-}
-
-func (x *RecordReviewRequest) GetSource() ReviewSource {
-	if x != nil {
-		return x.Source
-	}
-	return ReviewSource_REVIEW_SOURCE_UNSPECIFIED
 }
 
 type RecordReviewResponse struct {
@@ -802,11 +738,10 @@ const file_api_v1_review_service_proto_rawDesc = "" +
 	"\n" +
 	"period_end\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tperiodEnd\x12\x1f\n" +
 	"\vtotal_count\x18\x04 \x01(\x05R\n" +
-	"totalCount\"h\n" +
+	"totalCount\"4\n" +
 	"\x13RecordReviewRequest\x12\x1d\n" +
 	"\n" +
-	"memo_names\x18\x01 \x03(\tR\tmemoNames\x122\n" +
-	"\x06source\x18\x02 \x01(\x0e2\x1a.memos.api.v1.ReviewSourceR\x06source\"\\\n" +
+	"memo_names\x18\x01 \x03(\tR\tmemoNames\"\\\n" +
 	"\x14RecordReviewResponse\x12\x1d\n" +
 	"\n" +
 	"session_id\x18\x01 \x01(\x05R\tsessionId\x12%\n" +
@@ -817,13 +752,7 @@ const file_api_v1_review_service_proto_rawDesc = "" +
 	"totalMemos\x121\n" +
 	"\x15reviewed_last_30_days\x18\x02 \x01(\x05R\x12reviewedLast30Days\x120\n" +
 	"\x14available_for_review\x18\x03 \x01(\x05R\x12availableForReview\x12%\n" +
-	"\x0etotal_sessions\x18\x04 \x01(\x05R\rtotalSessions*\xa1\x01\n" +
-	"\fReviewSource\x12\x1d\n" +
-	"\x19REVIEW_SOURCE_UNSPECIFIED\x10\x00\x12\x18\n" +
-	"\x14REVIEW_SOURCE_REVIEW\x10\x01\x12\x1d\n" +
-	"\x19REVIEW_SOURCE_ON_THIS_DAY\x10\x02\x12\x1a\n" +
-	"\x16REVIEW_SOURCE_SURPRISE\x10\x03\x12\x1d\n" +
-	"\x19REVIEW_SOURCE_TIME_TRAVEL\x10\x042\x85\x06\n" +
+	"\x0etotal_sessions\x18\x04 \x01(\x05R\rtotalSessions2\x85\x06\n" +
 	"\rReviewService\x12|\n" +
 	"\x0fListReviewMemos\x12$.memos.api.v1.ListReviewMemosRequest\x1a%.memos.api.v1.ListReviewMemosResponse\"\x1c\x82\xd3\xe4\x93\x02\x16\x12\x14/api/v1/review/memos\x12\x8b\x01\n" +
 	"\x12ListOnThisDayMemos\x12'.memos.api.v1.ListOnThisDayMemosRequest\x1a(.memos.api.v1.ListOnThisDayMemosResponse\"\"\x82\xd3\xe4\x93\x02\x1c\x12\x1a/api/v1/review/on-this-day\x12f\n" +
@@ -845,52 +774,49 @@ func file_api_v1_review_service_proto_rawDescGZIP() []byte {
 	return file_api_v1_review_service_proto_rawDescData
 }
 
-var file_api_v1_review_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_api_v1_review_service_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_api_v1_review_service_proto_goTypes = []any{
-	(ReviewSource)(0),                  // 0: memos.api.v1.ReviewSource
-	(*ListReviewMemosRequest)(nil),     // 1: memos.api.v1.ListReviewMemosRequest
-	(*ListReviewMemosResponse)(nil),    // 2: memos.api.v1.ListReviewMemosResponse
-	(*ListOnThisDayMemosRequest)(nil),  // 3: memos.api.v1.ListOnThisDayMemosRequest
-	(*ListOnThisDayMemosResponse)(nil), // 4: memos.api.v1.ListOnThisDayMemosResponse
-	(*OnThisDayGroup)(nil),             // 5: memos.api.v1.OnThisDayGroup
-	(*GetRandomMemoRequest)(nil),       // 6: memos.api.v1.GetRandomMemoRequest
-	(*GetTimeTravelMemosRequest)(nil),  // 7: memos.api.v1.GetTimeTravelMemosRequest
-	(*GetTimeTravelMemosResponse)(nil), // 8: memos.api.v1.GetTimeTravelMemosResponse
-	(*RecordReviewRequest)(nil),        // 9: memos.api.v1.RecordReviewRequest
-	(*RecordReviewResponse)(nil),       // 10: memos.api.v1.RecordReviewResponse
-	(*GetReviewStatsRequest)(nil),      // 11: memos.api.v1.GetReviewStatsRequest
-	(*GetReviewStatsResponse)(nil),     // 12: memos.api.v1.GetReviewStatsResponse
-	(*Memo)(nil),                       // 13: memos.api.v1.Memo
-	(*timestamppb.Timestamp)(nil),      // 14: google.protobuf.Timestamp
+	(*ListReviewMemosRequest)(nil),     // 0: memos.api.v1.ListReviewMemosRequest
+	(*ListReviewMemosResponse)(nil),    // 1: memos.api.v1.ListReviewMemosResponse
+	(*ListOnThisDayMemosRequest)(nil),  // 2: memos.api.v1.ListOnThisDayMemosRequest
+	(*ListOnThisDayMemosResponse)(nil), // 3: memos.api.v1.ListOnThisDayMemosResponse
+	(*OnThisDayGroup)(nil),             // 4: memos.api.v1.OnThisDayGroup
+	(*GetRandomMemoRequest)(nil),       // 5: memos.api.v1.GetRandomMemoRequest
+	(*GetTimeTravelMemosRequest)(nil),  // 6: memos.api.v1.GetTimeTravelMemosRequest
+	(*GetTimeTravelMemosResponse)(nil), // 7: memos.api.v1.GetTimeTravelMemosResponse
+	(*RecordReviewRequest)(nil),        // 8: memos.api.v1.RecordReviewRequest
+	(*RecordReviewResponse)(nil),       // 9: memos.api.v1.RecordReviewResponse
+	(*GetReviewStatsRequest)(nil),      // 10: memos.api.v1.GetReviewStatsRequest
+	(*GetReviewStatsResponse)(nil),     // 11: memos.api.v1.GetReviewStatsResponse
+	(*Memo)(nil),                       // 12: memos.api.v1.Memo
+	(*timestamppb.Timestamp)(nil),      // 13: google.protobuf.Timestamp
 }
 var file_api_v1_review_service_proto_depIdxs = []int32{
-	13, // 0: memos.api.v1.ListReviewMemosResponse.memos:type_name -> memos.api.v1.Memo
-	5,  // 1: memos.api.v1.ListOnThisDayMemosResponse.groups:type_name -> memos.api.v1.OnThisDayGroup
-	13, // 2: memos.api.v1.OnThisDayGroup.memos:type_name -> memos.api.v1.Memo
-	14, // 3: memos.api.v1.GetTimeTravelMemosRequest.period_start:type_name -> google.protobuf.Timestamp
-	14, // 4: memos.api.v1.GetTimeTravelMemosRequest.period_end:type_name -> google.protobuf.Timestamp
-	13, // 5: memos.api.v1.GetTimeTravelMemosResponse.memos:type_name -> memos.api.v1.Memo
-	14, // 6: memos.api.v1.GetTimeTravelMemosResponse.period_start:type_name -> google.protobuf.Timestamp
-	14, // 7: memos.api.v1.GetTimeTravelMemosResponse.period_end:type_name -> google.protobuf.Timestamp
-	0,  // 8: memos.api.v1.RecordReviewRequest.source:type_name -> memos.api.v1.ReviewSource
-	1,  // 9: memos.api.v1.ReviewService.ListReviewMemos:input_type -> memos.api.v1.ListReviewMemosRequest
-	3,  // 10: memos.api.v1.ReviewService.ListOnThisDayMemos:input_type -> memos.api.v1.ListOnThisDayMemosRequest
-	6,  // 11: memos.api.v1.ReviewService.GetRandomMemo:input_type -> memos.api.v1.GetRandomMemoRequest
-	7,  // 12: memos.api.v1.ReviewService.GetTimeTravelMemos:input_type -> memos.api.v1.GetTimeTravelMemosRequest
-	9,  // 13: memos.api.v1.ReviewService.RecordReview:input_type -> memos.api.v1.RecordReviewRequest
-	11, // 14: memos.api.v1.ReviewService.GetReviewStats:input_type -> memos.api.v1.GetReviewStatsRequest
-	2,  // 15: memos.api.v1.ReviewService.ListReviewMemos:output_type -> memos.api.v1.ListReviewMemosResponse
-	4,  // 16: memos.api.v1.ReviewService.ListOnThisDayMemos:output_type -> memos.api.v1.ListOnThisDayMemosResponse
-	13, // 17: memos.api.v1.ReviewService.GetRandomMemo:output_type -> memos.api.v1.Memo
-	8,  // 18: memos.api.v1.ReviewService.GetTimeTravelMemos:output_type -> memos.api.v1.GetTimeTravelMemosResponse
-	10, // 19: memos.api.v1.ReviewService.RecordReview:output_type -> memos.api.v1.RecordReviewResponse
-	12, // 20: memos.api.v1.ReviewService.GetReviewStats:output_type -> memos.api.v1.GetReviewStatsResponse
-	15, // [15:21] is the sub-list for method output_type
-	9,  // [9:15] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	12, // 0: memos.api.v1.ListReviewMemosResponse.memos:type_name -> memos.api.v1.Memo
+	4,  // 1: memos.api.v1.ListOnThisDayMemosResponse.groups:type_name -> memos.api.v1.OnThisDayGroup
+	12, // 2: memos.api.v1.OnThisDayGroup.memos:type_name -> memos.api.v1.Memo
+	13, // 3: memos.api.v1.GetTimeTravelMemosRequest.period_start:type_name -> google.protobuf.Timestamp
+	13, // 4: memos.api.v1.GetTimeTravelMemosRequest.period_end:type_name -> google.protobuf.Timestamp
+	12, // 5: memos.api.v1.GetTimeTravelMemosResponse.memos:type_name -> memos.api.v1.Memo
+	13, // 6: memos.api.v1.GetTimeTravelMemosResponse.period_start:type_name -> google.protobuf.Timestamp
+	13, // 7: memos.api.v1.GetTimeTravelMemosResponse.period_end:type_name -> google.protobuf.Timestamp
+	0,  // 8: memos.api.v1.ReviewService.ListReviewMemos:input_type -> memos.api.v1.ListReviewMemosRequest
+	2,  // 9: memos.api.v1.ReviewService.ListOnThisDayMemos:input_type -> memos.api.v1.ListOnThisDayMemosRequest
+	5,  // 10: memos.api.v1.ReviewService.GetRandomMemo:input_type -> memos.api.v1.GetRandomMemoRequest
+	6,  // 11: memos.api.v1.ReviewService.GetTimeTravelMemos:input_type -> memos.api.v1.GetTimeTravelMemosRequest
+	8,  // 12: memos.api.v1.ReviewService.RecordReview:input_type -> memos.api.v1.RecordReviewRequest
+	10, // 13: memos.api.v1.ReviewService.GetReviewStats:input_type -> memos.api.v1.GetReviewStatsRequest
+	1,  // 14: memos.api.v1.ReviewService.ListReviewMemos:output_type -> memos.api.v1.ListReviewMemosResponse
+	3,  // 15: memos.api.v1.ReviewService.ListOnThisDayMemos:output_type -> memos.api.v1.ListOnThisDayMemosResponse
+	12, // 16: memos.api.v1.ReviewService.GetRandomMemo:output_type -> memos.api.v1.Memo
+	7,  // 17: memos.api.v1.ReviewService.GetTimeTravelMemos:output_type -> memos.api.v1.GetTimeTravelMemosResponse
+	9,  // 18: memos.api.v1.ReviewService.RecordReview:output_type -> memos.api.v1.RecordReviewResponse
+	11, // 19: memos.api.v1.ReviewService.GetReviewStats:output_type -> memos.api.v1.GetReviewStatsResponse
+	14, // [14:20] is the sub-list for method output_type
+	8,  // [8:14] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_api_v1_review_service_proto_init() }
@@ -905,14 +831,13 @@ func file_api_v1_review_service_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_v1_review_service_proto_rawDesc), len(file_api_v1_review_service_proto_rawDesc)),
-			NumEnums:      1,
+			NumEnums:      0,
 			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_api_v1_review_service_proto_goTypes,
 		DependencyIndexes: file_api_v1_review_service_proto_depIdxs,
-		EnumInfos:         file_api_v1_review_service_proto_enumTypes,
 		MessageInfos:      file_api_v1_review_service_proto_msgTypes,
 	}.Build()
 	File_api_v1_review_service_proto = out.File

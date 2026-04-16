@@ -20,20 +20,17 @@ func TestReviewSessionStore(t *testing.T) {
 	session, err := ts.CreateReviewSession(ctx, &store.ReviewSession{
 		UserID:    user.ID,
 		MemoCount: 5,
-		Source:    store.ReviewSourceReview,
 	})
 	require.NoError(t, err)
 	require.NotZero(t, session.ID)
 	require.Equal(t, user.ID, session.UserID)
 	require.Equal(t, int32(5), session.MemoCount)
-	require.Equal(t, store.ReviewSourceReview, session.Source)
 	require.NotZero(t, session.CompletedAt)
 
-	// Create a second session with a different source.
+	// Create a second session.
 	session2, err := ts.CreateReviewSession(ctx, &store.ReviewSession{
 		UserID:    user.ID,
 		MemoCount: 3,
-		Source:    store.ReviewSourceOnThisDay,
 	})
 	require.NoError(t, err)
 	require.NotEqual(t, session.ID, session2.ID)
@@ -44,16 +41,6 @@ func TestReviewSessionStore(t *testing.T) {
 	})
 	require.NoError(t, err)
 	require.Len(t, sessions, 2)
-
-	// List sessions filtered by source.
-	reviewSource := store.ReviewSourceReview
-	sessions, err = ts.ListReviewSessions(ctx, &store.FindReviewSession{
-		UserID: &user.ID,
-		Source: &reviewSource,
-	})
-	require.NoError(t, err)
-	require.Len(t, sessions, 1)
-	require.Equal(t, session.ID, sessions[0].ID)
 
 	// List sessions with limit.
 	limit := 1
@@ -93,7 +80,6 @@ func TestMemoReviewStore(t *testing.T) {
 	review, err := ts.CreateMemoReview(ctx, &store.MemoReview{
 		UserID: user.ID,
 		MemoID: memo.ID,
-		Source: store.ReviewSourceReview,
 	})
 	require.NoError(t, err)
 	require.NotZero(t, review.ID)
@@ -150,7 +136,6 @@ func TestBatchCreateMemoReviews(t *testing.T) {
 	session, err := ts.CreateReviewSession(ctx, &store.ReviewSession{
 		UserID:    user.ID,
 		MemoCount: int32(len(memoIDs)),
-		Source:    store.ReviewSourceReview,
 	})
 	require.NoError(t, err)
 
@@ -160,7 +145,6 @@ func TestBatchCreateMemoReviews(t *testing.T) {
 		reviews = append(reviews, &store.MemoReview{
 			UserID:    user.ID,
 			MemoID:    memoID,
-			Source:    store.ReviewSourceReview,
 			SessionID: &session.ID,
 		})
 	}
@@ -204,7 +188,6 @@ func TestMemoReviewFilterByTime(t *testing.T) {
 	_, err = ts.CreateMemoReview(ctx, &store.MemoReview{
 		UserID: user.ID,
 		MemoID: memo.ID,
-		Source: store.ReviewSourceReview,
 	})
 	require.NoError(t, err)
 
@@ -264,7 +247,6 @@ func TestListMemoReviewSummaries(t *testing.T) {
 		_, err = ts.CreateMemoReview(ctx, &store.MemoReview{
 			UserID: user.ID,
 			MemoID: memo1.ID,
-			Source: store.ReviewSourceReview,
 		})
 		require.NoError(t, err)
 	}
@@ -273,7 +255,6 @@ func TestListMemoReviewSummaries(t *testing.T) {
 	_, err = ts.CreateMemoReview(ctx, &store.MemoReview{
 		UserID: user.ID,
 		MemoID: memo2.ID,
-		Source: store.ReviewSourceReview,
 	})
 	require.NoError(t, err)
 

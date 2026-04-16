@@ -504,14 +504,10 @@ func (s *APIV1Service) RecordReview(ctx context.Context, request *v1pb.RecordRev
 		}, nil
 	}
 
-	// Convert source
-	source := convertReviewSourceToStore(request.Source)
-
 	// Create review session
 	session, err := s.Store.CreateReviewSession(ctx, &store.ReviewSession{
 		UserID:    user.ID,
 		MemoCount: int32(len(request.MemoNames)),
-		Source:    source,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create review session: %v", err)
@@ -527,7 +523,6 @@ func (s *APIV1Service) RecordReview(ctx context.Context, request *v1pb.RecordRev
 		reviews = append(reviews, &store.MemoReview{
 			UserID:    user.ID,
 			MemoID:    memoID,
-			Source:    source,
 			SessionID: &session.ID,
 		})
 	}
@@ -536,11 +531,9 @@ func (s *APIV1Service) RecordReview(ctx context.Context, request *v1pb.RecordRev
 		return nil, status.Errorf(codes.Internal, "failed to record reviews: %v", err)
 	}
 
-	// Mark session cache as completed for review source.
-	if request.Source == v1pb.ReviewSource_REVIEW_SOURCE_REVIEW {
-		if err := s.Store.CompleteMemoReviewSessionCache(ctx, user.ID); err != nil {
-			return nil, status.Errorf(codes.Internal, "failed to complete review session cache: %v", err)
-		}
+	// Mark session cache as completed.
+	if err := s.Store.CompleteMemoReviewSessionCache(ctx, user.ID); err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to complete review session cache: %v", err)
 	}
 
 	return &v1pb.RecordReviewResponse{
@@ -616,17 +609,3 @@ func (s *APIV1Service) GetReviewStats(ctx context.Context, _ *v1pb.GetReviewStat
 	}, nil
 }
 
-func convertReviewSourceToStore(source v1pb.ReviewSource) store.ReviewSource {
-	switch source {
-	case v1pb.ReviewSource_REVIEW_SOURCE_REVIEW:
-		return store.ReviewSourceReview
-	case v1pb.ReviewSource_REVIEW_SOURCE_ON_THIS_DAY:
-		return store.ReviewSourceOnThisDay
-	case v1pb.ReviewSource_REVIEW_SOURCE_SURPRISE:
-		return store.ReviewSourceSurprise
-	case v1pb.ReviewSource_REVIEW_SOURCE_TIME_TRAVEL:
-		return store.ReviewSourceTimeTravel
-	default:
-		return store.ReviewSourceReview
-	}
-}

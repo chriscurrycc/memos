@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { combine } from "zustand/middleware";
 import { reviewServiceClient, userServiceClient } from "@/grpcweb";
 import { Memo } from "@/types/proto/api/v1/memo_service";
-import { GetReviewStatsResponse, ReviewSource } from "@/types/proto/api/v1/review_service";
+import { GetReviewStatsResponse } from "@/types/proto/api/v1/review_service";
 import { UserSetting } from "@/types/proto/api/v1/user_service";
 
 export type ReviewTab = "review" | "on-this-day" | "time-travel" | "surprise";
@@ -293,14 +293,13 @@ export const useReviewStore = create(
       }
     },
 
-    recordReview: async (source: ReviewSource = ReviewSource.REVIEW_SOURCE_REVIEW) => {
+    recordReview: async () => {
       const { memos } = get();
       if (memos.length === 0) return;
 
       try {
         await reviewServiceClient.recordReview({
           memoNames: memos.map((m) => m.name),
-          source,
         });
       } catch (error) {
         console.error("Failed to record review:", error);

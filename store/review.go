@@ -4,25 +4,11 @@ import (
 	"context"
 )
 
-type ReviewSource string
-
-const (
-	ReviewSourceReview     ReviewSource = "review"
-	ReviewSourceOnThisDay  ReviewSource = "on_this_day"
-	ReviewSourceSurprise   ReviewSource = "surprise"
-	ReviewSourceTimeTravel ReviewSource = "time_travel"
-)
-
-func (s ReviewSource) String() string {
-	return string(s)
-}
-
 type ReviewSession struct {
 	ID          int32
 	UserID      int32
 	CompletedAt int64
 	MemoCount   int32
-	Source      ReviewSource
 }
 
 type MemoReview struct {
@@ -30,7 +16,6 @@ type MemoReview struct {
 	UserID     int32
 	MemoID     int32
 	ReviewedAt int64
-	Source     ReviewSource
 	SessionID  *int32
 }
 
@@ -38,7 +23,6 @@ type FindMemoReview struct {
 	UserID          *int32
 	MemoID          *int32
 	ReviewedAtAfter *int64
-	Source          *ReviewSource
 	Limit           *int
 }
 
@@ -55,7 +39,6 @@ type FindMemoReviewSummary struct {
 type FindReviewSession struct {
 	UserID           *int32
 	CompletedAtAfter *int64
-	Source           *ReviewSource
 	Limit            *int
 }
 
