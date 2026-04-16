@@ -4,6 +4,19 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.32.1](https://github.com/chriscurrycc/memos/releases/tag/v0.32.1) - 2026-04-16
+
+### 优化
+- 回顾卡片现在显示位置、双链和表情回应；PC 端支持滚轮切换卡片和文本选择
+- 无资源时隐藏资源标签页
+- 移除无用的关于页面
+
+### 修复
+- 修复导出图片时标签和链接的渲染问题
+
+### 重构
+- 移除未使用的 ReviewSource 字段
+
 ## [v0.32.0](https://github.com/chriscurrycc/memos/releases/tag/v0.32.0) - 2026-04-10
 
 ### 新功能

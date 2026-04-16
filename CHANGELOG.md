@@ -4,6 +4,19 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.32.1](https://github.com/chriscurrycc/memos/releases/tag/v0.32.1) - 2026-04-16
+
+### Improvements
+- Review cards now display location, relations, and reactions; PC supports mousewheel navigation and text selection
+- Hide Resources tab when no resources exist
+- Remove unused about page
+
+### Fixes
+- Fix tag and link rendering issues in image export
+
+### Refactor
+- Drop unused ReviewSource field from review tables
+
 ## [v0.32.0](https://github.com/chriscurrycc/memos/releases/tag/v0.32.0) - 2026-04-10
 
 ### Features
