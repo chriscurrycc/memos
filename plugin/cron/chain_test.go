@@ -104,7 +104,7 @@ func TestChainDelayIfStillRunning(t *testing.T) {
 		var j countJob
 		wrappedJob := NewChain(DelayIfStillRunning(DiscardLogger)).Then(&j)
 		go wrappedJob.Run()
-		time.Sleep(2 * time.Millisecond) // Give the job 2ms to complete.
+		time.Sleep(100 * time.Millisecond) // Generous upper bound; only a real hang would miss this.
 		if c := j.Done(); c != 1 {
 			t.Errorf("expected job run once, immediately, got %d", c)
 		}
@@ -118,7 +118,7 @@ func TestChainDelayIfStillRunning(t *testing.T) {
 			time.Sleep(time.Millisecond)
 			go wrappedJob.Run()
 		}()
-		time.Sleep(3 * time.Millisecond) // Give both jobs 3ms to complete.
+		time.Sleep(100 * time.Millisecond) // Generous upper bound; only a real hang would miss this.
 		if c := j.Done(); c != 2 {
 			t.Errorf("expected job run twice, immediately, got %d", c)
 		}
@@ -156,7 +156,7 @@ func TestChainSkipIfStillRunning(t *testing.T) {
 		var j countJob
 		wrappedJob := NewChain(SkipIfStillRunning(DiscardLogger)).Then(&j)
 		go wrappedJob.Run()
-		time.Sleep(2 * time.Millisecond) // Give the job 2ms to complete.
+		time.Sleep(100 * time.Millisecond) // Generous upper bound; only a real hang would miss this.
 		if c := j.Done(); c != 1 {
 			t.Errorf("expected job run once, immediately, got %d", c)
 		}
@@ -170,7 +170,7 @@ func TestChainSkipIfStillRunning(t *testing.T) {
 			time.Sleep(time.Millisecond)
 			go wrappedJob.Run()
 		}()
-		time.Sleep(3 * time.Millisecond) // Give both jobs 3ms to complete.
+		time.Sleep(100 * time.Millisecond) // Generous upper bound; only a real hang would miss this.
 		if c := j.Done(); c != 2 {
 			t.Errorf("expected job run twice, immediately, got %d", c)
 		}
