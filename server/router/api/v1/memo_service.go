@@ -260,6 +260,38 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 		currentTs := time.Now().Unix()
 		update.UpdatedTs = &currentTs
 	}
+
+	// Compute the final create_time/update_time the request would produce, then
+	// validate the resulting state once. This allows create_time and update_time
+	// to be updated in the same request as long as the final state is valid,
+	// instead of each field being rejected individually against the unchanged DB
+	// values.
+	now := time.Now().Unix()
+	finalCreatedTs := memo.CreatedTs
+	finalUpdatedTs := memo.UpdatedTs
+	if !request.PreserveUpdateTime {
+		finalUpdatedTs = now
+	}
+	var createTimeInMask, updateTimeInMask bool
+	for _, path := range request.UpdateMask.Paths {
+		if path == "create_time" {
+			finalCreatedTs = request.Memo.CreateTime.AsTime().Unix()
+			createTimeInMask = true
+		} else if path == "update_time" {
+			finalUpdatedTs = request.Memo.UpdateTime.AsTime().Unix()
+			updateTimeInMask = true
+		}
+	}
+	if createTimeInMask && finalCreatedTs > now {
+		return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be in the future")
+	}
+	if updateTimeInMask && finalUpdatedTs > now {
+		return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be in the future")
+	}
+	if (createTimeInMask || updateTimeInMask) && finalCreatedTs > finalUpdatedTs {
+		return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be after update_time")
+	}
+
 	for _, path := range request.UpdateMask.Paths {
 		if path == "content" {
 			contentLengthLimit, err := s.getContentLengthLimit(ctx)
@@ -300,23 +332,9 @@ func (s *APIV1Service) UpdateMemo(ctx context.Context, request *v1pb.UpdateMemoR
 			rowStatus := convertRowStatusToStore(request.Memo.RowStatus)
 			update.RowStatus = &rowStatus
 		} else if path == "create_time" {
-			createdTs := request.Memo.CreateTime.AsTime().Unix()
-			if createdTs > time.Now().Unix() {
-				return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be in the future")
-			}
-			if createdTs > memo.UpdatedTs {
-				return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be after update_time")
-			}
-			update.CreatedTs = &createdTs
+			update.CreatedTs = &finalCreatedTs
 		} else if path == "update_time" {
-			updatedTs := request.Memo.UpdateTime.AsTime().Unix()
-			if updatedTs > time.Now().Unix() {
-				return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be in the future")
-			}
-			if updatedTs < memo.CreatedTs {
-				return nil, status.Errorf(codes.InvalidArgument, "update_time cannot be before create_time")
-			}
-			update.UpdatedTs = &updatedTs
+			update.UpdatedTs = &finalUpdatedTs
 		} else if path == "pinned" {
 			if _, err := s.Store.UpsertMemoOrganizer(ctx, &store.MemoOrganizer{
 				MemoID: id,
