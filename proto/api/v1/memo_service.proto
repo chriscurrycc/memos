@@ -200,6 +200,10 @@ message CreateMemoRequest {
   repeated MemoRelation relations = 4;
 
   optional Location location = 5;
+
+  // Optional. If set, the memo is created with this timestamp as both its
+  // create_time and update_time. Must not be in the future.
+  google.protobuf.Timestamp create_time = 6;
 }
 
 enum MemoView {

@@ -2686,6 +2686,12 @@ definitions:
           $ref: '#/definitions/v1MemoRelation'
       location:
         $ref: '#/definitions/apiV1Location'
+      createTime:
+        type: string
+        format: date-time
+        description: |-
+          Optional. If set, the memo is created with this timestamp as both its
+          create_time and update_time. Must not be in the future.
   v1CreateWebhookRequest:
     type: object
     properties:

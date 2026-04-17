@@ -33,11 +33,20 @@ func (s *APIV1Service) CreateMemo(ctx context.Context, request *v1pb.CreateMemoR
 		return nil, status.Errorf(codes.Internal, "failed to get user")
 	}
 
+	if request.CreateTime != nil && request.CreateTime.AsTime().Unix() > time.Now().Unix() {
+		return nil, status.Errorf(codes.InvalidArgument, "create_time cannot be in the future")
+	}
+
 	create := &store.Memo{
 		UID:        shortuuid.New(),
 		CreatorID:  user.ID,
 		Content:    request.Content,
 		Visibility: convertVisibilityToStore(request.Visibility),
+	}
+	if request.CreateTime != nil {
+		ts := request.CreateTime.AsTime().Unix()
+		create.CreatedTs = ts
+		create.UpdatedTs = ts
 	}
 	workspaceMemoRelatedSetting, err := s.Store.GetWorkspaceMemoRelatedSetting(ctx)
 	if err != nil {

@@ -25,6 +25,17 @@ func (d *DB) CreateMemo(ctx context.Context, create *store.Memo) (*store.Memo, e
 	}
 	args := []any{create.UID, create.CreatorID, create.Content, create.Visibility, payload}
 
+	if create.CreatedTs != 0 {
+		fields = append(fields, "`created_ts`")
+		placeholder = append(placeholder, "FROM_UNIXTIME(?)")
+		args = append(args, create.CreatedTs)
+	}
+	if create.UpdatedTs != 0 {
+		fields = append(fields, "`updated_ts`")
+		placeholder = append(placeholder, "FROM_UNIXTIME(?)")
+		args = append(args, create.UpdatedTs)
+	}
+
 	stmt := "INSERT INTO `memo` (" + strings.Join(fields, ", ") + ") VALUES (" + strings.Join(placeholder, ", ") + ")"
 	result, err := d.db.ExecContext(ctx, stmt, args...)
 	if err != nil {
