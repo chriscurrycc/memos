@@ -4,6 +4,11 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.32.3](https://github.com/chriscurrycc/memos/releases/tag/v0.32.3) - 2026-04-17
+
+### 修复
+- `UpdateMemo` 现在按请求最终状态校验 `create_time` 和 `update_time`，而不是对每个字段都只比对原始 DB 值；在一次 PATCH 里同时修改两个时间字段只要结果合法就能成功。
+
 ## [v0.32.2](https://github.com/chriscurrycc/memos/releases/tag/v0.32.2) - 2026-04-17
 
 ### 优化

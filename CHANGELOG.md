@@ -4,6 +4,11 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.32.3](https://github.com/chriscurrycc/memos/releases/tag/v0.32.3) - 2026-04-17
+
+### Fixes
+- `UpdateMemo` now validates `create_time` and `update_time` against the request's final state instead of per-field against the unchanged DB values, so both can be set atomically in a single PATCH when the resulting state is valid.
+
 ## [v0.32.2](https://github.com/chriscurrycc/memos/releases/tag/v0.32.2) - 2026-04-17
 
 ### Improvements
