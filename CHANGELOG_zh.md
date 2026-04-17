@@ -4,6 +4,11 @@
 
 本文档记录了此分支相对于原版 [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 的所有重要更改。
 
+## [v0.32.2](https://github.com/chriscurrycc/memos/releases/tag/v0.32.2) - 2026-04-17
+
+### 优化
+- API：`CreateMemoRequest` 新增可选的 `create_time` 字段，便于导入时指定 memo 的历史时间。
+
 ## [v0.32.1](https://github.com/chriscurrycc/memos/releases/tag/v0.32.1) - 2026-04-16
 
 ### 优化

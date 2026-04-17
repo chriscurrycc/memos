@@ -4,6 +4,11 @@
 
 All notable changes to this fork compared to the original [usememos/memos v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## [v0.32.2](https://github.com/chriscurrycc/memos/releases/tag/v0.32.2) - 2026-04-17
+
+### Improvements
+- API: `CreateMemoRequest` now accepts an optional `create_time` for importing memos with historical timestamps.
+
 ## [v0.32.1](https://github.com/chriscurrycc/memos/releases/tag/v0.32.1) - 2026-04-16
 
 ### Improvements
