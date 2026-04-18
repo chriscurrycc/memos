@@ -18,17 +18,6 @@ Try it live without installing anything: **[memo-demo.chriscurry.cc](https://mem
 
 > Shared demo instance — please don't store anything sensitive. Content may be reset periodically.
 
-## Versioning
-
-This project uses two independent version numbers:
-
-- **Application version** (e.g., `v0.30.0`) — the release version, incremented when new features or improvements are added. This is what you see in Docker tags and GitHub releases.
-- **Database schema version** (e.g., `0.25.2`) — the database migration version, only incremented when the database structure changes. Defined in [`store/migration/SCHEMA_VERSION`](store/migration/SCHEMA_VERSION).
-
-The application version may increase without any database schema change. For example, multiple feature releases can share the same schema version if they only involve frontend or API changes.
-
-> **Note:** You don't need to worry about the database schema version in daily use. It only matters when migrating from the original usememos/memos. The original project ties its database version to the application version — even if the database hasn't changed, the version number still increases with each minor release (e.g., v0.26 → v0.27). So the compatibility range "v0.24.0 ~ v0.26.2" below refers to the original project's **application version**, not actual database changes.
-
 ## What's Different
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed list of features and improvements compared to the original Memos.
@@ -52,17 +41,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed list of features and improvement
 - **Lightweight** - Minimal resource usage with SQLite as default database
 - **RESTful API** - Full API support for integration and automation
 - **SSO Support** - OAuth2 identity provider integration
-- **Webhook** - Event notifications for automation workflows
 - **Multi-language** - i18n support for multiple languages
-
-## Tech Stack
-
-| Frontend | Backend |
-|----------|---------|
-| React | Go |
-| TypeScript | SQLite / MySQL / PostgreSQL |
-| Tailwind CSS | gRPC + REST API |
-| Vite | |
 
 ## Quick Start
 
@@ -217,7 +196,20 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 
 The script is idempotent and safe to run multiple times.
 
-## MCP Server
+## Versioning
+
+This project uses two independent version numbers:
+
+- **Application version** (e.g., `v0.30.0`) — the release version, incremented when new features or improvements are added. This is what you see in Docker tags and GitHub releases.
+- **Database schema version** (e.g., `0.25.2`) — the database migration version, only incremented when the database structure changes. Defined in [`store/migration/SCHEMA_VERSION`](store/migration/SCHEMA_VERSION).
+
+The application version may increase without any database schema change. For example, multiple feature releases can share the same schema version if they only involve frontend or API changes.
+
+> **Note:** You don't need to worry about the database schema version in daily use. It only matters when migrating from the original usememos/memos. The original project ties its database version to the application version — even if the database hasn't changed, the version number still increases with each minor release (e.g., v0.26 → v0.27). So the compatibility range "v0.24.0 ~ v0.26.2" below refers to the original project's **application version**, not actual database changes.
+
+## Ecosystem
+
+### MCP Server
 
 Use the [MCP server](https://github.com/chriscurrycc/memos-mcp) to connect AI assistants (Claude Code, Claude Desktop, Cursor, etc.) to your Memos instance:
 
@@ -227,28 +219,16 @@ npx @chriscurrycc/memos-mcp
 
 17 tools for memo CRUD & search, tags, resources, relations, and review — plus 6 workflow prompts (digest, review, relation graph, etc.). See the [memos-mcp](https://github.com/chriscurrycc/memos-mcp) repo for setup instructions.
 
+### Pixmo
+
+[Pixmo](https://pixmo.cc) is a photo wall that connects to your Memos server — turn your memos into a browsable gallery with masonry layout, timeline navigation, EXIF display, and tag cloud.
+
+- Demo: [ccmemos.pixmo.cc](https://ccmemos.pixmo.cc) (connected to this fork)
+- Supports both this fork and official Memos v0.26.x+
+
 ## Documentation
 
 - [Development Guide](docs/development.md) - Set up local development environment
 - [Development on Windows](docs/development-windows.md) - Windows-specific setup
 - [API Documentation](docs/API.md) - REST API reference
 - [How I develop this project](https://github.com/chriscurrycc/memos/issues/8) - Development blog
-
-## Contributing
-
-Contributions are welcome! Feel free to:
-
-- Report bugs or request features via [Issues](https://github.com/chriscurrycc/memos/issues)
-- Submit [Pull Requests](https://github.com/chriscurrycc/memos/pulls)
-
-## Acknowledgements
-
-- [usememos/memos](https://github.com/usememos/memos) - The original project this fork is based on
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-If you have any questions, feel free to [contact me](mailto:hichriscurry@gmail.com).

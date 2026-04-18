@@ -18,17 +18,6 @@
 
 > 公共演示实例——请勿存储敏感信息，数据可能会定期重置。
 
-## 版本说明
-
-本项目使用两个独立的版本号：
-
-- **应用版本**（如 `v0.30.0`）— 发布版本，每次新增功能或改进时递增。对应 Docker 标签和 GitHub Releases。
-- **数据库版本**（如 `0.25.2`）— 数据库迁移版本，仅在数据库结构变更时递增。定义在 [`store/migration/SCHEMA_VERSION`](store/migration/SCHEMA_VERSION)。
-
-应用版本可能在数据库版本不变的情况下多次递增。例如，多个功能发布可能共享同一个数据库版本（如仅涉及前端或 API 变更）。
-
-> **说明：** 日常使用无需关注数据库版本，仅在从原版 usememos/memos 迁移时需要了解。原版的数据库版本与应用版本绑定——即使数据库没有任何变化，数据库版本号也会随每次 minor 版本发布而递增（如 v0.26 → v0.27）。因此下文兼容性范围中提到的「v0.24.0 ~ v0.26.2」指的是原版的**应用版本**，并非实际的数据库变更版本。
-
 ## 版本差异
 
 查看 [CHANGELOG_zh.md](CHANGELOG_zh.md) 了解与原版 Memos 的详细功能和改进。
@@ -52,17 +41,7 @@
 - **轻量高效** - 默认使用 SQLite，资源占用极低
 - **RESTful API** - 完整的 API 支持，便于集成和自动化
 - **SSO 支持** - OAuth2 身份提供商集成
-- **Webhook** - 事件通知，支持自动化工作流
 - **多语言** - i18n 国际化支持
-
-## 技术栈
-
-| 前端 | 后端 |
-|------|------|
-| React | Go |
-| TypeScript | SQLite / MySQL / PostgreSQL |
-| Tailwind CSS | gRPC + REST API |
-| Vite | |
 
 ## 快速开始
 
@@ -217,7 +196,20 @@ curl -sL https://raw.githubusercontent.com/chriscurrycc/memos/main/scripts/migra
 
 该脚本是幂等的，可以安全地多次运行。
 
-## MCP 服务器
+## 版本说明
+
+本项目使用两个独立的版本号：
+
+- **应用版本**（如 `v0.30.0`）— 发布版本，每次新增功能或改进时递增。对应 Docker 标签和 GitHub Releases。
+- **数据库版本**（如 `0.25.2`）— 数据库迁移版本，仅在数据库结构变更时递增。定义在 [`store/migration/SCHEMA_VERSION`](store/migration/SCHEMA_VERSION)。
+
+应用版本可能在数据库版本不变的情况下多次递增。例如，多个功能发布可能共享同一个数据库版本（如仅涉及前端或 API 变更）。
+
+> **说明：** 日常使用无需关注数据库版本，仅在从原版 usememos/memos 迁移时需要了解。原版的数据库版本与应用版本绑定——即使数据库没有任何变化，数据库版本号也会随每次 minor 版本发布而递增（如 v0.26 → v0.27）。因此下文兼容性范围中提到的「v0.24.0 ~ v0.26.2」指的是原版的**应用版本**，并非实际的数据库变更版本。
+
+## 生态系统
+
+### MCP 服务器
 
 使用 [MCP 服务器](https://github.com/chriscurrycc/memos-mcp) 将 AI 助手（Claude Code、Claude Desktop、Cursor 等）连接到你的 Memos 实例：
 
@@ -227,28 +219,16 @@ npx @chriscurrycc/memos-mcp
 
 17 个工具，支持 Memo 增删改查与搜索、标签、资源、关联和回顾 — 以及 6 个工作流提示词（活动总结、间隔回顾、关系图谱等）。详细配置请参阅 [memos-mcp](https://github.com/chriscurrycc/memos-mcp) 仓库。
 
+### Pixmo
+
+[Pixmo](https://pixmo.cc) 是一个可以连接 Memos 服务器的照片墙 — 将你的备忘录转化为可浏览的图片画廊，支持瀑布流布局、时间线导航、EXIF 信息展示和标签云。
+
+- 演示：[ccmemos.pixmo.cc](https://ccmemos.pixmo.cc)（连接本 fork）
+- 同时支持本 fork 和原版 Memos v0.26.x+
+
 ## 文档
 
 - [开发指南](docs/development.md) - 搭建本地开发环境
 - [Windows 开发指南](docs/development-windows.md) - Windows 特定设置
 - [API 文档](docs/API.md) - REST API 参考
 - [我是如何开发这个项目的](https://github.com/chriscurrycc/memos/issues/8) - 开发博客
-
-## 贡献
-
-欢迎贡献！你可以：
-
-- 通过 [Issues](https://github.com/chriscurrycc/memos/issues) 报告 Bug 或提出功能建议
-- 提交 [Pull Requests](https://github.com/chriscurrycc/memos/pulls)
-
-## 致谢
-
-- [usememos/memos](https://github.com/usememos/memos) - 本项目 fork 的原始项目
-
-## 许可证
-
-本项目基于 MIT 许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
-## 联系方式
-
-如有任何问题，欢迎[联系我](mailto:hichriscurry@gmail.com)。
