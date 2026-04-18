@@ -8,6 +8,16 @@ A lightweight, self-hosted memo hub for capturing and organizing your thoughts.
 
 This is a customized fork of [usememos/memos](https://github.com/usememos/memos), forked from [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0).
 
+## Demo
+
+Try it live without installing anything: **[memo-demo.chriscurry.cc](https://memo-demo.chriscurry.cc)**
+
+| Username | Password |
+|----------|----------|
+| `chriscurry` | `memos` |
+
+> Shared demo instance — please don't store anything sensitive. Content may be reset periodically.
+
 ## Versioning
 
 This project uses two independent version numbers:

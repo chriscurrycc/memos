@@ -8,6 +8,16 @@
 
 このプロジェクトは [usememos/memos](https://github.com/usememos/memos) のカスタマイズ版フォークで、[v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) からフォークされています。
 
+## デモ
+
+インストール不要でそのまま試せます：**[memo-demo.chriscurry.cc](https://memo-demo.chriscurry.cc)**
+
+| ユーザー名 | パスワード |
+|------------|------------|
+| `chriscurry` | `memos` |
+
+> 共有デモインスタンスです。機密情報は保存しないでください。データは定期的にリセットされる場合があります。
+
 ## バージョニング
 
 本プロジェクトでは2つの独立したバージョン番号を使用しています：

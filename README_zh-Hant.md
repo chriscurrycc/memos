@@ -8,6 +8,16 @@
 
 本專案是 [usememos/memos](https://github.com/usememos/memos) 的定製分支，從 [v0.23.0](https://github.com/usememos/memos/releases/tag/v0.23.0) 版本 fork 而來。
 
+## 線上體驗
+
+無需安裝，直接試用：**[memo-demo.chriscurry.cc](https://memo-demo.chriscurry.cc)**
+
+| 使用者名稱 | 密碼 |
+|----------|------|
+| `chriscurry` | `memos` |
+
+> 公共示範實例——請勿儲存敏感資訊，資料可能會定期重置。
+
 ## 版本說明
 
 本專案使用兩個獨立的版本號：
